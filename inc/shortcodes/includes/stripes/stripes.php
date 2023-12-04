@@ -30,25 +30,24 @@ class DT_Shortcode_Stripe extends DT_Shortcode {
 	}
 
 	public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'type'          => '1',
-			'bg_color'      => '',
-			'bg_image'      => '',
-			'bg_position'   => '',
-			'bg_repeat'     => '',
-			'bg_cover'      => '0',
-			'bg_attachment' => 'false',
+		extract( shortcode_atts( array(
+			'type'              => '1',
+			'bg_color'          => '',
+			'bg_image'          => '',
+			'bg_position'       => '',
+			'bg_repeat'         => '',
+			'bg_cover'          => '0',
+			'bg_attachment'     => 'false',
 
-			'bg_video_src_mp4'  => '',
-			'bg_video_src_ogv'  => '',
-			'bg_video_src_webm' => '',
+			'bg_video_src_mp4'	=> '',
+			'bg_video_src_ogv'	=> '',
+			'bg_video_src_webm'	=> '',
 
-			'padding_top'    => '',
-			'padding_bottom' => '',
-			'margin_top'     => '',
-			'margin_bottom'  => ''
-		], $atts, $this->shortcode_name );
-		extract( $shortcode_atts );
+			'padding_top'       => '',
+			'padding_bottom'    => '',
+			'margin_top'        => '',
+			'margin_bottom'     => ''
+		), $atts, $this->shortcode_name ) );
 
 		$bg_cover = apply_filters( 'dt_sanitize_flag', $bg_cover );
 		$bg_attachment = in_array( $bg_attachment, array( 'false', 'fixed', 'true' ) ) ? $bg_attachment : 'false';

@@ -13,7 +13,7 @@ if ( ! function_exists( 'presscore_get_primary_menu_class' ) ) :
 
 	/**
 	 * Primary menu wrap classes.
-	 *
+	 * 
 	 * @param  string|array $class
 	 * @return array
 	 */
@@ -25,7 +25,7 @@ if ( ! function_exists( 'presscore_get_primary_menu_class' ) ) :
 			case 'underline':
 				$classes[] = 'underline-decoration';
 
-				$classes[] = the7_array_match( $config->get( 'header.menu.decoration.style.underline.direction' ), array(
+				$classes[] = presscore_array_value( $config->get( 'header.menu.decoration.style.underline.direction' ), array(
 					'left_to_right'      => 'l-to-r-line',
 					'from_center'        => 'from-centre-line',
 					'upwards'            => 'upwards-line',
@@ -35,7 +35,7 @@ if ( ! function_exists( 'presscore_get_primary_menu_class' ) ) :
 			case 'other':
 				$classes[] = 'bg-outline-decoration';
 
-				$classes[] = the7_array_match( $config->get( 'header.menu.decoration.style.other.hover.style' ), array(
+				$classes[] = presscore_array_value( $config->get( 'header.menu.decoration.style.other.hover.style' ), array(
 					'outline'    => 'hover-outline-decoration',
 					'background' => 'hover-bg-decoration',
 				) );
@@ -44,7 +44,7 @@ if ( ! function_exists( 'presscore_get_primary_menu_class' ) ) :
 					$classes[] = 'hover-line-decoration';
 				}
 
-				$classes[] = the7_array_match( $config->get( 'header.menu.decoration.style.other.active.style' ), array(
+				$classes[] = presscore_array_value( $config->get( 'header.menu.decoration.style.other.active.style' ), array(
 					'outline'    => 'active-outline-decoration',
 					'background' => 'active-bg-decoration',
 				) );
@@ -63,7 +63,7 @@ if ( ! function_exists( 'presscore_get_primary_menu_class' ) ) :
 			$classes[] = 'level-arrows-on';
 		}
 
-		$classes[] = the7_array_match( $config->get( 'header.menu.items.margins.style' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.menu.items.margins.style' ), array(
 			'double'   => 'outside-item-double-margin',
 			'custom'   => 'outside-item-custom-margin',
 			'disabled' => 'outside-item-remove-margin',
@@ -80,7 +80,7 @@ if ( ! function_exists( 'presscore_get_primary_submenu_class' ) ) :
 
 	/**
 	 * Primary menu submenu classes.
-	 *
+	 * 
 	 * @param  string|array $class
 	 * @return array
 	 */
@@ -93,7 +93,7 @@ if ( ! function_exists( 'presscore_get_primary_submenu_class' ) ) :
 			$classes[] = 'gradient-hover';
 		}
 
-		$classes[] = the7_array_match( $config->get( 'header.menu.submenu.background.hover.style' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.menu.submenu.background.hover.style' ), array(
 			'background'          => 'hover-style-bg',
 		) );
 
@@ -148,7 +148,7 @@ if ( ! function_exists( 'presscore_nav_menu_list' ) ) :
 		presscore_nav_menu(
 			array(
 				'theme_location'      => $location,
-				'items_wrap'          => '<ul id="' . esc_attr( "{$location}-menu" ) . '">%3$s</ul>',
+				'items_wrap'          => '<ul id="' . esc_attr( "{$location}-menu" ) . '" role="menubar">%3$s</ul>',
 				'submenu_class'       => $args['submenu_class'],
 				'parent_is_clickable' => true,
 				'fallback_cb'         => '',
@@ -208,13 +208,13 @@ function the7_display_mobile_menu( $location ) {
 	do_action( 'presscore_primary_nav_menu_before' );
 
 	presscore_nav_menu(
-		[
-			'theme_location'               => $location,
-			'items_wrap'                   => '%3$s',
-			'submenu_class'                => implode( ' ', presscore_get_primary_submenu_class( 'sub-nav' ) ),
-			'parent_is_clickable'          => presscore_config()->get( 'header.menu.submenu.parent_clickable' ),
-			'walker'                       => new The7_Walker_Nav_Menu_Mobile(),
-		]
+		array(
+			'theme_location'      => $location,
+			'items_wrap'          => '%3$s',
+			'submenu_class'       => implode( ' ', presscore_get_primary_submenu_class( 'sub-nav' ) ),
+			'parent_is_clickable' => presscore_config()->get( 'header.menu.submenu.parent_clickable' ),
+			'walker'              => new The7_Walker_Nav_Menu_Mobile(),
+		)
 	);
 
 	do_action( 'presscore_primary_nav_menu_after' );
@@ -235,31 +235,38 @@ function the7_get_menu_cache_key( $args ) {
 	return 'the7_menu_cache-' . md5( wp_json_encode( $args ) );
 }
 
-if ( ! function_exists( 'presscore_nav_menu' ) ) :
+if ( ! function_exists( 'presscore_disable_posts_meta_cache_warming' ) ) {
 
 	/**
-	 * @param array $args Arguments.
+	 * Disable post meta cache update for $wp_query.
+	 * Intended to be used with 'pre_get_posts' action.
 	 *
-	 * @return void|string
+	 * @since 6.1.1
+	 *
+	 * @param WP_Query $wp_query WP Query object.
 	 */
+	function presscore_disable_posts_meta_cache_warming( $wp_query ) {
+		$wp_query->query_vars['update_post_meta_cache'] = false;
+	}
+}
+
+if ( ! function_exists( 'presscore_nav_menu' ) ) :
+
 	function presscore_nav_menu( $args = array() ) {
-		$args = wp_parse_args(
-			$args,
-			[
-				'theme_location'               => 'primary',
-				'container'                    => false,
-				'container_class'              => false,
-				'menu_class'                   => false,
-				'menu_id'                      => 'mainmenu',
-				'fallback_cb'                  => 'presscore_page_menu',
-				'before'                       => '',
-				'after'                        => '',
-				'items_wrap'                   => '<ul id="%1$s">%3$s</ul>',
-				'echo'                         => true,
-				'submenu_class'                => 'sub-nav',
-				'parent_is_clickable'          => true,
-			]
-		);
+		$args = wp_parse_args( $args, array(
+			'theme_location' => 'primary',
+			'container' => false,
+			'container_class' => false,
+			'menu_class' => false,
+			'menu_id' => 'mainmenu',
+			'fallback_cb' => 'presscore_page_menu',
+			'before' => '',
+			'after' => '',
+			'items_wrap' => '<ul id="%1$s">%3$s</ul>',
+			'echo' => true,
+			'submenu_class' => 'sub-nav',
+			'parent_is_clickable' => true,
+		) );
 		$args = apply_filters( 'presscore_nav_menu_args', $args );
 
 		if ( empty( $args['walker'] ) ) {
@@ -282,7 +289,10 @@ if ( ! function_exists( 'presscore_nav_menu' ) ) :
 			$_args = $args;
 			$_args['echo'] = false;
 
+			// Try to resolve high memory consumption.
+			add_action( 'pre_get_posts', 'presscore_disable_posts_meta_cache_warming' );
 			$html = wp_nav_menu( $_args );
+			remove_action( 'pre_get_posts', 'presscore_disable_posts_meta_cache_warming' );
 
 			wp_cache_add( the7_get_menu_cache_key( $args ), $html, 'the7-tmp' );
 		}

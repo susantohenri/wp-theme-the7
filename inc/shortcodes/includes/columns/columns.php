@@ -36,8 +36,7 @@ class DT_Shortcode_Columns extends DT_Shortcode {
         $def_atts = array(
             'width'         => '1',
         );
-		$shortcode_atts = shortcode_atts( $def_atts, $atts, $this->shortcode_name );
-		extract( $shortcode_atts );
+        extract( shortcode_atts( $def_atts, $atts, $this->shortcode_name ) );
 
         $width_classes = array(
             '1' => 'wf-1',
@@ -53,7 +52,7 @@ class DT_Shortcode_Columns extends DT_Shortcode {
 
         $output = '<div class="wf-usr-cell ' . esc_attr( $width_class ) . '">' . do_shortcode( $content ) . '</div>';
 
-        return $output;
+        return $output; 
     }
 
     public function register_puny_shortcode( $puny_shortcodes = array() ) {

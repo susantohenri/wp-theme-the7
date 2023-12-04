@@ -26,13 +26,12 @@ class DT_Shortcode_Gap extends DT_Shortcode {
     }
 
     public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'height' => 10,
-		], $atts, $this->shortcode_name );
-		extract( $shortcode_atts );
-
-		$output = '<div class="gap" style="line-height: ' . absint($height) . 'px; height: ' . absint($height) . 'px;"></div>';
-
+       extract( shortcode_atts( array(
+		'height' => 10,
+	    ), $atts, $this->shortcode_name ) );
+	    
+	    $output = '<div class="gap" style="line-height: ' . absint($height) . 'px; height: ' . absint($height) . 'px;"></div>';
+	    
 	    return $output;
     }
 

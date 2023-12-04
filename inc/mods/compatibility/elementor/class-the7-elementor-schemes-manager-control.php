@@ -6,15 +6,15 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor;
+namespace The7\Adapters\Elementor;
 
 use Elementor\Core\Files\CSS\Global_CSS;
 use Elementor\Plugin as Elementor;
 use Elementor\Settings;
 use Elementor\Core\Schemes as Elementor_Schemes;
 use Elementor\Core\Schemes\Manager as Schemes_Manager;
-use The7\Mods\Compatibility\Elementor\Schemes\The7_Elementor_Color_Scheme;
-use The7\Mods\Compatibility\Elementor\Schemes\The7_Elementor_Typography_Scheme;
+use The7\Adapters\Elementor\Schemes\The7_Elementor_Color_Scheme;
+use The7\Adapters\Elementor\Schemes\The7_Elementor_Typography_Scheme;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -19,6 +19,7 @@ $atts = [
 ];
 
 $atts['href']       = esc_url( $follow_link );
+$atts['rel']        = 'nofollow';
 $atts['target']     = $target;
 $atts['aria-label'] = $aria_label;
 ?>

@@ -5,7 +5,7 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor;
+namespace The7\Adapters\Elementor;
 
 use Elementor\Modules\PageTemplates\Module as PageTemplatesModule;
 use Elementor\Plugin;
@@ -13,8 +13,6 @@ use Elementor\Plugin;
 use Elementor\Modules\Library\Documents\Section;
 use ElementorPro\Modules\ThemeBuilder\Documents\Section as ProSection;
 use ElementorPro\Modules\ThemeBuilder\Module;
-use The7\Mods\Compatibility\Elementor\Modules\Mega_Menu\Document as Mega_Menu;
-use The7\Mods\Compatibility\Elementor\Modules\Slider\Document as Slider;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -41,7 +39,7 @@ class The7_Elementor_Template_Manager {
 	public function template_include( $template ) {
 		if ( is_singular() ) {
 			$document = Plugin::instance()->documents->get_doc_for_frontend( get_the_ID() );
-			if ( $document && ( $document instanceof ProSection || $document instanceof Section || $document instanceof Mega_Menu || $document instanceof Slider) ) {
+			if ( $document && ( $document instanceof ProSection || $document instanceof Section ) ) {
 				$page_templates_module = Plugin::$instance->modules_manager->get_modules( 'page-templates' );
 				if ( $page_templates_module !== null ) {
 					$template = $page_templates_module->get_template_path( PageTemplatesModule::TEMPLATE_CANVAS );

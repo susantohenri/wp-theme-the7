@@ -11,95 +11,43 @@
  * the readme will list any important changes.
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
- * @package WooCommerce\Templates
- * @version 7.8.0
- *
- * @var bool   $readonly If the input should be set to readonly mode.
- * @var string $type     The input type attribute.
+ * @package WooCommerce/Templates
+ * @version 4.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
-/* translators: %s: Quantity. */
-$label = ! empty( $args['product_name'] ) ? sprintf( esc_html__( '%s quantity', 'woocommerce' ), wp_strip_all_tags( $args['product_name'] ) ) : esc_html__( 'Quantity', 'woocommerce' );
-
-// Modification: start.
-// Compatibility with 7.2.0.
-if ( ! isset( $readonly, $type ) ) {
-	// In some cases we wish to display the quantity but not allow for it to be changed.
-	if ( $max_value && $min_value === $max_value ) {
-		$readonly    = true;
-		$input_value = $min_value;
-		$type        = $max_value > 1 ? 'text' : 'hidden';
-	} else {
-		$readonly = false;
-		$type     = 'number';
-	}
-}
-
-$qty_class = ' buttons_added';
-// Hide the whole block if $type is 'hidden'.
-if ( $type === 'hidden' ) {
-	$qty_class .= ' hidden';
-}
-
-// Hide buttons.
-if ( $readonly || $type === 'hidden' ) {
-	$qty_end   = '';
-	$qty_start = '';
+if ( $max_value && $min_value === $max_value ) {
+	?>
+	<div class="quantity hidden">
+		<input type="hidden" id="<?php echo esc_attr( $input_id ); ?>" class="qty" name="<?php echo esc_attr( $input_name ); ?>" value="<?php echo esc_attr( $min_value ); ?>" />
+	</div>
+	<?php
 } else {
-	$qty_end   = '<button type="button" class="plus is-form">﹢</button>';
-	$qty_start = '<button type="button" class="minus is-form">﹣</button>';
+	/* translators: %s: Quantity. */
+	$label = ! empty( $args['product_name'] ) ? sprintf( esc_html__( '%s quantity', 'the7mk2' ), wp_strip_all_tags( $args['product_name'] ) ) : esc_html__( 'Quantity', 'the7mk2' );
+	$qty_end = '<input type="button" value="+" class="plus button is-form">';
+	$qty_start = '<input type="button" value="-" class="minus button is-form">';
+	?>
+	<div class="quantity buttons_added">
+		<?php do_action( 'woocommerce_before_quantity_input_field' ); ?>
+		<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_attr( $label ); ?></label>
+		<?php echo $qty_start; ?>
+		<input
+				type="number"
+				id="<?php echo esc_attr( $input_id ); ?>"
+				class="<?php echo esc_attr( join( ' ', (array) $classes ) ); ?>"
+				step="<?php echo esc_attr( $step ); ?>"
+				min="<?php echo esc_attr( $min_value ); ?>"
+				max="<?php echo esc_attr( 0 < $max_value ? $max_value : '' ); ?>"
+				name="<?php echo esc_attr( $input_name ); ?>"
+				value="<?php echo esc_attr( $input_value ); ?>"
+				title="<?php echo esc_attr_x( 'Qty', 'Product quantity input tooltip', 'the7mk2' ); ?>"
+				size="4"
+				placeholder="<?php echo esc_attr( $placeholder ); ?>"
+				inputmode="<?php echo esc_attr( $inputmode ); ?>" />
+		<?php echo $qty_end; ?>
+		<?php do_action( 'woocommerce_after_quantity_input_field' ); ?>
+	</div>
+	<?php
 }
-// Modification: end.
-?>
-<div class="quantity<?php echo esc_attr( $qty_class ); ?>">
-	<?php
-	/**
-	 * Hook to output something before the quantity input field.
-	 *
-	 * @since 7.2.0
-	 */
-	do_action( 'woocommerce_before_quantity_input_field' );
-	?>
-	<label class="screen-reader-text" for="<?php echo esc_attr( $input_id ); ?>"><?php echo esc_attr( $label ); ?></label>
-
-	<?php
-	// Modified.
-	echo $qty_start;
-	?>
-
-	<input
-		type="<?php echo esc_attr( $type ); ?>"
-		<?php echo $readonly ? 'readonly="readonly"' : ''; ?>
-		id="<?php echo esc_attr( $input_id ); ?>"
-		class="<?php echo esc_attr( join( ' ', (array) $classes ) ); ?>"
-		name="<?php echo esc_attr( $input_name ); ?>"
-		value="<?php echo esc_attr( $input_value ); ?>"
-		aria-label="<?php esc_attr_e( 'Product quantity', 'woocommerce' ); ?>"
-		size="4"
-		min="<?php echo esc_attr( $min_value ); ?>"
-		max="<?php echo esc_attr( 0 < $max_value ? $max_value : '' ); ?>"
-		<?php if ( ! $readonly ) : ?>
-			step="<?php echo esc_attr( $step ); ?>"
-		placeholder="<?php echo esc_attr( $placeholder ); ?>"
-		inputmode="<?php echo esc_attr( $inputmode ); ?>"
-			autocomplete="<?php echo esc_attr( isset( $autocomplete ) ? $autocomplete : 'on' ); ?>"
-		<?php endif; ?>
-	/>
-
-	<?php
-	// Modified.
-	echo $qty_end;
-	?>
-
-	<?php
-	/**
-	 * Hook to output something after quantity input field
-	 *
-	 * @since 3.6.0
-	 */
-	do_action( 'woocommerce_after_quantity_input_field' );
-	?>
-</div>
-<?php

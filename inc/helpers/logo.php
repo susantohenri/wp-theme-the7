@@ -26,7 +26,7 @@ if ( ! function_exists( 'presscore_get_logo_src' ) ) :
 			$srcset[] = "{$logo[0]} {$l_type}";
 		}
 
-		return array( implode( ', ', $srcset ), $default_logo['width'], $default_logo['height'] );
+		return array( implode( $srcset, ', ' ), $default_logo['width'], $default_logo['height'] );
 	}
 
 endif;
@@ -317,7 +317,7 @@ if ( ! function_exists( 'presscore_get_the_mixed_logo' ) ) :
 	 */
 	function presscore_get_the_mixed_logo() {
 		if ( presscore_header_is_transparent() && presscore_config()->get( 'header.layout' ) === 'top_line' && of_get_option( 'header-style-mixed-transparent-top_line-choose_logo') !== 'main' ) {
-
+		
 
 			if ( 'none' === of_get_option( 'header-style-mixed-transparent-top_line-choose_logo') ) {
 				return '';
@@ -367,11 +367,11 @@ if ( ! function_exists( 'presscore_get_floating_menu_logos_meta' ) ) :
 		if ( presscore_mixed_header_with_top_line() && $use_main_logo ) {
 			$logo = of_get_option( 'header-style-mixed-logo_regular', array('', 0) );
 			$hd_logo = of_get_option( 'header-style-mixed-logo_hd', array('', 0) );
-		} elseif ( $use_main_logo ) {
-			$logo    = $config->get( 'logo.header.regular' );
+		} else if ( $use_main_logo ) {
+			$logo = $config->get( 'logo.header.regular' );
 			$hd_logo = $config->get( 'logo.header.hd' );
 		} else {
-			$logo    = $config->get( 'logo.header.floating.regular' );
+			$logo = $config->get( 'logo.header.floating.regular' );
 			$hd_logo = $config->get( 'logo.header.floating.hd' );
 		}
 

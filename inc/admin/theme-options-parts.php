@@ -646,7 +646,7 @@ if ( ! class_exists( 'Presscore_Lib_Options_HeaderElementButtonTemplate', false 
 			$_fields['typography'] = array(
 				'type' => 'typography',
 				'std'  => array(
-					'font_family' => 'Arial:700',
+					'font_family' => 'Roboto:700',
 					'font_size'   => 14,
 				),
 			);

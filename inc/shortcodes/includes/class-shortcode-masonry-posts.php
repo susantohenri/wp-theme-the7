@@ -13,7 +13,7 @@ if ( ! class_exists( 'DT_Masonry_Posts_Shortcode', false ) ):
 		protected $taxonomy = 'category';
 
 		protected function setup($atts = array(), $content = null) {
-			$this->config = presscore_config();
+			$this->config = presscore_get_config();
 			$this->vc_is_inline = presscore_vc_is_inline();
 			$this->atts = $this->sanitize_attributes( $atts );
 		}

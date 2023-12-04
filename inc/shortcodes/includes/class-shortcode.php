@@ -162,11 +162,11 @@ if ( ! class_exists( 'DT_Shortcode', false ) ):
 		}
 
 		protected function backup_theme_config() {
-			$this->config_backup = presscore_config()->get();
+			$this->config_backup = presscore_get_config()->get();
 		}
 
 		protected function restore_theme_config() {
-			presscore_config()->reset( $this->config_backup );
+			presscore_get_config()->reset( $this->config_backup );
 			unset( $this->config_backup );
 		}
 

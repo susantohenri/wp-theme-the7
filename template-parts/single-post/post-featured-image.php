@@ -1,10 +1,4 @@
 <?php
-/**
- * @package The7
- */
-
-defined( 'ABSPATH' ) || exit;
-
 global $post;
 
 $show_thumbnail = ! get_post_meta( $post->ID, '_dt_post_options_hide_thumbnail', true );

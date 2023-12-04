@@ -29,11 +29,6 @@ class The7_Mega_Menu {
 	protected $mega_menu_enabled = false;
 
 	/**
-	 * @var bool $force_icons_only
-	 */
-	protected $force_icons_only = false;
-
-	/**
 	 * Add mega menu hooks.
 	 */
 	public function add_hooks() {
@@ -42,8 +37,8 @@ class The7_Mega_Menu {
 		add_filter( 'presscore_nav_menu_el_before', array( $this, 'append_columns' ), 10, 4 );
 		add_filter( 'presscore_nav_menu_start_lvl', array( $this, 'start_row' ), 10, 2 );
 		add_filter( 'presscore_nav_menu_end_lvl', array( $this, 'end_row' ), 10, 2 );
-		add_filter( 'walker_nav_menu_start_el', array( $this, 'append_widgets' ), 10, 4 );
-		add_filter( 'presscore_nav_menu_item', array( $this, 'menu_item' ), 10, 6 );
+		add_filter( 'walker_nav_menu_start_el', array( $this, 'append_widgets' ), 10, 2 );
+		add_filter( 'presscore_nav_menu_item', array( $this, 'menu_item' ), 10, 5 );
 	}
 
 	/**
@@ -60,25 +55,17 @@ class The7_Mega_Menu {
 	}
 
 	/**
-	 * @param  bool $icons_only  Should we use only icons functionality.
-	 */
-	public function force_icons_only( $icons_only = true ) {
-		$this->force_icons_only = $icons_only;
-	}
-
-	/**
 	 * Filter menu item. Add icon/image.
 	 *
-	 * @param string   $menu_item   Menu item code.
-	 * @param string   $title       Menu item title.
-	 * @param string   $description Menu item description.
-	 * @param WP_Post  $item        Menu item data object.
-	 * @param int      $depth       Menu item depth.
-	 * @param stdClass $args        An object of wp_nav_menu() arguments.
+	 * @param string  $menu_item   Menu item code.
+	 * @param string  $title       Menu item title.
+	 * @param string  $description Menu item description.
+	 * @param WP_Post $item        Menu item data object.
+	 * @param int     $depth       Menu item depth.
 	 *
 	 * @return string
 	 */
-	public function menu_item( $menu_item, $title, $description, $item, $depth, $args ) {
+	public function menu_item( $menu_item, $title, $description, $item, $depth ) {
 		if ( $menu_item ) {
 			return $menu_item;
 		}
@@ -104,14 +91,14 @@ class The7_Mega_Menu {
 	 */
 	public function detect_mega_menu_action( $item, $args, $depth ) {
 		if ( 0 === $depth ) {
-			if ( isset( $item->the7_mega_menu['mega-menu'] ) && $item->the7_mega_menu['mega-menu'] === 'on' && ! $this->force_icons_only ) {
+			if ( isset( $item->the7_mega_menu['mega-menu'] ) && $item->the7_mega_menu['mega-menu'] === 'on' ) {
 				$this->mega_menu_enabled = true;
 				$this->columns           = ( isset( $item->the7_mega_menu['mega-menu-columns'] ) ? (int) $item->the7_mega_menu['mega-menu-columns'] : 3 );
 			} else {
 				$this->mega_menu_enabled = false;
 				$this->columns           = 3;
 			}
-		} elseif ( $this->is_mega_menu_enabled() ) {
+		} elseif ( $this->mega_menu_enabled ) {
 			// If mega menu enabled.
 			if ( 1 === $depth ) {
 				// Only items with $depth = 1 have ability to remove a link.
@@ -124,7 +111,6 @@ class The7_Mega_Menu {
 				$item->dt_is_parent = true;
 			}
 		}
-		do_action('the7_mega_menu_presscore_nav_menu_start_el',  $item, $args, $depth);
 	}
 
 	/**
@@ -138,7 +124,7 @@ class The7_Mega_Menu {
 	 * @return array
 	 */
 	public function mega_menu_class_filter( $classes, $item, $args, $depth ) {
-		if ( $this->is_mega_menu_enabled() ) {
+		if ( $this->mega_menu_enabled ) {
 
 			if ( 0 === $depth ) {
 
@@ -161,9 +147,7 @@ class The7_Mega_Menu {
 						$classes[] = 'empty-title';
 					}
 				}
-				if ( isset( $item->the7_mega_menu['mega-menu-widgets'] ) && $item->the7_mega_menu['mega-menu-widgets'] !== 'none' ) {
-					$classes[] = 'has-widget';
-				}
+
 				$classes[] = 'no-link';
 				$classes[] = 'dt-mega-parent';
 				$classes[] = $this->get_column_class( $this->columns );
@@ -190,7 +174,7 @@ class The7_Mega_Menu {
 	 * @return string
 	 */
 	public function start_row( $output, $depth ) {
-		if ( 0 === $depth && $this->is_mega_menu_enabled() ) {
+		if ( 0 === $depth && $this->mega_menu_enabled ) {
 			$output = '<div class="dt-mega-menu-wrap">' . $output;
 		}
 
@@ -206,7 +190,7 @@ class The7_Mega_Menu {
 	 * @return string
 	 */
 	public function end_row( $output, $depth ) {
-		if ( 0 === $depth && $this->is_mega_menu_enabled() ) {
+		if ( 0 === $depth && $this->mega_menu_enabled ) {
 			$output .= '</div>';
 		}
 
@@ -224,7 +208,7 @@ class The7_Mega_Menu {
 	 * @return string
 	 */
 	public function append_columns( $before, $item, $args, $depth ) {
-		if ( $this->is_mega_menu_enabled() ) {
+		if ( $this->mega_menu_enabled ) {
 
 			if ( 1 === $depth && isset( $item->the7_mega_menu['mega-menu-start-new-row'] ) && $item->the7_mega_menu['mega-menu-start-new-row'] === 'on' ) {
 				$args->walker->end_lvl( $before, $depth, $args );
@@ -266,21 +250,15 @@ class The7_Mega_Menu {
 	 *
 	 * @return string
 	 */
-	public function append_widgets( $item_html, $item, $depth, $args ) {
-		$local_html = '';
-		if ( ! empty( $item->the7_mega_menu['mega-menu-widgets'] ) && $item->the7_mega_menu['mega-menu-widgets'] !== 'none' && $this->is_mega_menu_enabled() ) {
-			$style        = $this->dt_get_spacing_inline_style( $item, 'mega-menu-widgets-padding', 'padding' );
-			$inline_style = '';
-			if ( $style ) {
-				$inline_style = 'style="' . esc_attr( $style ) . '"';
-			}
+	public function append_widgets( $item_html, $item ) {
+		if ( $this->mega_menu_enabled && ! empty( $item->the7_mega_menu['mega-menu-widgets'] ) && $item->the7_mega_menu['mega-menu-widgets'] !== 'none' ) {
 			ob_start();
-			echo '<ul ' . $inline_style . ' class="sub-nav sub-nav-widgets"><li><div class="mega-menu-widgets sidebar-content">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<ul class="sub-nav sub-nav-widgets"><li><div class="mega-menu-widgets sidebar-content">';
 			dynamic_sidebar( $item->the7_mega_menu['mega-menu-widgets'] );
 			echo '</div></li></ul>';
-			$local_html .= ob_get_clean();
+			$item_html .= ob_get_clean();
 		}
-		$item_html .= apply_filters( 'the7_mega_menu_walker_nav_menu_start_el', $local_html, $item, $depth, $args);
+
 		return $item_html;
 	}
 
@@ -312,19 +290,16 @@ class The7_Mega_Menu {
 	 */
 	protected function dt_get_item_icon( $item ) {
 		$image_html = '';
-		$deprecated_mega_menu = The7_Admin_Dashboard_Settings::get( 'deprecated_mega_menu_settings' );
+
 		if ( isset( $item->the7_mega_menu['menu-item-icon-type'] ) ) {
 			switch ( $item->the7_mega_menu['menu-item-icon-type'] ) {
 				case 'html':
 					$image_html = $item->the7_mega_menu['menu-item-icon-html'];
 					break;
 				case 'icon':
-					$inline_style = '';
-					if ( $deprecated_mega_menu ) {
-						$style = $this->dt_get_icon_padding_inline_style( $item );
-						if ( $style ) {
-							$inline_style = 'style="' . esc_attr( $style ) . '"';
-						}
+					$inline_style = $this->dt_get_icon_padding_inline_style( $item );
+					if ( $inline_style ) {
+						$inline_style = 'style="' . esc_attr( $inline_style ) . '"';
 					}
 					$image_html = '<i class="fa-fw ' . esc_attr( $item->the7_mega_menu['menu-item-icon'] ) . '" ' . $inline_style . ' ></i>';
 					break;
@@ -332,27 +307,20 @@ class The7_Mega_Menu {
 					if ( empty( $item->the7_mega_menu['menu-item-image'][1] ) ) {
 						break;
 					}
-
-					$width       = 50;
-					$height      = 50;
 					$image_style = '';
-
-					if ( $deprecated_mega_menu ) {
-						if ( isset( $item->the7_mega_menu['menu-item-image-size'] ) ) {
-							$size_option_value = (array) The7_Option_Field_Spacing::decode( $item->the7_mega_menu['menu-item-image-size'] );
-							if ( count( $size_option_value ) === 2 ) {
-								list( $width, $height ) = array_map( 'absint', wp_list_pluck( $size_option_value, 'val' ) );
-							}
-						}
-
-						if ( isset( $item->the7_mega_menu['menu-item-image-border-radius'] ) ) {
-							$image_style .= 'border-radius: ' . $item->the7_mega_menu['menu-item-image-border-radius'] . ';';
-						}
-						$image_style .= $this->dt_get_icon_padding_inline_style( $item );
-						if ( $image_style ) {
-							$image_style = 'style="' . esc_attr( $image_style ) . '"';
+					$width       = 1;
+					$height      = 1;
+					if ( isset( $item->the7_mega_menu['menu-item-image-size'] ) ) {
+						$size_option_value = (array) The7_Option_Field_Spacing::decode( $item->the7_mega_menu['menu-item-image-size'] );
+						if ( count( $size_option_value ) === 2 ) {
+							list( $width, $height ) = array_map( 'absint', wp_list_pluck( $size_option_value, 'val' ) );
 						}
 					}
+					if ( isset( $item->the7_mega_menu['menu-item-image-border-radius'] ) ) {
+						$image_style .= 'border-radius: ' . $item->the7_mega_menu['menu-item-image-border-radius'] . ';';
+					}
+					$image_style .= $this->dt_get_icon_padding_inline_style( $item );
+
 					$image_html = dt_get_thumb_img(
 						array(
 							'class'   => 'rollover',
@@ -363,7 +331,7 @@ class The7_Mega_Menu {
 								'h' => $height,
 							),
 							'wrap'    => '<img %IMG_CLASS% %SRC% %ALT% %SIZE% %CUSTOM% />',
-							'custom'  => $image_style,
+							'custom'  => 'style="' . esc_attr( $image_style ) . '"',
 							'echo'    => false,
 						)
 					);
@@ -375,34 +343,6 @@ class The7_Mega_Menu {
 	}
 
 	/**
-	 * Return padding inline style.
-	 *
-	 * @param WP_Post $item Page data object.
-	 * @param string  $prop Mega menu property.
-	 * @param string  $style_type CSS property.
-	 *
-	 * @return string
-	 */
-	protected function dt_get_spacing_inline_style( $item, $prop, $style_type ) {
-		$style = '';
-		if ( empty( $style_type ) ) {
-			$style_type = 'padding';
-		}
-		if ( isset( $item->the7_mega_menu[ $prop ] ) ) {
-			$padding_option_value = The7_Option_Field_Spacing::decode( $item->the7_mega_menu[ $prop ] );
-			if ( $padding_option_value ) {
-				$padding_style = '';
-				foreach ( $padding_option_value as $padding ) {
-					$padding_style .= "{$padding['val']}{$padding['units']} ";
-				}
-				$style = $style_type . ': ' . trim( $padding_style ) . ';';
-			}
-		}
-
-		return $style;
-	}
-
-	/**
 	 * Return menu item padding inline style.
 	 *
 	 * @param WP_Post $item Page data object.
@@ -410,17 +350,18 @@ class The7_Mega_Menu {
 	 * @return string
 	 */
 	protected function dt_get_icon_padding_inline_style( $item ) {
-		return $this->dt_get_spacing_inline_style( $item, 'menu-item-image-padding', 'margin' );
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected function is_mega_menu_enabled() {
-		if ( $this->force_icons_only ) {
-			return false;
+		$style = '';
+		if ( isset( $item->the7_mega_menu['menu-item-image-padding'] ) ) {
+			$padding_option_value = The7_Option_Field_Spacing::decode( $item->the7_mega_menu['menu-item-image-padding'] );
+			if ( $padding_option_value ) {
+				$padding_style = '';
+				foreach ( $padding_option_value as $padding ) {
+					$padding_style .= "{$padding['val']}{$padding['units']} ";
+				}
+				$style = 'margin: ' . trim( $padding_style ) . ';';
+			}
 		}
 
-		return $this->mega_menu_enabled;
+		return $style;
 	}
 }

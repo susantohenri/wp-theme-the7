@@ -575,18 +575,6 @@ function of_sanitize_typography( $input, $option ) {
 }
 add_filter( 'of_sanitize_typography', 'of_sanitize_typography', 10, 2 );
 
-/* Typography */
-
-function of_sanitize_shadow( $input, $option ) {
-	$options = The7_Option_Field_Shadow::get_fields();
-	foreach ( $options as $field => $default_declaration ) {
-		$options[$field]['id'] = $field;
-	}
-
-	return optionsframework_sanitize_options_values( $options, $input);
-}
-add_filter( 'of_sanitize_shadow', 'of_sanitize_shadow', 10, 2 );
-
 function of_sanitize_font_size( $value ) {
 	$recognized = of_recognized_font_sizes();
 	$value_check = preg_replace('/px/','', $value);

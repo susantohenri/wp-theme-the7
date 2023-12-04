@@ -35,6 +35,7 @@ if ( !class_exists( 'THE7_RWMB_Post_Field' ) )
 			{
 				case 'select':
 					return THE7_RWMB_Select_Field::html( $html, $meta, $field );
+					break;
 				case 'select_advanced':
 				default:
 					return THE7_RWMB_Select_Advanced_Field::html( $html, $meta, $field );
@@ -85,6 +86,7 @@ if ( !class_exists( 'THE7_RWMB_Post_Field' ) )
 			{
 				case 'select':
 					return THE7_RWMB_Select_Field::normalize_field( $field );
+					break;
 				case 'select_advanced':
 				default:
 					return THE7_RWMB_Select_Advanced_Field::normalize_field( $field );

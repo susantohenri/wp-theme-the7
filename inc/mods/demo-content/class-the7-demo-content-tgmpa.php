@@ -9,7 +9,7 @@ class The7_Demo_Content_TGMPA {
 
 	/**
 	 * array( 'slug' => 'name' )
-	 *
+	 * 
 	 * @var array
 	 */
 	protected $inactive_plugins = [];
@@ -56,17 +56,15 @@ class The7_Demo_Content_TGMPA {
 		$plugins_to_install = $this->get_plugins_to_install();
 		$required_plugins   = [];
 		if ( ! $this->is_installed( 'pro-elements' ) ) {
-			$required_plugins['pro-elements'] = esc_html(
-				sprintf(
-					_x(
-						// translators: 1: elementor pro plugin name, 2: pro elements plugin name
-						'%1$s or %2$s',
-						'admin',
-						'the7mk2'
-					),
-					'Elementor Pro (premium)',
-					'PRO Elements (free)'
-				)
+			$required_plugins['pro-elements'] = sprintf(
+				_x(
+				// translators: 1: elementor pro plugin name, 2: pro elements plugin name
+					'%1$s or %2$s (cannot be installed automatically)',
+					'admin',
+					'the7mk2'
+				),
+				'Elementor Pro',
+				'PRO Elements'
 			);
 		}
 
@@ -117,14 +115,14 @@ class The7_Demo_Content_TGMPA {
 			return true;
 		}
 
-		if ( $this->tgmpa->is_plugin_activated( $slug ) ) {
+		if ( $this->tgmpa->is_plugin_active( $slug ) ) {
 			return true;
 		}
 
 		$aliases = (array) $this->get_plugin_aliases( $slug );
 
 		foreach ( $aliases as $alias ) {
-			if ( $this->tgmpa->is_plugin_activated( $alias ) ) {
+			if ( $this->tgmpa->is_plugin_active( $alias ) ) {
 				return true;
 			}
 		}
@@ -168,7 +166,7 @@ class The7_Demo_Content_TGMPA {
 
 	/**
 	 * If all plugins installed and active - returns empty string. In other cases returns url to tgmpa plugins page.
-	 *
+	 * 
 	 * @return string
 	 */
 	public function get_install_plugins_page_link() {
@@ -181,7 +179,7 @@ class The7_Demo_Content_TGMPA {
 
 	/**
 	 * Returns $slug plugin name if it is registered, in other cases returns $slug.
-	 *
+	 * 
 	 * @param  string $slug
 	 * @return string
 	 */
@@ -204,17 +202,13 @@ class The7_Demo_Content_TGMPA {
 		}
 
 		foreach ( $plugins as $slug ) {
-			if ( $this->is_plugin_or_alias_activated( $slug ) ) {
-				continue;
-			}
-
-			if ( $this->maybe_plugin_can_be_activated( $slug ) ) {
+			if ( $this->maybe_plugin_is_active_or_can_be_activated( $slug ) ) {
 				continue;
 			}
 
 			$aliases = $this->get_plugin_aliases( $slug );
 			foreach ( $aliases as $alias ) {
-				if ( $this->maybe_plugin_can_be_activated( $slug ) ) {
+				if ( $this->maybe_plugin_is_active_or_can_be_activated( $slug ) ) {
 					break;
 				}
 			}
@@ -224,11 +218,15 @@ class The7_Demo_Content_TGMPA {
 	/**
 	 * Populates $plugins_to_install and $inactive_plugins properties.
 	 *
-	 * @param string $slug Plugin lsug.
+	 * @param string $slug
 	 *
 	 * @return bool
 	 */
-	protected function maybe_plugin_can_be_activated( $slug ) {
+	protected function maybe_plugin_is_active_or_can_be_activated( $slug ) {
+		if ( $this->tgmpa->is_plugin_active( $slug ) ) {
+			return true;
+		}
+
 		if ( $this->tgmpa->is_plugin_installable( $slug ) ) {
 			$this->plugins_to_install[ $slug ] = $this->get_plugin_name( $slug );
 
@@ -237,34 +235,11 @@ class The7_Demo_Content_TGMPA {
 
 		if (
 			$this->tgmpa->is_plugin_installed( $slug )
-			&& ! $this->tgmpa->is_plugin_activated( $slug )
+			&& ! $this->tgmpa->is_plugin_active( $slug )
 		) {
 			$this->inactive_plugins[ $slug ] = $this->get_plugin_name( $slug );
 
 			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check if the plugin or alias is activated.
-	 *
-	 * @param string $slug Plugin slug.
-	 *
-	 * @return bool
-	 */
-	protected function is_plugin_or_alias_activated( $slug ) {
-		if ( $this->tgmpa->is_plugin_activated( $slug ) ) {
-			return true;
-		}
-
-		$aliases = $this->get_plugin_aliases( $slug );
-
-		foreach ( $aliases as $alias ) {
-			if ( $this->tgmpa->is_plugin_activated( $alias ) ) {
-				return true;
-			}
 		}
 
 		return false;

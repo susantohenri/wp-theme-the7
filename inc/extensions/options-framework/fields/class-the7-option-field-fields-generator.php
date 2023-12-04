@@ -67,7 +67,7 @@ class The7_Option_Field_Fields_Generator extends The7_Option_Field_Abstract {
 					}
 
 					// create form elements
-					$element = self::create_tag( $data['type'], $el_args );
+					$element = dt_create_tag( $data['type'], $el_args );
 
 					$block .= $element;
 				}
@@ -126,13 +126,13 @@ class The7_Option_Field_Fields_Generator extends The7_Option_Field_Abstract {
 			}
 
 			// create form
-			$element = self::create_tag( $data['type'], $el_args );
+			$element = dt_create_tag( $data['type'], $el_args );
 
 			$output .= $element;
 		}
 
 		// add button
-		$button = self::create_tag( 'button', array(
+		$button = dt_create_tag( 'button', array(
 			'name'  => $this->option_name . '[add]',
 			'title' => isset( $this->option['options']['button']['title'] ) ? $this->option['options']['button']['title'] : _x( 'Add', 'backend fields button', 'the7mk2' ),
 			'class' => 'of_fields_gen_add button-secondary',
@@ -143,32 +143,5 @@ class The7_Option_Field_Fields_Generator extends The7_Option_Field_Abstract {
 		$output .= '</div>';
 
 		return $output;
-	}
-
-	/**
-	 * @param string $type    Type.
-	 * @param array  $options Options.
-	 *
-	 * @return \The7\Classes\DT_Mbutton|\The7\Classes\DT_Mcheckbox|\The7\Classes\DT_Mlink|\The7\Classes\DT_Mradio|\The7\Classes\DT_Mselect|\The7\Classes\DT_Mtext|\The7\Classes\DT_Mtextarea|void
-	 */
-	public static function create_tag( $type, $options ) {
-		require_once PRESSCORE_CLASSES_DIR . '/tag-classes.php';
-
-		switch ( $type ) {
-			case 'checkbox':
-				return new \The7\Classes\DT_Mcheckbox( $options );
-			case 'radio':
-				return new \The7\Classes\DT_Mradio( $options );
-			case 'select':
-				return new \The7\Classes\DT_Mselect( $options );
-			case 'button':
-				return new \The7\Classes\DT_Mbutton( $options );
-			case 'text':
-				return new \The7\Classes\DT_Mtext( $options );
-			case 'textarea':
-				return new \The7\Classes\DT_Mtextarea( $options );
-			case 'link':
-				return new \The7\Classes\DT_Mlink( $options );
-		}
 	}
 }

@@ -51,7 +51,7 @@ class The7_Admin_Dashboard {
 	public function init() {
 		add_action( 'after_setup_theme', array( $this, 'setup_pages' ), 9999 );
 		add_action( 'admin_menu', array( $this, 'add_menu_page' ) );
-		add_action( 'after_switch_theme', array( $this, 'on_after_theme_switch' ) );
+		add_action( 'after_switch_theme', array( $this, 'redirect_to_dashboard' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ) );
 	}
 
@@ -104,19 +104,13 @@ class The7_Admin_Dashboard {
 		// Additional actions:
 
 		// Demo content.
-		if ( function_exists( 'the7_demo_content' ) ) {
-			the7_demo_content()->setup_admin_page_hooks( $sub_page_hook_suffix['the7-demo-content'] );
-		}
+		the7_demo_content()->setup_admin_page_hooks( $sub_page_hook_suffix['the7-demo-content'] );
 
 		// Plugins.
-		if ( class_exists( 'Presscore_Modules_TGMPAModule' ) ) {
-			Presscore_Modules_TGMPAModule::setup_hooks( $sub_page_hook_suffix['the7-plugins'] );
-		}
+		Presscore_Modules_TGMPAModule::setup_hooks( $sub_page_hook_suffix['the7-plugins'] );
 
 		// Theme registration.
-		if ( class_exists( 'Presscore_Modules_ThemeUpdateModule' ) ) {
-			Presscore_Modules_ThemeUpdateModule::setup_hooks( $the7_page );
-		}
+		Presscore_Modules_ThemeUpdateModule::setup_hooks( $the7_page );
 
 		// Status page.
 		add_action( 'admin_print_scripts-' . $sub_page_hook_suffix['the7-status'], array(
@@ -168,11 +162,9 @@ class The7_Admin_Dashboard {
 	}
 
 	/**
-	 * Redirect to theme dashboard and disable splash-screen right away.
+	 * Redirect to theme dashboard.
 	 */
-	public function on_after_theme_switch() {
-		the7_admin_notices()->dismiss_notice( 'the7_show_registration_splash_screen' );
-
+	public function redirect_to_dashboard() {
 		$main_page_slug = $this->get_main_page_slug();
 		wp_safe_redirect( admin_url( "admin.php?page=$main_page_slug" ) );
 	}
@@ -207,7 +199,7 @@ class The7_Admin_Dashboard {
 			The7_Admin_Dashboard_Settings::set( $id, The7_Admin_Dashboard_Settings::sanitize_setting( $value, $type ) );
 		}
 
-		$this->on_after_theme_switch();
+		$this->redirect_to_dashboard();
 		exit;
 	}
 

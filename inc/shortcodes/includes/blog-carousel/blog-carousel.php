@@ -253,7 +253,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 
 				do_action( 'presscore_after_shortcode_loop', $this->sc_name, $this->atts );
 		}
-
+		
 		protected function get_container_html_class( $class = array() ) {
 			$el_class = $this->atts['el_class'];
 
@@ -282,7 +282,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 
 			if ( $this->atts['image_scale_animation_on_hover']  === 'quick_scale' ) {
 				$class[] = 'quick-scale-img';
-			} elseif ( $this->atts['image_scale_animation_on_hover'] === 'slow_scale' ) {
+			}else if($this->atts['image_scale_animation_on_hover']  === 'slow_scale') {
 				$class[] = 'scale-img';
 			}
 			if ( 'disabled' != $this->get_att( 'image_hover_bg_color' ) ) {
@@ -338,13 +338,13 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 					$class[] = 'reposition-arrows';
 					break;
 			};
-
+			
 			if($this->atts['arrows_bg_show'] === 'y'){
 				$class[] = 'arrows-bg-on';
 			}else{
 				$class[] = 'arrows-bg-off';
 			};
-
+			
 			if ( $this->get_att( 'arrow_bg_color' ) === $this->get_att( 'arrow_bg_color_hover' ) ) {
 				$class[] = 'disable-arrows-hover-bg';
 			};
@@ -534,7 +534,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 			$less_vars->add_pixel_number( 'post-meta-margin-bottom', $this->get_att( 'meta_info_bottom_margin' ) );
 			$less_vars->add_pixel_number( 'post-title-margin-bottom', $this->get_att( 'post_title_bottom_margin' ) );
 			$less_vars->add_pixel_number( 'post-excerpt-margin-bottom', $this->get_att( 'content_bottom_margin' ) );
-
+			
 			$less_vars->add_font_style( array(
 				'post-meta-font-style',
 				'post-meta-font-weight',
@@ -584,7 +584,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 			$less_vars->add_keyword( 'icon-color-hover', $this->get_att( 'arrow_icon_color_hover', '~""' ) );
 			$less_vars->add_keyword( 'arrow-border-color-hover', $this->get_att( 'arrow_border_color_hover', '~""' ) );
 			$less_vars->add_keyword( 'arrow-bg-hover', $this->get_att( 'arrow_bg_color_hover', '~""' ) );
-
+			
 			$less_vars->add_keyword( 'arrow-right-v-position', $this->get_att( 'r_arrow_v_position' ) );
 			$less_vars->add_keyword( 'arrow-right-h-position', $this->get_att( 'r_arrow_h_position' ) );
 			$less_vars->add_pixel_number( 'r-arrow-v-position', $this->get_att( 'r_arrow_v_offset' ) );
@@ -607,7 +607,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Carousel', false ) ) :
 			$less_vars->add_keyword( 'bullets-h-position', $this->get_att( 'bullets_h_position' ) );
 			$less_vars->add_pixel_number( 'bullet-v-position', $this->get_att( 'bullets_v_offset' ) );
 			$less_vars->add_pixel_number( 'bullet-h-position', $this->get_att( 'bullets_h_offset' ) );
-
+			
 
 			return $less_vars->get_vars();
 		}

@@ -196,14 +196,15 @@ if ( ! function_exists( 'presscore_get_blog_list_content_width' ) ) :
 
 			$max_content_width = 100;
 			$min_content_width = 0;
-			$config = presscore_config();
+			$config = Presscore_Config::get_instance();
 			$media_content_width = absint( $config->get( 'post.preview.media.width' ) );
 
 			if ( $media_content_width > $max_content_width ) {
 				$media_content_width = $max_content_width;
 
-			} elseif ( $media_content_width < $min_content_width ) {
+			} else if ( $media_content_width < $min_content_width ) {
 				$media_content_width = $min_content_width;
+
 			}
 
 			$static_content_width = array();
@@ -226,12 +227,12 @@ if ( ! function_exists( 'presscore_get_post_content_style_for_blog_list' ) ) :
 
 	/**
 	 * Get style attribute for content parts for blog posts
-	 *
+	 * 
 	 * @param  string $content_type Content type: 'content' or 'media'
 	 * @return string               Empty string for wide preview or if post type do not support media content, width style attribute in other case
 	 */
 	function presscore_get_post_content_style_for_blog_list( $content_type = 'content' ) {
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 
 		if ( 'wide' === $config->get( 'post.preview.width' ) ) {
 			return '';
@@ -276,7 +277,7 @@ if ( ! function_exists( 'presscore_blog_ajax_loading_responce' ) ) :
 			$html = '';
 			if ( have_posts() && !post_password_required() ) : while ( have_posts() ) : the_post(); // main loop
 
-				$config = presscore_config();
+				$config = Presscore_Config::get_instance();
 
 				$config->set( 'template', 'blog' );
 				$config->set( 'layout', empty( $page_data['layout'] ) ? 'masonry' : $page_data['layout'] );
@@ -358,10 +359,10 @@ if ( ! function_exists( 'presscore_blog_ajax_loading_responce' ) ) :
 
 				$responce['paginationType'] = 'more';
 
-			} elseif ( 'ajax_pagination' == $load_style ) {
+			} else if ( 'ajax_pagination' == $load_style ) {
 
 				ob_start();
-				dt_paginator( $query, [ 'class' => 'paginator with-ajax', 'ajaxing' => true ] );
+				dt_paginator( $query, array('class' => 'paginator with-ajax', 'ajaxing' => true ) );
 				$pagination = ob_get_clean();
 
 				if ( $pagination ) {
@@ -369,9 +370,10 @@ if ( ! function_exists( 'presscore_blog_ajax_loading_responce' ) ) :
 				}
 
 				$responce['paginationType'] = 'paginator';
+
 			}
 
-				/////////////////
+			/////////////////
 			// response //
 			/////////////////
 
@@ -399,7 +401,7 @@ if ( ! function_exists( 'presscore_get_post_media_slider' ) ) :
 	 * Based on royal slider. Properly works only in the loop.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @return string HTML.
 	 */
 	function presscore_get_post_media_slider( $attachments_data, $options = array() ) {
@@ -486,7 +488,7 @@ if ( ! function_exists( 'presscore_get_post_galleries_recursive' ) ) :
 	 * Recursively search for gallery shortcodes in given post.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param  integer $post Post ID
 	 * @param  boolean $html If true - return array of galleries html
 	 * @param  integer $num  Number of galleries to search
@@ -512,7 +514,7 @@ if ( ! function_exists( 'presscore_get_post_gallery_recursive' ) ) :
 	 * Return first gallery shortcode info in post.
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param  integer $post Post ID
 	 * @param  boolean $html If true - return array of galleries html
 	 * @return array         Found shotcode info
@@ -532,7 +534,7 @@ if ( ! function_exists( 'presscore_post_buttons' ) ) :
 	 * PressCore post Details and Edit buttons in <p> tag.
 	 */
 	function presscore_post_buttons() {
-		echo presscore_post_details_link();
+		echo presscore_post_details_link() . presscore_post_edit_link();
 	}
 
 endif;
@@ -564,7 +566,7 @@ endif;
 if ( ! function_exists( 'presscore_get_blog_query' ) ) :
 
 	function presscore_get_blog_query() {
-		$config  = presscore_config();
+		$config  = presscore_get_config();
 		$orderby = $config->get( 'orderby' );
 
 		$post_status = [

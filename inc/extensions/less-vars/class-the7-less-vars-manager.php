@@ -12,26 +12,12 @@ defined( 'ABSPATH' ) || exit;
  */
 class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 
-	/**
-	 * @var \The7\Classes\The7_SimpleBag
-	 */
 	protected $storage;
-
-	/**
-	 * @var The7_Less_Vars_Factory_Interface
-	 */
 	protected $factory;
 
-	public function __construct( \The7\Classes\The7_SimpleBag $storage, The7_Less_Vars_Factory_Interface $factory ) {
+	public function __construct( Presscore_Lib_SimpleBag $storage, The7_Less_Vars_Factory_Interface $factory ) {
 		$this->storage = $storage;
 		$this->factory = $factory;
-	}
-
-	/**
-	 * @return \The7\Classes\The7_SimpleBag
-	 */
-	public function storage() {
-		return $this->storage;
 	}
 
 	public function import( $items ) {
@@ -137,17 +123,13 @@ class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 	 * @param string      $units
 	 */
 	public function add_paddings( $vars, $value, $units = '', $wrap = null ) {
-		if ( empty( $value ) ) {
-			$value = [];
-		}
-
 		if ( ! is_array( $value ) ) {
 			$value = explode( ' ', $value );
 		}
 
 		for ( $i = 0; $i < 4; $i ++ ) {
 			$value[ $i ] = ( isset( $value[ $i ] ) ? $value[ $i ] : '0' );
-			$first_char  = isset( $value[ $i ][0] ) ? $value[ $i ][0] : '';
+			$first_char = isset( $value[ $i ][0] ) ? $value[ $i ][0] : '';
 			if ( $first_char !== '-' && ! is_numeric( $first_char ) ) {
 				$value[ $i ] = '';
 			}
@@ -160,7 +142,19 @@ class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 				$this->add_keyword( $var, '', $wrap );
 				continue;
 			}
-			$this->add_unitized_number( $var, $value[ $i ], $wrap );
+
+			switch ( $units ) {
+				case '%|px':
+				case 'px|%':
+					$this->add_pixel_or_percent_number( $var, $value[ $i ], $wrap );
+					break;
+				case '%':
+					$this->add_percent_number( $var, $value[ $i ], $wrap );
+					break;
+				case 'px':
+				default:
+					$this->add_pixel_number( $var, $value[ $i ], $wrap );
+			}
 		}
 	}
 
@@ -175,17 +169,5 @@ class The7_Less_Vars_Manager implements The7_Less_Vars_Manager_Interface {
 		}
 
 		return $color_obj;
-	}
-
-	/**
-	 * Register less var as a padding onliner.
-	 *
-	 * @param  string      $var Var name.
-	 * @param  string      $value Var value.
-	 * @param  string      $units Units, px by default.
-	 * @param  string|null $wrap Wrap.
-	 */
-	public function add_padding( $var, $value, $units = 'px', $wrap = null ) {
-		$this->add_keyword( $var, The7_Option_Field_Spacing::encode( The7_Option_Field_Spacing::sanitize( $value, $units ) ), $wrap );
 	}
 }

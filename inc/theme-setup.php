@@ -51,23 +51,20 @@ if ( ! function_exists( 'presscore_setup' ) ) :
 		 */
 		load_theme_textdomain( 'the7mk2', get_template_directory() . '/languages' );
 
-		$menus = [
-			'primary' => esc_html_x( 'Primary Menu', 'backend', 'the7mk2' ),
-		];
-
-		if ( ! the7_is_elementor_theme_mode_active() ) {
-			$menus['split_left']          = esc_html_x( 'Split Menu Left', 'backend', 'the7mk2' );
-			$menus['split_right']         = esc_html_x( 'Split Menu Right', 'backend', 'the7mk2' );
-			$menus['mobile']              = esc_html_x( 'Mobile Menu', 'backend', 'the7mk2' );
-			$menus['top']                 = esc_html_x( 'Header Microwidget 1', 'backend', 'the7mk2' );
-			$menus['header_microwidget2'] = esc_html_x( 'Header Microwidget 2', 'backend', 'the7mk2' );
-			$menus['bottom']              = esc_html_x( 'Bottom Menu', 'backend', 'the7mk2' );
-		}
-
 		/**
 		 * Register custom menu.
 		 */
-		register_nav_menus( $menus );
+		register_nav_menus(
+			array(
+				'primary'             => _x( 'Primary Menu', 'backend', 'the7mk2' ),
+				'split_left'          => _x( 'Split Menu Left', 'backend', 'the7mk2' ),
+				'split_right'         => _x( 'Split Menu Right', 'backend', 'the7mk2' ),
+				'mobile'              => _x( 'Mobile Menu', 'backend', 'the7mk2' ),
+				'top'                 => _x( 'Header Microwidget 1', 'backend', 'the7mk2' ),
+				'header_microwidget2' => _x( 'Header Microwidget 2', 'backend', 'the7mk2' ),
+				'bottom'              => _x( 'Bottom Menu', 'backend', 'the7mk2' ),
+			)
+		);
 
 		/**
 		 * Add default posts and comments RSS feed links to head.
@@ -88,9 +85,7 @@ if ( ! function_exists( 'presscore_setup' ) ) :
 		add_theme_support( 'responsive-embeds' );
 		add_theme_support( 'wp-block-styles' );
 		add_theme_support( 'editor-styles' );
-
-		$style_editor_suffix = ( defined( 'THE7_DEV_ENV' ) && THE7_DEV_ENV ) ? '' : '.min';
-		add_editor_style( "inc/admin/assets/css/style-editor{$style_editor_suffix}.css" );
+		add_editor_style( 'inc/admin/assets/css/style-editor.min.css' );
 
 		// TODO: Run only in front.
 		$less_vars                                        = the7_get_new_less_vars_manager();
@@ -184,6 +179,26 @@ add_action( 'enqueue_block_editor_assets', 'presscore_editor_frame_styles' );
  */
 add_action( 'after_switch_theme', 'flush_rewrite_rules' );
 
+if ( ! function_exists( 'presscore_turn_off_custom_fields_meta' ) ) :
+
+	/**
+	 * Removes support of custom-fields for pages and posts.
+	 *
+	 * @since 3.0.0
+	 */
+	function presscore_turn_off_custom_fields_meta() {
+
+		/**
+		 * Custom fields significantly increases db load because of theme heavily uses meta fields. It's a simplest way to reduce db load.
+		 */
+		remove_post_type_support( 'post', 'custom-fields' );
+		remove_post_type_support( 'page', 'custom-fields' );
+	}
+
+	add_action( 'init', 'presscore_turn_off_custom_fields_meta' );
+
+endif;
+
 if ( ! function_exists( 'presscore_enable_theme_modules' ) ) :
 
 	/**
@@ -192,52 +207,35 @@ if ( ! function_exists( 'presscore_enable_theme_modules' ) ) :
 	 * @since 3.1.4
 	 */
 	function presscore_enable_theme_modules() {
-		$always_load = [
+		$modules_to_load = array(
+			'archive-ext',
 			'compatibility',
 			'theme-update',
 			'tgmpa',
 			'demo-content',
 			'bundled-content',
+			'posts-defaults',
 			'dev-mode',
+			'options-wizard',
 			'dev-tools',
 			'remove-customizer',
-		];
+			'custom-fonts',
+		);
 
-		$load_conditionally = [
+		$dashboard_settings = array(
 			'portfolio',
+			'albums',
+			'team',
+			'testimonials',
+			'slideshow',
+			'benefits',
+			'logos',
 			'mega-menu',
 			'admin-icons-bar',
-		];
-
-		if ( the7_is_elementor_theme_mode_active() ) {
-			add_filter(
-				'the7_core_bundled_post_types_list',
-				function( $post_types ) {
-					return isset( $post_types['dt_portfolio'] ) ? [ 'dt_portfolio' => $post_types['dt_portfolio'] ] : $post_types;
-				}
-			);
-		} else {
-			// No use with Elementor.
-			$always_load[] = 'archive-ext';
-			$always_load[] = 'posts-defaults';
-			$always_load[] = 'options-wizard';
-
-			$load_conditionally[] = 'albums';
-			$load_conditionally[] = 'team';
-			$load_conditionally[] = 'testimonials';
-			$load_conditionally[] = 'slideshow';
-			$load_conditionally[] = 'benefits';
-			$load_conditionally[] = 'logos';
-		}
-
-		if ( the7_is_icons_manager_enabled() ) {
-			$always_load[] = 'custom-fonts';
-		}
-
-		$modules_to_load = $always_load;
+		);
 
 		// Load modules that was enabled on dashboard.
-		foreach ( $load_conditionally as $module_name ) {
+		foreach ( $dashboard_settings as $module_name ) {
 			if ( The7_Admin_Dashboard_Settings::get( $module_name ) ) {
 				$modules_to_load[] = $module_name;
 			}
@@ -251,6 +249,19 @@ if ( ! function_exists( 'presscore_enable_theme_modules' ) ) :
 		$modules_to_load = apply_filters( 'the7_active_modules', $modules_to_load );
 
 		add_theme_support( 'presscore-modules', $modules_to_load );
+	}
+
+endif;
+
+if ( ! function_exists( 'presscore_add_theme_options' ) ) :
+
+	/**
+	 * Set theme options path.
+	 *
+	 * @since 1.0.0
+	 */
+	function presscore_add_theme_options() {
+		return array( 'inc/admin/load-theme-options.php' );
 	}
 
 endif;
@@ -330,6 +341,72 @@ if ( ! function_exists( 'presscore_post_types_author_archives' ) ) :
 	}
 
 	add_action( 'pre_get_posts', 'presscore_post_types_author_archives' );
+
+endif;
+
+if ( ! function_exists( 'optionsframework_get_presets_list' ) ) :
+
+	/**
+	 * Add theme options presets.
+	 *
+	 * @return array
+	 */
+	function optionsframework_get_presets_list() {
+		$presets_names = array(
+			'skin11r',
+			'skin12r',
+			'skin15r',
+			'skin14r',
+			'skin09r',
+			'skin03r',
+			'skin05r',
+			'skin02r',
+			'skin11b',
+			'skin16r',
+			'skin19b',
+			'skin19r',
+			'skin10r',
+			'skin07c',
+			'skin06r',
+
+			'wizard01',
+			'wizard02',
+			'wizard03',
+			'wizard05',
+			'wizard07',
+			'wizard08',
+			'wizard09',
+		);
+
+		$presets = array();
+		foreach ( $presets_names as $preset_name ) {
+			$presets[ $preset_name ] = array(
+				'src'   => '/inc/presets/icons/' . $preset_name . '.gif',
+				'title' => $preset_name,
+			);
+		}
+
+		return $presets;
+	}
+
+endif;
+
+
+if ( ! function_exists( 'presscore_set_first_run_skin' ) ) :
+
+	/**
+	 * Set first run skin.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $skin_name
+	 * @return string
+	 */
+	function presscore_set_first_run_skin( $skin_name = '' ) {
+		return 'skin11r';
+	}
+
+	add_filter( 'options_framework_first_run_skin', 'presscore_set_first_run_skin' );
 
 endif;
 

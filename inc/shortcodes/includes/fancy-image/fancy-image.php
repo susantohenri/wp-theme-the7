@@ -174,7 +174,7 @@ if ( ! class_exists( 'DT_Shortcode_FancyImage', false ) ) {
 			}
 			if ( $this->atts['image_scale_animation_on_hover']  === 'quick_scale' ) {
 				$class[] = 'quick-scale-img';
-			} elseif ( $this->atts['image_scale_animation_on_hover'] === 'slow_scale' ) {
+			}else if($this->atts['image_scale_animation_on_hover']  === 'slow_scale') {
 				$class[] = 'scale-img';
 			}
 
@@ -358,7 +358,7 @@ if ( ! class_exists( 'DT_Shortcode_FancyImage', false ) ) {
 				if ( $this->atts['extra_class'] ) {
 					$class .= ' ' . esc_attr( $this->atts['extra_class'] );
 				}
-
+				
 
 				$style = '';
 				if ( $this->atts['border_radius'] ) {
@@ -496,23 +496,24 @@ if ( ! class_exists( 'DT_Shortcode_FancyImage', false ) ) {
 
 				}
 
-			} elseif ( $image_src ) {
+			} else if ( $image_src ) {
 				$output = $image_html;
 
 				if ( 'lightbox' === $this->atts['onclick'] ) {
 
-					$output = $this->render_image_in_lightbox( [
-						'image_html'   => $image_html,
-						'image_width'  => $this->atts['_image_width'],
-						'image_height' => $this->atts['_image_height'],
-						'href'         => $image_src,
-						'title'        => $this->atts['image_title'],
-						'description'  => $this->content,
-						'rollover'     => $this->is_hover_enabled()
-					] );
+					$output = $this->render_image_in_lightbox( array(
+						'image_html' => $image_html,
+						'image_width' => $this->atts['_image_width'],
+                        'image_height' => $this->atts['_image_height'],
+						'href' => $image_src,
+						'title' => $this->atts['image_title'],
+						'description' => $this->content,
+						'rollover' => $this->is_hover_enabled()
+					) );
+
 				} elseif ( $this->is_image_with_link() ) {
 					$target = ( '_blank' === $this->atts['custom_link_target'] ? ' target="_blank"' : '' );
-					$rel    = '';
+					$rel = '';
 					if ( $target ) {
 						$rel = ' rel="noopener"';
 					} elseif ( $this->atts['nofollow'] ) {
@@ -527,17 +528,19 @@ if ( ! class_exists( 'DT_Shortcode_FancyImage', false ) ) {
 						$class .= ' rollover';
 						$style = $this->image_inline_style();
 					}
-					$output = '<a href="' . esc_url( $this->atts['image_link'] ) . '" class="' . esc_attr( $class ) . '" style="' . esc_attr( $style ) . '"' . $target . $rel . ' aria-label="' . esc_attr( 'Image', 'the7mk2' ) . '">' . $image_html;
+					$output = '<a href="' . esc_url( $this->atts['image_link'] ) . '" class="' . esc_attr( $class ) . '" style="' . esc_attr( $style ) . '"' . $target . $rel . ' aria-label="' . esc_attr( 'Image', 'the7mk2' ) . '">' .  $image_html ;
 					if ( $this->get_att( 'show_zoom' ) === 'y' ) {
-						$output .= '<span class="' . esc_attr( 'rollover-icon ' . $icon_class ) . '"></span>';
+						$output .= '<span class="'. esc_attr( 'rollover-icon ' . $icon_class ).'"></span>';
 					}
 					$output .= '</a>';
-				} elseif ( $this->lazy_loading_on() ) {
+				} elseif( $this->lazy_loading_on() ) {
 					$wrap_class = ' layzr-bg';
 				}
-			} elseif ( $video_url ) {
+
+			} else if ( $video_url ) {
 
 				$output = $this->render_video( $video_url, $this->atts['width'], $this->atts['height'] );
+
 			}
 
 			return $this->wrap_media( $output, $wrap_class );

@@ -26,8 +26,8 @@ if ( !function_exists( 'dt_paginator' ) ) {
 			'class'               => 'paginator',
 			'item_class'          => 'page-numbers',
 			'act_class'           => 'act',
-			'pages_prev_class'    => 'nav-prev filter-item',
-			'pages_next_class'    => 'nav-next filter-item',
+			'pages_prev_class'    => 'nav-prev',
+			'pages_next_class'    => 'nav-next',
 			'always_show'         => 0,
 			'dotleft_wrap'        => '<a href="javascript:void(0);" class="dots">%TEXT%</a>',
 			'dotright_wrap'       => '<a href="javascript:void(0);" class="dots">%TEXT%</a>',
@@ -36,10 +36,10 @@ if ( !function_exists( 'dt_paginator' ) ) {
 			'page_text'           => '%PAGE_NUMBER%',
 			'first_text'          => _x( 'First', 'pagination defaults', 'the7mk2' ),
 			'last_text'           => _x( 'Last', 'pagination defaults', 'the7mk2' ),
-			'prev_text'           => '←',
-			'next_text'           => '→',
-			'no_next'             => '<span class="nav-next disabled">←</span>',
-			'no_prev'             => '<span class="nav-prev disabled">→</span>',
+			'prev_text'           => '<i class="dt-icon-the7-arrow-0-42" aria-hidden="true"></i>',
+			'next_text'           => '<i class="dt-icon-the7-arrow-0-41" aria-hidden="true"></i>',
+			'no_next'             => '<span class="nav-next disabled"><i class="dt-icon-the7-arrow-0-41" aria-hidden="true"></i></span>',
+			'no_prev'             => '<span class="nav-prev disabled"><i class="dt-icon-the7-arrow-0-42" aria-hidden="true"></i></span>',
 			'dotright_text'       => '&#8230;',
 			'dotleft_text'        => '&#8230;',
 			'num_pages'           => 5,
@@ -599,14 +599,11 @@ if ( ! function_exists( 'presscore_ajax_pagination_controller' ) ) :
 
 		if ( $ajax_data['post_id'] && 'page' == get_post_type($ajax_data['post_id']) ) {
 			$template = dt_get_template_name( $ajax_data['post_id'], true );
-		} elseif ( is_array( $ajax_data['page_data'] ) ) {
+		} else if ( is_array($ajax_data['page_data']) ) {
 
 			switch ( $ajax_data['page_data'][0] ) {
-				case 'archive' :
-					$template = 'archive';
-					break;
-				case 'search' :
-					$template = 'search';
+				case 'archive' : $template = 'archive'; break;
+				case 'search' : $template = 'search';
 			}
 		}
 
@@ -643,7 +640,7 @@ if ( ! function_exists( 'presscore_complex_pagination' ) ) :
 
 			} else {
 
-				$ajax_class = 'default' != presscore_config()->get( 'load_style' ) ? ' with-ajax' : '';
+				$ajax_class = 'default' != presscore_get_config()->get( 'load_style' ) ? ' with-ajax' : '';
 
 				// paginator
 				dt_paginator( $query, array( 'class' => 'paginator' . $ajax_class ) );
@@ -664,7 +661,7 @@ if ( ! function_exists( 'presscore_is_load_more_pagination' ) ) :
 	 * @return boolean Is we use load more button in pagination
 	 */
 	function presscore_is_load_more_pagination() {
-		return in_array( presscore_config()->get('load_style'), array( 'ajax_more', 'lazy_loading' ) );
+		return in_array( presscore_get_config()->get('load_style'), array( 'ajax_more', 'lazy_loading' ) );
 	}
 
 endif;
@@ -672,7 +669,7 @@ endif;
 if ( ! function_exists( 'presscore_is_lazy_loading' ) ) :
 
 	function presscore_is_lazy_loading() {
-		return ( 'lazy_loading' == presscore_config()->get( 'load_style' ) );
+		return ( 'lazy_loading' == presscore_get_config()->get( 'load_style' ) );
 	}
 
 endif;

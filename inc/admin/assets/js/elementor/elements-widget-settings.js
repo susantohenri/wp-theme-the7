@@ -92,8 +92,6 @@
                 var $taxonomySelect = panel.$el.find("[data-setting='taxonomy']");
                 var $termsSelect = panel.$el.find("[data-setting='terms']");
 
-                fillTermsTaxonomy(model, $termsSelect, $taxonomySelect);
-
                 // On post type change.
                 $postTypeSelect.on("change", function () {
                     var widgetType = model.attributes.widgetType;
@@ -126,11 +124,11 @@
             var widgetType = model.attributes.widgetType;
 
             if (!getWidgetSettingsCache(widgetType, "taxonomies") || !getWidgetSettingsCache(widgetType, "terms")) {
-                $.post(window.the7ElementsWidget.ajaxurl, {
+                var data = {
                     action: "the7_elements_get_widget_taxonomies",
-                    post_types: $postTypeSelect.find("option").map(function() { return $(this).val(); }).get(),
                     _wpnonce: window.the7ElementsWidget._wpnonce
-                })
+                };
+                $.post(window.the7ElementsWidget.ajaxurl, data)
                     .done(function (response) {
                         if (!response) {
                             response = {};
@@ -171,19 +169,7 @@
                 panel: panel,
                 model: model
             });
-
         });
-
-        elementor.hooks.addAction("panel/open_editor/widget",handlePanel);
-
-        function  handlePanel (panel, model, view) {
-            var widgetType = model.attributes.widgetType;
-            if (widgetType && widgetType.startsWith('the7')){
-                let $title =  panel.$el.find('#elementor-panel-header-title');
-                if ($title.children('img, i.the7-widget').length) return;
-                $title.append('<i class="the7-widget"></i>');
-            }
-        }
 
         elementor.on('preview:loaded', function () {
             elementor.addControlView('the7-query',

@@ -16,9 +16,9 @@ if ( isset( $_GET['tab'] ) ) {
 	<?php
 	$dev_tabs = [
 		'tools'          => 'Tools',
+		'beta'           => 'Beta',
 		'install'        => 'Installation',
 		'activation-log' => 'Activation Log',
-		'import-log'     => 'Import Log',
 	];
 	foreach ( $dev_tabs as $tab_id => $tab_title ) {
 		printf(
@@ -30,6 +30,6 @@ if ( isset( $_GET['tab'] ) ) {
 	}
 	?>
 </nav>
-<div class="wrap">
+<div id="the7-dashboard" class="wrap">
 	<?php get_template_part( 'inc/mods/dev-mode/views/tab', $dev_tab ); ?>
 </div>

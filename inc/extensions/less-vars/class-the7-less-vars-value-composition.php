@@ -36,8 +36,8 @@ class The7_Less_Vars_Value_Composition {
 		foreach ( $this->parts as $part ) {
 			if ( ! is_object( $part ) ) {
 				$res[] = $part;
-			} elseif ( is_callable( [ $part, $method ] ) ) {
-				$res[] = call_user_func_array( [ $part, $method ], $args );
+			} else if ( is_callable( array( $part, $method ) ) ) {
+				$res[] = call_user_func_array( array( $part, $method ), $args );
 			}
 		}
 

@@ -88,7 +88,8 @@ class The7_Option_Field_Web_Fonts extends The7_Option_Field_Composition_Abstract
 		}
 		if ( ! $font['font_weight'] && $font['font_style'] ) {
 			return $font['font_family'] . ":" . $font['font_style'];
-		} elseif ( ! $font['font_weight'] && ! $font['font_style'] ) {
+		}
+		else if(! $font['font_weight'] && !$font['font_style'] ){
 			return $font['font_family'];
 		}
 
@@ -100,7 +101,7 @@ class The7_Option_Field_Web_Fonts extends The7_Option_Field_Composition_Abstract
 			'font_family'            => array(
 				'name'  => _x( 'Font family', 'theme-options', 'the7mk2' ),
 				'type'  => 'web_fonts_wrapped',
-				'std'   => 'Arial',
+				'std'   => 'Open Sans',
 				'fonts' => 'all',
 				'class' => 'font-family',
 			),

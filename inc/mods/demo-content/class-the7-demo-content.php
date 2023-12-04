@@ -117,10 +117,8 @@ class The7_Demo_Content {
 		require_once __DIR__ . '/importers/class-the7-wp-settings-importer.php';
 		require_once __DIR__ . '/importers/class-the7-ultimate-addons-importer.php';
 		require_once __DIR__ . '/importers/class-the7-elementor-importer.php';
-		require_once __DIR__ . '/importers/class-the7-post-types-builder-data-importer.php';
 		require_once __DIR__ . '/importers/class-the7-theme-options-importer.php';
 		require_once __DIR__ . '/importers/class-the7-dashboard-settings-importer.php';
-		include_once __DIR__ . '/importers/class-the7-wc-importer.php';
 		require_once __DIR__ . '/class-the7-demo.php';
 	}
 

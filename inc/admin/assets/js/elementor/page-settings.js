@@ -124,7 +124,7 @@ jQuery(function ($) {
         if ($elemntorEditorFooter === undefined) {
             var $elemntorLocationHeader = $(".elementor-location-header", iframe)[0];
             if (($elemntorLocationHeader !== undefined && $elemntorEditorHeader !== undefined) || (
-                $elemntorLocationHeader === undefined && $elemntorEditorHeader === undefined)) {
+                    $elemntorLocationHeader === undefined && $elemntorEditorHeader === undefined)) {
                 addControls($(".masthead, .page-title, #main-slideshow, #fancy-header", iframe), [
                     {
                         action: "edit",
@@ -175,102 +175,7 @@ jQuery(function ($) {
                         }
                     });
                 }, 300);
-            } else {
-                //handle kit reload
-                var page_name = elementor.getPanelView().getCurrentPageName();
-                if (page_name !== "kit_settings") {
-                    return
-                }
-                var name = Object.keys(settings.changed)[0];
-                if (name in settings.controls) {
-                    var control = settings.controls[name];
-                    if ('the7_reload_on_change' in control && control['the7_reload_on_change'] === true) {
-                        const activeTab = elementor.getPanelView().getCurrentPageView().content.currentView.activeTab;
-                        const activeSection = elementor.getPanelView().getCurrentPageView().content.currentView.activeSection;
-
-                        autoSaveTimeout = setTimeout(function () {
-                            $e.internal('panel/state-loading');
-                            jQuery('#elementor-preview-loading').show();
-                            elementor.saver.update.apply().then(function () {
-                                $e.run('editor/documents/switch', {
-                                    mode: 'autosave',
-                                    id: elementor.config.initial_document.id,
-                                    onClose: function onClose(document) {
-                                        //$e.components.get('panel/global').close();
-                                        if (document.isDraft()) {
-                                            // Restore published style.
-                                            elementor.toggleDocumentCssFiles(document, true);
-                                            elementor.settings.page.destroyControlsCSS();
-                                        }
-                                        // The kit shouldn't be cached for next open. (it may be changed via create colors/typography).
-                                        elementor.documents.invalidateCache( elementor.config.kit_id );
-                                    }
-                                }).finally(function () {
-                                    elementor.reloadPreview();
-                                 //   elementor.initElements();
-                                    elementor.once("preview:loaded", function () {
-                                        $e.run('editor/documents/switch', {
-                                            id: elementor.config.kit_id,
-                                            mode: 'autosave',
-                                        }).finally(function () {
-                                            $e.route('panel/global/' + activeTab);
-                                            elementor.getPanelView().currentPageView.content.currentView.activateSection(activeSection)._renderChildren();
-                                            $e.internal('panel/state-ready');
-                                            jQuery( '#elementor-loading, #elementor-preview-loading' ).fadeOut( 600 );
-                                        });
-                                    });
-                                });
-                            });
-                        }, 300);
-                    }
-                }
             }
         });
-        /*elementor.settings.page.addChangeCallback("the7_scroll_to_top_button_icon", function (newValue) {
-            elementor.saver.update.apply().then(function () {
-                elementor.reloadPreview();
-            });
-        });*/
     });
 });
-
-(function ($) {
-    "use strict";
-
-    $(window).on("elementor:init", function () {
-        class The7AfterSave extends $e.modules.hookData.After {
-            getCommand() {
-                return 'document/save/save';
-            }
-
-            getConditions(args) {
-                /**
-                 * Conditions was copied from elementor code base.
-                 * Search for 'document/save/save' in elementor/assets/js/editor.js
-                 */
-                const status = args.status,
-                    _args$document = args.document,
-                    document = _args$document === void 0 ? elementor.documents.getCurrent() : _args$document;
-                return 'publish' === status && 'kit' === document.config.type;
-            }
-
-            getId() {
-                return 'the7-saver-after-save';
-            }
-
-            apply(args) {
-                const settings = args.document.container.settings;
-                jQuery.each(settings.changed, function (key) {
-                    if (settings !== 'undefined' && settings.controls !== 'undefined' && 'the7_save' in settings.controls[key] && settings.controls[key]['the7_save'] === true) {
-                        if (key in elementor.settings.page.model.controls && key in settings.attributes) {
-                            elementor.settings.page.model.controls[key].default = settings.attributes[key];
-                        }
-                    }
-                });
-            }
-        }
-
-        // Change default values in order to fix settings saving.
-        $e.hooks.registerDataAfter(new The7AfterSave());
-    });
-})(jQuery);

@@ -19,18 +19,16 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 		 * Execute module.
 		 */
 		public static function execute() {
-			if ( ( defined( 'WP_CLI' ) && WP_CLI ) || is_admin() ) {
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				include dirname( __FILE__ ) . '/class-tgm-plugin-activation.php';
+			} elseif ( is_admin() ) {
 				self::init_the7_tgmpa();
 			} else {
 				return;
 			}
 
-			add_filter( 'pre_set_site_transient_update_plugins', [ __CLASS__, 'update_plugins_list' ], 99 );
-			add_filter( 'site_transient_update_plugins', [ __CLASS__, 'update_plugins_list' ], 99 );
-			add_action( 'tgmpa_register', [ __CLASS__, 'register_plugins_action' ] );
-
-			// Allow to install plugins hidden with `protected_slug`.
-			add_filter( 'presscore_tgmpa_module_plugins_list', [ __CLASS__, 'install_protected_plugins_filter' ], 20 );
+			add_filter( 'pre_set_site_transient_update_plugins', array( __CLASS__, 'update_plugins_list' ) , 99);
+			add_action( 'tgmpa_register', array( __CLASS__, 'register_plugins_action' ) );
 		}
 
 		/**
@@ -61,6 +59,8 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 				}
 			}
 
+			$plugins = apply_filters( 'presscore_tgmpa_module_plugins_list', $plugins );
+
 			// Add these plugins just for auto activation purpose.
 			$plugins[] = [
 				'name'          => 'Elementor Pro',
@@ -76,7 +76,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 				'aliases'       => [ 'elementor-pro' ],
 			];
 
-			$config = array(
+			$config  = array(
 				'id'           => 'the7_tgmpa',
 				'menu'         => 'the7-plugins',
 				'parent_slug'  => 'admin.php?page=the7-dashboard',
@@ -105,7 +105,11 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 				),
 			);
 
-			self::register_plugins_with_the7_tgmpa( $plugins, $config );
+			if ( defined( 'WP_CLI' ) && WP_CLI ) {
+				tgmpa( $plugins, $config );
+			} else {
+				self::register_plugins_with_the7_tgmpa( $plugins, $config );
+			}
 		}
 
 		/**
@@ -205,7 +209,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 		 */
 		public static function update_plugins_list( $transient ) {
 			self::update_plugins_list_once_in_10_minutes();
-			$transient = self::inject_plugins_update_information( $transient );
+			$transient = self::inject_plugins_update_information( $transient);
 
 			return $transient;
 		}
@@ -230,7 +234,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 			}
 
 			if ( ! is_object( $transient ) ) {
-				$transient           = new stdClass();
+				$transient           = new stdClass;
 				$transient->response = [];
 			}
 
@@ -239,8 +243,8 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 					continue;
 				}
 
-				$file_path = $plugin['file_path'];
-				$item      = [
+				$file_path  = $plugin['file_path'];
+				$item       = [
 					'id'            => $file_path,
 					'slug'          => $slug,
 					'plugin'        => $file_path,
@@ -261,7 +265,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 					continue;
 				}
 
-				$new_version         = $the7_tgmpa->get_plugin_minimum_version( $slug );
+				$new_version = $the7_tgmpa->get_plugin_minimum_version( $slug );
 				$item['new_version'] = $new_version;
 
 				$source = $the7_tgmpa->get_download_url( $slug );
@@ -342,9 +346,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 		 * @return array
 		 */
 		public static function get_plugins_list_cache() {
-			$plugins = (array) get_site_option( 'the7_plugins_list', array() );
-
-			return apply_filters( 'presscore_tgmpa_module_plugins_list', $plugins );
+			return (array) get_site_option( 'the7_plugins_list', array() );
 		}
 
 		/**
@@ -357,32 +359,6 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 		}
 
 		/**
-		 * @param array $plugins Plugins list.
-		 *
-		 * @return array
-		 */
-		public static function install_protected_plugins_filter( $plugins ) {
-			if ( isset( $_POST['tgmpa_install_protected_plugins'] ) && wp_verify_nonce( $_POST['tgmpa_install_protected_plugins'], 'tgmpa_install_protected_plugins' ) ) {
-				foreach ( $plugins as &$plugin ) {
-					if ( isset( $plugin['protected_slug'] ) ) {
-						$plugin['slug'] = $plugin['protected_slug'];
-						unset( $plugin['protected_slug'] );
-					}
-				}
-				unset( $plugin );
-			}
-
-			return $plugins;
-		}
-
-		/**
-		 * @return void
-		 */
-		public static function print_protected_plugins_installation_form_field() {
-			wp_nonce_field( 'tgmpa_install_protected_plugins', 'tgmpa_install_protected_plugins', false );
-		}
-
-		/**
 		 * Update plugins list once in 10 minutes.
 		 *
 		 * @since 7.1.2
@@ -391,7 +367,8 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 			$ten_minutes        = MINUTE_IN_SECONDS * 10;
 			$last_check_time    = (int) get_site_option( 'the7_plugins_last_check', 0 );
 			$its_time_to_update = time() - $last_check_time > $ten_minutes;
-			if ( $its_time_to_update ) {
+			$is_beta_tester     = The7_Dev_Beta_Tester::get_status();
+			if ( $is_beta_tester || $its_time_to_update ) {
 				self::get_update_plugin_list();
 				update_site_option( 'the7_plugins_last_check', time() );
 			}
@@ -402,7 +379,7 @@ if ( ! class_exists( 'Presscore_Modules_TGMPAModule', false ) ) :
 	 * Important to override this function before The7_TGM_Plugin_Activation class include!
 	 * This maneuver prevents original class from loading and allow us to extend it in a subclass.
 	 */
-	if ( ! function_exists( 'load_tgm_plugin_activation' ) ) {
+	if ( ! defined( 'WP_CLI' ) && ! function_exists( 'load_tgm_plugin_activation' ) ) {
 
 		/**
 		 * Override TGMPA bootstrap function.

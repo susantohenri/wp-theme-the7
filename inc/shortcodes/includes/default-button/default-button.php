@@ -80,7 +80,7 @@ if ( ! class_exists( 'DT_Shortcode_Default_Button', false ) ) {
 					if ( preg_match( '/^fa[a-z]*\s/', $this->atts['icon'] ) ) {
 						$icon_html = '<i class="' . esc_attr( $this->atts['icon'] ) . '"></i>';
 					} else {
-						$icon_html = wp_kses( rawurldecode( the7_base_64_decode( $this->atts['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
+						$icon_html = wp_kses( rawurldecode( base64_decode( $this->atts['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
 					}
 				} elseif ( ! empty( $this->atts[ "icon_{$icon_type}" ] ) ) {
 					$icon_html = '<i class="' . esc_attr( $this->atts[ "icon_{$icon_type}" ] ) . '"></i>';
@@ -257,7 +257,7 @@ if ( ! class_exists( 'DT_Shortcode_Default_Button', false ) ) {
 			$less_vars = the7_get_new_shortcode_less_vars_manager();
 
 			$less_vars->add_keyword( 'unique-shortcode-class-name', $this->get_unique_class(), '~"%s"' );
-
+			
 			$less_vars->add_pixel_number( 'btn-icon-gap', $this->get_att( 'icon_gap' ) );
 
 			/**
@@ -358,7 +358,7 @@ if ( ! class_exists( 'DT_Shortcode_Default_Button', false ) ) {
 
 				if ( $this->get_flag( 'link_hover' ) ) {
 					$less_vars->add_keyword( 'link-color-hover', $this->get_att( 'link_text_hover_color' ) );
-
+					
 					// Take care of border width on hover.
 					$less_vars->add_pixel_number( 'btn-border-width-hover', $border_width );
 					if ( ! $this->get_flag( 'default_btn_border_hover' ) ) {

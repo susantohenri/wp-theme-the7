@@ -87,11 +87,11 @@ if ( !class_exists( 'THE7_RWMB_Proportion_Slider_Field' ) ) {
 
 			// find label
 			$begin_parts = explode('</div>', $begin, 2);
-
+			
 			if ( isset( $begin_parts[1] ) ) {
 				// add previw after label
 				$begin_parts[0] .= '</div>' . $preview;
-
+			
 			// if no label
 			} else {
 				$begin_parts[0] = $preview . $begin_parts[0];
@@ -203,7 +203,7 @@ if ( ! class_exists( 'THE7_RWMB_Image_Advanced_MK2_Field' ) && class_exists( 'TH
 		 * Ajax callback for deleting files.
 		 * Modified from a function used by "Verve Meta Boxes" plugin
 		 *
-		 * @link https://goo.gl/LzYSq
+		 * @link http://goo.gl/LzYSq
 		 * @return void
 		 */
 		static function wp_ajax_delete_file()
@@ -240,17 +240,13 @@ if ( ! class_exists( 'THE7_RWMB_Image_Advanced_MK2_Field' ) && class_exists( 'TH
 		 * Get field HTML
 		 *
 		 * @param string $html
-		 * @param array  $meta
+		 * @param mixed  $meta
 		 * @param array  $field
 		 *
 		 * @return string
 		 */
 		static function html( $html, $meta, $field )
 		{
-			if ( ! is_array( $meta ) ) {
-				$meta = [];
-			}
-
 			$i18n_title = apply_filters( 'the7_mb_image_advanced_select_string', _x( 'Select or Upload Images', 'image upload', 'the7mk2' ), $field );
 			$attach_nonce = wp_create_nonce( "the7-mb-attach-media_{$field['id']}" );
 
@@ -394,7 +390,7 @@ if ( ! class_exists( 'THE7_RWMB_Image_Advanced_MK2_Field' ) && class_exists( 'TH
 
 			return $html;
 		}
-
+		
 		/**
 		 * Get HTML markup for ONE uploaded image
 		 *
@@ -424,7 +420,7 @@ if ( ! class_exists( 'THE7_RWMB_Image_Advanced_MK2_Field' ) && class_exists( 'TH
 			} else {
 				$src = wp_mime_type_icon( $mime_type );
 			}
-
+			
 			$link = get_edit_post_link( $image );
 
 			return sprintf(
@@ -565,9 +561,8 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 			update_post_thumbnail_cache( self::get_posts_query() );
 
 			foreach ( self::get_posts_query()->posts as $_post ) {
-
-				$attachments = (array) get_post_meta( $_post->ID, '_dt_album_media_items', true );
-				$attachments = array_filter( $attachments );
+				
+				$attachments = get_post_meta( $_post->ID, '_dt_album_media_items', true );
 
 				// count post images
 				$imgs_count = count( $attachments );
@@ -579,7 +574,7 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 
 				// post terms
 				$terms = get_the_terms( $_post->ID, self::$field['taxonomy'] );
-				if( !is_wp_error($terms) && $terms ) {
+				if( !is_wp_error($terms) && $terms ) { 
 					$term_links = array();
 					foreach ( $terms as $term ) {
 						$link = get_admin_url() . 'edit-tags.php';
@@ -594,11 +589,11 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 						);
 						$term_links[] = '<a href="' . esc_url( $link ) . '" rel="tag" target="_blank">' . $term->name . '</a>';
 					}
-
+					
 					if( empty($term_links) ) {
 						$term_links[] = 'none';
 					}
-
+					
 					$terms_list = '<p><strong>' . _x('Categories: ', 'backend', 'the7mk2') . '</strong>' . implode( ', ', $term_links ) . '</p>';
 				}else {
 					$terms_list = '<p></p>';
@@ -606,7 +601,7 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 
 				// item start
 				$item_str = '<div class="dt_list-item"><div class="dt_item-holder">';
-
+				
 				// item checkbox
 				$item_str .= sprintf( '<label class="dt_checkbox"><input type="checkbox" name="%s" value="%s" %s /></label>',
 					self::$field['field_name'] . '[posts_ids][' . $_post->ID . ']',
@@ -618,8 +613,11 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 				$img = '';
 				if ( has_post_thumbnail($_post->ID) ) {
 					$img = wp_get_attachment_image_src( get_post_thumbnail_id($_post->ID), 'thumbnail' );
-				} elseif ( $attachments && is_array( $attachments ) ) {
-					$img = wp_get_attachment_image_src( current( $attachments ), 'thumbnail' );
+				} else {
+					
+					if ( $attachments && is_array( $attachments ) ) {
+						$img = wp_get_attachment_image_src( current( $attachments ), 'thumbnail' );
+					}
 				}
 
 				// if no image
@@ -629,7 +627,7 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 
 				// image style and dimensions
 				$cover_style = 'dt_album-cover';
-				$w = $h = 88;
+				$w = $h = 88; 
 				if( 'dt_slider' == $_post->post_type ) {
 					$cover_style = 'dt_slider-cover';
 					$w = 98; $h = 68;
@@ -655,7 +653,7 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 					_x('Date: ', 'backend', 'the7mk2'),
 					apply_filters('get_the_date', mysql2date($date_format, $_post->post_date), $date_format)
 				);
-
+				
 				// actions start
 				$item_str .= '<div class="row-actions">';
 
@@ -663,7 +661,7 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 					$item_str .= sprintf('<span class="edit"><a title="%s" href="%s" target="_blank">%s</a></span>',
 						_x( 'Edit this item', 'backend', 'the7mk2' ),
 						esc_url(get_admin_url() . 'post.php?post=' . $_post->ID . '&action=edit'),
-						_x( 'Edit', 'backend', 'the7mk2' )
+						_x( 'Edit', 'backend', 'the7mk2' ) 
 					);
 
 					// move to trash
@@ -724,19 +722,19 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 		static function get_main_tab() {
 			global $wpdb;
 			$admin_url = get_admin_url();
-
+			
 			$post_type_info = empty(self::$field['post_type_info']) ? array('posts', 'categories') : (array) self::$field['post_type_info'];
 			$tab_class = empty(self::$field['main_tab_class']) ? 'dt_all_sliders' : esc_attr(self::$field['main_tab_class']);
 
 			$html = '';
-
+			
 			// buttons
 			$buttons = array();
 			if ( null !== self::$post_type_obj ) {
 
 				// add new
 				$buttons[] = self::get_admin_link( 'post-new.php?post_type=' . self::$field['post_type'], self::$post_type_obj->labels->add_new_item );
-
+				
 				// edit
 				$buttons[] = self::get_admin_link( 'edit.php?post_type=' . self::$field['post_type'], self::$post_type_obj->labels->edit_item );
 
@@ -781,10 +779,10 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 
 			$html .= '<p class="dt_hr"></p>';
 			$html .= '<h4>' . _x('You have:', 'backend', 'the7mk2') . '</h4>';
-
+			
 			// output total
 			$html .= '<ul class="dt_total">' . implode('', $total) . '</ul>';
-
+			
 			$html .= implode('', $buttons);
 
 			$html .= '
@@ -811,19 +809,19 @@ if ( ! class_exists( 'THE7_RWMB_Fancy_Category_Field' ) ) {
 
 			$html = '';
 			$html .= '<div class="dt_tabs">';
-
+				
 				$hidden_class = '';
 				if ( 'both' != self::$field['mode'] ) { $hidden_class = ' hide-if-js'; }
 
 				// Arrange
 				$html .= '<div class="dt_arrange-by' . $hidden_class . '">';
-
+				
 					if ( 'both' == self::$field['mode'] ) {
 						$html .= '<strong>' . _x('Arrange by:', 'backend metabox', 'the7mk2') . '</strong>';
 					}
 
 					foreach ( $type as $value=>$title ) {
-
+						
 						$class = $value;
 						if ( 'category' == $value ) { $class = 'categories'; }
 
@@ -1054,7 +1052,7 @@ if ( ! class_exists( 'THE7_RWMB_Simple_Proportions_Field' ) )
 			) );
 			return $field;
 		}
-
+		
 		/**
 		 * Create datalist, if any
 		 *
@@ -1071,13 +1069,13 @@ if ( ! class_exists( 'THE7_RWMB_Simple_Proportions_Field' ) )
 				'<datalist id="%s">',
 				$datalist['id']
 			);
-
+			
 			foreach( $datalist['options'] as $option ) {
-				$html.= sprintf('<option value="%s"></option>', $option);
+				$html.= sprintf('<option value="%s"></option>', $option);	
 			}
-
+			
 			$html .= '</datalist>';
-
+			
 			return $html;
 		}
 
@@ -1247,7 +1245,7 @@ function presscore_meta_box_classes( $begin, $field, $meta ) {
 			foreach( $field['options'] as $option ) {
 				if ( is_array($option) ) { $classes[] = 'dt_radio-img'; break; }
 			}
-
+			
 			break;
 	}
 
@@ -1272,7 +1270,7 @@ add_filter('the7_mb_begin_html', 'presscore_meta_box_classes', 10, 3);
  * Add some classes to meta box wrap.
  */
 function presscore_meta_box_classes_end_html( $end, $field, $meta ) {
-
+	
 	// divider
 	if ( !empty( $field['divider'] ) && in_array( $field['divider'], array( 'bottom', 'top_and_bottom' ) ) ) {
 		$end .= '<div class="dt_hr dt_hr-bottom"></div>';
@@ -1305,18 +1303,20 @@ function presscore_meta_box_before_html( $before_html, $field ) {
 		$saved_show_on_template = $field_show_on_template;
 		$result_html .= sprintf( $open_template, implode( ',', $saved_show_on_template ) );
 
-	} elseif ( ! empty( $saved_show_on_template ) && empty( $field_show_on_template ) ) {
-		$saved_show_on_template = [];
-		$result_html            = $close_template . $result_html;
-	} elseif ( ! empty( $saved_show_on_template ) && ! empty( $field_show_on_template ) ) {
+	} else if ( !empty( $saved_show_on_template ) && empty( $field_show_on_template ) ) {
+		$saved_show_on_template = array();
+		$result_html = $close_template . $result_html;
+
+	} else if ( !empty( $saved_show_on_template ) && !empty( $field_show_on_template ) ) {
 
 		$saved_string = implode( ',', $saved_show_on_template );
 		$field_string = implode( ',', $field_show_on_template );
 
 		if ( $saved_string != $field_string ) {
 			$saved_show_on_template = $field_show_on_template;
-			$result_html            = $close_template . $before_html . sprintf( $open_template, implode( ',', $saved_show_on_template ) );
+			$result_html = $close_template . $before_html . sprintf( $open_template, implode( ',', $saved_show_on_template ) );
 		}
+
 	}
 
 	return $result_html;

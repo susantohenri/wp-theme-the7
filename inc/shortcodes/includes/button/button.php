@@ -102,7 +102,7 @@ if ( ! class_exists( 'DT_Shortcode_Button', false ) ) {
 				if ( preg_match( '/^fa\s(fa|icon)-(\w)/', $attributes['icon'] ) ) {
 					$attributes['icon'] = '<i class="' . esc_attr( $attributes['icon'] ) . '"></i>';
 				} else {
-					$attributes['icon'] = wp_kses( rawurldecode( the7_base_64_decode( $attributes['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
+					$attributes['icon'] = wp_kses( rawurldecode( base64_decode( $attributes['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
 				}
 
 			}
@@ -444,9 +444,9 @@ if ( ! class_exists( 'DT_Shortcode_Button', false ) ) {
 		protected function darken_color( $color = '', $amount = 18 ) {
 			if ( $color ) {
 				if ( false !== strpos( $color, 'rgb' ) ) {
-					$color_obj = new The7\Vendor\Color\Color( The7\Vendor\Color\Color::rgbToHex( $color ) );
+					$color_obj = new Color( Color::rgbToHex( $color ) );
 				} else {
-					$color_obj = new The7\Vendor\Color\Color( $color );
+					$color_obj = new Color( $color );
 				}
 				return '#' . $color_obj->darken( $amount );
 			}

@@ -1,7 +1,5 @@
 <?php
 /**
- * The7 Theme Options importer.
- *
  * @package The7
  */
 
@@ -46,7 +44,7 @@ class The7_Theme_Options_Importer {
 				]
 			);
 
-			$this->transform_options( $theme_options );
+			$this->fix_options( $theme_options );
 
 			update_option( $known_options['id'], $theme_options );
 
@@ -54,7 +52,7 @@ class The7_Theme_Options_Importer {
 		}
 	}
 
-	protected function transform_options( &$theme_options ) {
+	protected function fix_options( &$theme_options ) {
 		$options_definitions = _optionsframework_get_clean_options();
 		foreach ( $options_definitions as $option_definition ) {
 			if ( ! isset( $option_definition['id'], $theme_options[ $option_definition['id'] ] ) ) {
@@ -70,8 +68,8 @@ class The7_Theme_Options_Importer {
 		}
 	}
 
-	protected function fix_upload( $field_definition, $value ) {
-		if ( isset( $field_definition['mode'] ) && $field_definition['mode'] === 'full' ) {
+	protected function fix_upload( $definition, $value ) {
+		if ( isset( $definition['mode'] ) && $definition['mode'] === 'full' ) {
 			list( $img_src, $img_id ) = $value;
 
 			if ( $img_id ) {
@@ -82,7 +80,7 @@ class The7_Theme_Options_Importer {
 						$img_id,
 					];
 				} else {
-					$logo = $this->is_logo( $field_definition['id'] );
+					$logo = $this->is_logo( $definition['id'] );
 					if ( $logo ) {
 						$value = [
 							$this->get_logo_placeholder( $logo ),
@@ -91,25 +89,6 @@ class The7_Theme_Options_Importer {
 					}
 				}
 			}
-		}
-
-		return $value;
-	}
-
-	/**
-	 * Fix 'background_img' field value.
-	 *
-	 * Localize 'image' url.
-	 *
-	 * @param array $field_definition Field definition.
-	 * @param array $value Option value.
-	 *
-	 * @return array
-	 */
-	protected function fix_background_img( $field_definition, $value ) {
-		if ( isset( $value['image'] ) && $value['image'] ) {
-			$wp_uploads     = wp_get_upload_dir();
-			$value['image'] = $wp_uploads['baseurl'] . substr( $value['image'], strlen( '/wp-content/uploads' ) );
 		}
 
 		return $value;

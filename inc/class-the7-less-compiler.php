@@ -15,7 +15,7 @@ class The7_Less_Compiler {
 	/**
 	 * Less compiler.
 	 *
-	 * @var The7\Vendor\Lessphp\Compiler Less compiler.
+	 * @var the7_lessc Less compiler.
 	 */
 	protected $lessc;
 
@@ -39,13 +39,22 @@ class The7_Less_Compiler {
 			throw new Exception( __( 'Cannot access file system.', 'the7mk2' ) );
 		}
 
-		$this->lessc = new The7\Vendor\Lessphp\Compiler();
+		if ( ! class_exists( 'the7_lessc' ) ) {
+			require PRESSCORE_DIR . '/vendor/lessphp/the7_lessc.inc.php';
+		}
+
+		$this->lessc = new the7_lessc();
 
 		// Register custom less functions.
 		The7_Less_Functions::register_functions( $this->lessc );
 
 		if ( $import_dir === null ) {
-			$import_dir = array( PRESSCORE_THEME_DIR . '/css', PRESSCORE_THEME_DIR . '/css/dynamic-less' );
+			if (The7_Admin_Dashboard_Settings::get( 'lite-mode' )){
+				$import_dir = array( PRESSCORE_THEME_DIR . '/css-lite', PRESSCORE_THEME_DIR . '/css-lite/dynamic-less' );
+			}
+			else {
+				$import_dir = array( PRESSCORE_THEME_DIR . '/css', PRESSCORE_THEME_DIR . '/css/dynamic-less' );
+			}
 		}
 
 		$this->lessc->setImportDir( $import_dir );
@@ -84,6 +93,7 @@ class The7_Less_Compiler {
 	public function compile_to_file( $source_file, $output_file, $imports = array() ) {
 		$css = $this->compile_file( $source_file, $imports );
 		$css = $this->make_relative_urls( $css, $source_file, $output_file );
+		wp_mkdir_p( dirname( $output_file ) );
 		$this->put_contents( $output_file, $css );
 	}
 
@@ -186,15 +196,13 @@ class The7_Less_Compiler {
 	 * @param string $output_file Output file.
 	 * @param string $content Content.
 	 */
-	public function put_contents( $output_file, $content ) {
+	protected function put_contents( $output_file, $content ) {
 		/**
 		 * WP Filesystem global.
 		 *
 		 * @var WP_Filesystem_Base $wp_filesystem
 		 */
 		global $wp_filesystem;
-
-		wp_mkdir_p( dirname( $output_file ) );
 
 		$wp_filesystem->put_contents( $output_file, $content );
 	}
@@ -217,10 +225,6 @@ class The7_Less_Compiler {
 		);
 
 		return $css;
-	}
-
-	public function get_lessc( ) {
-		return $this->lessc;
 	}
 }
 

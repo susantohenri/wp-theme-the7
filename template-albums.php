@@ -61,12 +61,25 @@ if ( presscore_is_content_visible() ) : ?>
 					) . presscore_masonry_container_data_atts() . '>';
 
 					if ( $page_query->have_posts() ) {
+						add_filter(
+							'presscore_get_images_gallery_hoovered-title_img_args',
+							'presscore_gallery_post_exclude_featured_image_from_gallery',
+							15,
+							3
+						);
+
 						while ( $page_query->have_posts() ) {
 							$page_query->the_post();
 							presscore_populate_album_post_config();
 							presscore_get_template_part( 'mod_albums', 'album-masonry/album' );
 						}
 						wp_reset_postdata();
+
+						remove_filter(
+							'presscore_get_images_gallery_hoovered-title_img_args',
+							'presscore_gallery_post_exclude_featured_image_from_gallery',
+							15
+						);
 					}
 
 					// Masonry container close.

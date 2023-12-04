@@ -6,7 +6,6 @@ return array(
 	"weight" => -1,
 	"name" => __("Products Carousel", 'the7mk2'),
 	"base" => "dt_products_carousel",
-	'description' => '',
 	"icon" => "dt_vc_ico_products",
 	"class" => "dt_products_carousel",
 	"category" => __('by Dream-Theme', 'the7mk2'),

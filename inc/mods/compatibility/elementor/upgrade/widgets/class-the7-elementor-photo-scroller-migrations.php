@@ -3,13 +3,13 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor\Upgrade\Widgets;
+namespace The7\Adapters\Elementor\Upgrade\Widgets;
 
-use The7\Mods\Compatibility\Elementor\Upgrade\Widget_Migration;
+use The7\Adapters\Elementor\Upgrade\The7_Elementor_Widget_Migrations;
 
 defined( 'ABSPATH' ) || exit;
 
-class The7_Elementor_Photo_Scroller_Migrations extends Widget_Migration {
+class The7_Elementor_Photo_Scroller_Migrations extends The7_Elementor_Widget_Migrations {
 
 	public static function get_widget_name() {
 		return 'the7_photo-scroller';

@@ -23,7 +23,6 @@ if ( ! function_exists( 'dt_woocommerce_configure_mini_cart' ) ) :
 		$config->set( 'woocommerce.mini_cart.counter.style', of_get_option( 'header-elements-woocommerce_cart-counter-style', 'round' ) );
 		$config->set( 'woocommerce.mini_cart.counter.bg', of_get_option( 'header-elements-woocommerce_cart-counter-bg', 'accent' ) );
 		$config->set( 'woocommerce.mini_cart.dropdown', of_get_option( 'header-elements-woocommerce_cart-show_sub_cart' ) );
-		$config->set( 'woocommerce.mini_cart.dropdown.behavior', of_get_option( 'header-elements-woocommerce_cart-show_sub_cart_behavior', 'hover' ) );
 	}
 
 endif;
@@ -54,9 +53,9 @@ if ( ! function_exists( 'dt_woocommerce_configure_template' ) ) :
 		$post_id = null;
 		if ( is_shop() || is_product_taxonomy() ) {
 			$post_id = wc_get_page_id( 'shop' );
-		} elseif ( is_cart() ) {
+		} else if ( is_cart() ) {
 			$post_id = wc_get_page_id( 'cart' );
-		} elseif ( is_checkout() ) {
+		} else if ( is_checkout() ) {
 			$post_id = wc_get_page_id( 'checkout' );
 		}
 

@@ -6,7 +6,6 @@ return array(
 	"weight" => -1,
 	"name" => __("Social Icons", 'the7mk2'),
 	"base" => "dt_soc_icons",
-	'description' => '',
 	"icon" => "dt_vc_soc_icons",
 	"class" => "dt_vc_soc_icons",
 	"category" => __('by Dream-Theme', 'the7mk2'),

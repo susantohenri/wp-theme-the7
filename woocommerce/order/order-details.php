@@ -12,7 +12,7 @@
  *
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
- * @version 7.8.0
+ * @version 4.6.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -33,7 +33,7 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 	<section class="woocommerce-order-details">
 		<?php do_action( 'woocommerce_order_details_before_order_table', $order ); ?>
 
-		<h4 class="woocommerce-order-details__title"><?php esc_html_e( 'Order details', 'woocommerce' ); ?></h4>
+		<h4 class="woocommerce-order-details__title"><?php esc_html_e( 'Order Details', 'the7mk2' ); ?></h4>
 
 		<div class="woocommerce-cart-wrap">
 
@@ -41,8 +41,8 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 
 			<thead>
 			<tr>
-					<th class="woocommerce-table__product-name product-name"><?php esc_html_e( 'Product', 'woocommerce' ); ?></th>
-					<th class="woocommerce-table__product-table product-total"><?php esc_html_e( 'Total', 'woocommerce' ); ?></th>
+					<th class="woocommerce-table__product-name product-name"><?php esc_html_e( 'Product', 'the7mk2' ); ?></th>
+					<th class="woocommerce-table__product-table product-total"><?php esc_html_e( 'Total', 'the7mk2' ); ?></th>
 			</tr>
 			</thead>
 
@@ -76,14 +76,14 @@ $show_downloads        = $order->has_downloadable_item() && $order->is_download_
 				?>
 				<tr>
 					<th scope="row"><?php echo esc_html( $total['label'] ); ?></th>
-						<td><?php echo wp_kses_post( $total['value'] ); ?></td>
+					<td><?php echo ( 'payment_method' === $key ) ? esc_html( $total['value'] ) : wp_kses_post( $total['value'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></td>
 				</tr>
 				<?php
 			}
 			?>
 			<?php if ( $order->get_customer_note() ) : ?>
 				<tr>
-						<th><?php esc_html_e( 'Note:', 'woocommerce' ); ?></th>
+						<th><?php esc_html_e( 'Note:', 'the7mk2' ); ?></th>
 					<td><?php echo wp_kses_post( nl2br( wptexturize( $order->get_customer_note() ) ) ); ?></td>
 				</tr>
 			<?php endif; ?>

@@ -49,9 +49,7 @@ if ( ! function_exists( 'presscore_comment' ) ) :
 							$avatar = presscore_get_avatar( $comment, 60 );
 
 							if ( ! $avatar ) {
-								$avatar = '<span class="avatar no-avatar"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path d="M8,8c2.2,0,4-1.8,4-4s-1.8-4-4-4S4,1.8,4,4S5.8,8,8,8z M8,10c-2.7,0-8,1.3-8,4v1c0,0.5,0.4,1,1,1h14c0.5,0,1-0.5,1-1v-1
-	C16,11.3,10.7,10,8,10z"/></svg></span>';
+								$avatar = '<span class="avatar no-avatar"></span>';
 							}
 
 							$author_url = get_comment_author_url();
@@ -98,7 +96,7 @@ if ( ! function_exists( 'presscore_comment' ) ) :
 								'max_depth'     => $args['max_depth'],
 								'before'        => '<div class="reply">',
 								'after'         => '</div>',
-								'reply_text'    => __( 'Reply', 'the7mk2' ),
+								'reply_text'    => $icon . __( 'Reply', 'the7mk2' ),
 								'reply_to_text' => __( 'Reply to %s', 'the7mk2' ),
 								'login_text'    => $icon . __( 'Log in to Reply', 'the7mk2' ),
 							)

@@ -237,42 +237,36 @@ if ( ! function_exists( 'presscore_react_on_categorizer' ) ) :
 	function presscore_react_on_categorizer() {
 		$config = presscore_config();
 
-		// phpcs:disable WordPress.Security.NonceVerification.Recommended
-
 		if ( isset( $_REQUEST['term'] ) ) {
 			if ( '' === $_REQUEST['term'] ) {
-				$display = [];
+				$display = array();
 			} elseif ( 'none' === $_REQUEST['term'] ) {
-				$display = [
-					'terms_ids' => [ 0 ],
+				$display = array(
+					'terms_ids' => array( 0 ),
 					'select'    => 'except',
-				];
+				);
 			} else {
-				$display = [
-					'terms_ids' => [ absint( $_REQUEST['term'] ) ],
+				$display = array(
+					'terms_ids' => array( absint( $_REQUEST['term'] ) ),
 					'select'    => 'only',
-				];
+				);
 			}
 			$config->set( 'request_display', $display );
 		}
 
 		if ( isset( $_REQUEST['order'] ) ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$order = strtolower( (string) $_REQUEST['order'] );
-			if ( in_array( $order, [ 'asc', 'desc' ], true ) ) {
+			$order = strtolower( $_REQUEST['order'] );
+			if ( in_array( $order, array( 'asc', 'desc' ) ) ) {
 				$config->set( 'order', $order );
 			}
 		}
 
 		if ( isset( $_REQUEST['orderby'] ) ) {
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$orderby = strtolower( (string) $_REQUEST['orderby'] );
-			if ( in_array( $orderby, [ 'name', 'date' ], true ) ) {
+			$orderby = strtolower( $_REQUEST['orderby'] );
+			if ( in_array( $orderby, array( 'name', 'date' ) ) ) {
 				$config->set( 'orderby', $orderby );
 			}
 		}
-
-		// phpcs:enable
 
 		add_filter( 'presscore_get_category_list-args', 'presscore_filter_categorizer_current_arg', 15 );
 	}
@@ -322,13 +316,34 @@ if ( ! function_exists( 'presscore_return_empty_string' ) ) :
 
 endif;
 
+if ( ! function_exists( 'presscore_gallery_post_exclude_featured_image_from_gallery' ) ) :
+
+	/**
+	 * Attempt to exclude featured image from hovered gallery in albums.
+	 * Works only in the loop.
+	 */
+	function presscore_gallery_post_exclude_featured_image_from_gallery( $args = array(), $default_args = array(), $options = array() ) {
+		global $post;
+
+		return $args;
+
+		if ( in_the_loop() && get_post_meta( $post->ID, '_dt_album_options_exclude_featured_image', true ) ) {
+			$args['custom'] = isset( $args['custom'] ) ? $args['custom'] : trim( str_replace( $options['links_rel'], '', $default_args['custom'] ) );
+			$args['class']  = $default_args['class'] . ' ignore-feaured-image';
+		}
+
+		return $args;
+	}
+
+endif;
+
 if ( ! function_exists( 'presscore_set_image_width_based_on_column_width' ) ) :
 
 	/**
 	 * Set image width for testimonials template and shortcode.
 	 */
 	function presscore_set_image_width_based_on_column_width( $args = array() ) {
-		$config       = presscore_config();
+		$config       = Presscore_Config::get_instance();
 		$target_width = $config->get( 'target_width' );
 
 		if ( $target_width ) {
@@ -610,37 +625,26 @@ if ( ! function_exists( 'presscore_post_class_filter' ) ) :
 
 	/**
 	 * Add post format classes to post.
-	 *
-	 * @param array $classes Post classes.
 	 */
 	function presscore_post_class_filter( $classes = array() ) {
 		global $post;
 
-		// Remove filter on posts built with Elementor.
-		if ( the7_is_post_built_with_elementor( $post->ID ) ) {
-			remove_filter( 'post_class', __FUNCTION__ );
-
-			return $classes;
+		// All public taxonomies for posts filter.
+		$taxonomy = 'category';
+		if ( $post->post_type !== 'post' ) {
+			$taxonomy = $post->post_type . '_category';
 		}
-
-		if ( isset( $post->post_type ) ) {
-			// All public taxonomies for posts filter.
-			$taxonomy = 'category';
-			if ( $post->post_type !== 'post' ) {
-				$taxonomy = $post->post_type . '_category';
-			}
-			if ( is_object_in_taxonomy( $post->post_type, $taxonomy ) ) {
-				foreach ( (array) get_the_terms( $post->ID, $taxonomy ) as $term ) {
-					if ( empty( $term->slug ) ) {
-						continue;
-					}
-
-					$classes[] = sanitize_html_class( $taxonomy . '-' . $term->term_id );
+		if ( is_object_in_taxonomy( $post->post_type, $taxonomy ) ) {
+			foreach ( (array) get_the_terms( $post->ID, $taxonomy ) as $term ) {
+				if ( empty( $term->slug ) ) {
+					continue;
 				}
+
+				$classes[] = sanitize_html_class( $taxonomy . '-' . $term->term_id );
 			}
 		}
 
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 
 		$is_archive = is_search() || is_archive();
 
@@ -760,29 +764,20 @@ if ( ! function_exists( 'presscore_render_fullscreen_overlay' ) ) :
 	function presscore_render_fullscreen_overlay() {
 		if ( presscore_config()->get_bool( 'template.beautiful_loading.enabled' ) ) {
 			$tpl_args = array();
-			$loader_template = '';
 			switch ( presscore_config()->get( 'template.beautiful_loading.loadr.style' ) ) {
 				case 'square_jelly_box':
 					$tpl_args['load_class'] = 'ring-loader';
-					$loader_template = 'general/loader-ring';
 					break;
 				case 'ball_elastic_dots':
 					$tpl_args['load_class'] = 'hourglass-loader';
-					$loader_template = 'general/loader-bars';
 					break;
 				case 'custom':
 					$tpl_args['loader_code'] = presscore_config()->get( 'template.beautiful_loading.loadr.custom_code' );
 					break;
 				default:
 					$tpl_args['load_class'] = 'spinner-loader';
-					$loader_template = 'general/loader-spinner';
 			}
 
-            if (!empty($loader_template)) {
-	            ob_start();
-	            presscore_get_template_part( 'theme', $loader_template );
-	            $tpl_args['loader_code'] = ob_get_clean();
-            }
 			presscore_get_template_part( 'theme', 'loader', null, $tpl_args );
 		}
 	}
@@ -807,8 +802,7 @@ if ( ! function_exists( 'presscore_slideshow_controller' ) ) :
 			return;
 		}
 
-		$slideshow_type = $config->get( 'slideshow_mode' );
-		switch ( $slideshow_type ) {
+		switch ( $config->get( 'slideshow_mode' ) ) {
 			case 'revolution':
 				$rev_slider = $config->get( 'slideshow_revolution_slider' );
 
@@ -831,7 +825,7 @@ if ( ! function_exists( 'presscore_slideshow_controller' ) ) :
 				}
 		}
 
-		do_action( 'presscore_do_header_slideshow', $slideshow_type );
+		do_action( 'presscore_do_header_slideshow', $config->get( 'slideshow_mode' ) );
 	}
 
 endif;

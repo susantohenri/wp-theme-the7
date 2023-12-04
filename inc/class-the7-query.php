@@ -88,30 +88,31 @@ class The7_Query {
 				) );
 
 			// EXCEPT tax_query
-			} elseif ( 'except' == $args['select'] ) {
+			} else if ( 'except' == $args['select'] ) {
 				$in_terms = array_diff( $all_terms, $terms );
 				sort( $in_terms );
 
 				if ( $in_terms ) {
-					$query_args['tax_query'] = [
-						'relation' => 'OR',
-						[
-							'taxonomy' => $args['taxonomy'],
-							'terms'    => $in_terms,
-							'operator' => 'IN',
-							'field'    => 'id',
-						],
-						[
-							'taxonomy' => $args['taxonomy'],
-							'terms'    => $terms,
-							'operator' => 'NOT IN',
-							'field'    => 'id',
-						]
-					];
+					$query_args['tax_query'] = array(
+						'relation'	=> 'OR',
+						array(
+							'taxonomy'	=> $args['taxonomy'],
+							'terms'		=> $in_terms,
+							'operator'	=> 'IN',
+							'field'		=> 'id',
+						),
+						array(
+							'taxonomy'	=> $args['taxonomy'],
+							'terms'		=> $terms,
+							'operator'	=> 'NOT IN',
+							'field'		=> 'id',
+						)
+					);
 
 					add_filter( 'posts_clauses', 'dt_core_join_left_filter' );
 				}
 			}
+
 		}
 
 		$query_args = apply_filters( 'presscore_query-get_posts_by_terms', $query_args, $args );
@@ -187,10 +188,9 @@ class The7_Query {
 	protected function verify_args( $args ) {
 		if ( ! post_type_exists( $args['post_type'] ) ) {
 			return false;
-		} elseif ( isset( $args['taxonomy'] ) && ! taxonomy_exists( $args['taxonomy'] ) ) {
+		} else if ( isset( $args['taxonomy'] ) && ! taxonomy_exists( $args['taxonomy'] ) ) {
 			return false;
 		}
-
 		return true;
 	}
 }

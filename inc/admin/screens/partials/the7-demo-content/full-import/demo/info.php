@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  */
 ?>
 
-<?php if ( $demo->id === 'main' ) : ?>
+<?php if ( $demo->id === 'main' ): ?>
 
 	<div class="dt-dummy-controls-block dt-dummy-info-content">
 		<?php
@@ -29,15 +29,33 @@ defined( 'ABSPATH' ) || exit;
 <?php if ( ! $demo->include_attachments ) : ?>
 
 	<div class="dt-dummy-controls-block dt-dummy-info-content">
-		<p><strong>
-		<?php
-			echo esc_html_x(
-				'Please note that all copyrighted images were replaced with a placeholder pictures.',
-				'admin',
-				'the7mk2'
+		<p><strong><?php
+				echo esc_html_x(
+					'Please note that all copyrighted images were replaced with a placeholder pictures.',
+					'admin',
+					'the7mk2'
+				);
+				?></strong></p>
+	</div>
+
+<?php endif; ?>
+
+<?php if ( ! $demo->plugins()->is_installed( 'pro-elements' ) ) : ?>
+
+	<div class="dt-dummy-controls-block dt-dummy-info-content">
+		<p><?php
+			echo wp_kses_post(
+				sprintf(
+                    _x(
+                        '<strong>Important!</strong> This demo requires <a href="%s" target="_blank" rel="nofollow">Elementor Pro</a> or its free alternative, <a href="%s" target="_blank" rel="nofollow">PRO Elements</a> plugin. We cannot install them automatically. Please install one of these plugins to proceed with the demo installation.',
+                        'admin',
+                        'the7mk2'
+                    ),
+                    'https://elementor.com/pro/',
+                    'https://proelements.org'
+                )
 			);
-		?>
-		</strong></p>
+			?></p>
 	</div>
 
 <?php endif; ?>

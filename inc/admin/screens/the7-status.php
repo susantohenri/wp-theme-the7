@@ -101,23 +101,6 @@ global $wp_filesystem;
                     <td data-export-label="Server Info"><?php _e( 'Server Info:', 'the7mk2' ); ?></td>
                     <td><?php echo esc_html( $_SERVER['SERVER_SOFTWARE'] ); ?></td>
                 </tr>
-				<tr>
-					<td><?php esc_html_e( 'Apache "mod_security" module:', 'the7mk2'); ?></td>
-					<td>
-						<?php
-						if ( function_exists( 'apache_get_modules' ) ) {
-							$apache_get_modules = (array) apache_get_modules();
-							if ( in_array( 'mod_security', $apache_get_modules, true ) || in_array( 'security2_module', $apache_get_modules, true ) ) {
-								echo '<span class="yes">&#10004;</span>';
-							} else {
-								echo '<span class="no">&ndash;</span>';
-							}
-						} else {
-							echo '<span class="no">?</span>';
-						}
-						?>
-					</td>
-				</tr>
                 <tr>
                     <td data-export-label="PHP Version"><?php _e( 'PHP Version:', 'the7mk2' ); ?></td>
                     <td><?php if ( function_exists( 'phpversion' ) ) {
@@ -330,21 +313,18 @@ If the issue persists, contact your hosting provider and make sure that %s is no
 		                if ( $the7_server_code === 400 ) {
 			                echo '<span class="yes">&#10004;</span>';
 		                } else {
-							echo '<span class="error">&#10006;</span><br> ';
-							echo esc_html(
-								sprintf(
-									__(
-										'Seems that your server is blocking connections to your own site (responded with %1$s code). It may break theme db update process and lead to style corruption. Please, make sure that remote requests to %2$s are not blocked.',
-										'the7mk2'
-									),
-									$the7_server_code,
-									$ajax_url
-								)
-							);
+			                printf( __( '<span class="error">No</span><br> Seems that your server is blocking connections to your own site. It may break theme db update process and lead to style corruption. Please, make sure that remote requests to %s are not blocked.', 'the7mk2' ), $ajax_url );
 		                }
 		                ?>
                     </td>
                 </tr>
+
+				<?php if ( class_exists( 'The7_Dev_Beta_Tester' ) && The7_Dev_Beta_Tester::get_status() ): ?>
+                    <tr>
+                        <td data-export-label="The7 BETA tester"><?php _e( 'The7 BETA tester:' ) ?></td>
+                        <td><span class="yes">&#10004;</span></td>
+                    </tr>
+				<?php endif ?>
 
                 </tbody>
             </table>

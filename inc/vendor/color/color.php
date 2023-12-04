@@ -1,11 +1,9 @@
 <?php
 /**
- * Author: Arlo Carreon <https://arlocarreon.com>
- * Info: https://mexitek.github.io/phpColors/
- * License: https://arlo.mit-license.org/
+ * Author: Arlo Carreon <http://arlocarreon.com>
+ * Info: http://mexitek.github.io/phpColors/
+ * License: http://arlo.mit-license.org/
  */
-
-namespace The7\Vendor\Color;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -92,15 +90,11 @@ class Color {
             $del_G = ( ( ( $var_Max - $var_G ) / 6 ) + ( $del_Max / 2 ) ) / $del_Max;
             $del_B = ( ( ( $var_Max - $var_B ) / 6 ) + ( $del_Max / 2 ) ) / $del_Max;
 
-			if ( $var_R == $var_Max ) {
-				$H = $del_B - $del_G;
-			} elseif ( $var_G == $var_Max ) {
-				$H = ( 1 / 3 ) + $del_R - $del_B;
-			} elseif ( $var_B == $var_Max ) {
-				$H = ( 2 / 3 ) + $del_G - $del_R;
-			}
+            if      ($var_R == $var_Max) $H = $del_B - $del_G;
+            else if ($var_G == $var_Max) $H = ( 1 / 3 ) + $del_R - $del_B;
+            else if ($var_B == $var_Max) $H = ( 2 / 3 ) + $del_G - $del_R;
 
-			if ($H<0) $H++;
+            if ($H<0) $H++;
             if ($H>1) $H--;
         }
 
@@ -120,7 +114,7 @@ class Color {
     public static function hslToHex( $hsl = array() ){
          // Make sure it's HSL
         if(empty($hsl) || !isset($hsl["H"]) || !isset($hsl["S"]) || !isset($hsl["L"]) ) {
-            throw new \Exception("Param was not an HSL array");
+            throw new Exception("Param was not an HSL array");
         }
 
         list($H,$S,$L) = array( $hsl['H']/360,$hsl['S'],$hsl['L'] );
@@ -202,7 +196,7 @@ class Color {
 
          // Make sure it's RGB
         if(empty($rgb) || !isset($rgb["R"]) || !isset($rgb["G"]) || !isset($rgb["B"]) ) {
-            throw new \Exception("Param was not an RGB array");
+            throw new Exception("Param was not an RGB array");
         }
 
         // Convert RGB to HEX
@@ -323,7 +317,7 @@ class Color {
         // Return the new value in HEX
         return self::hslToHex($hsl);
     }
-
+    
     /**
      * Returns your color's HSL array
      */
@@ -353,7 +347,7 @@ class Color {
      * @param boolean $vintageBrowsers Optional: include vendor prefixes for browsers that almost died out already
      * @param string $prefix Optional: prefix for every lines
      * @param string $suffix Optional: suffix for every lines
-     * @link  https://caniuse.com/css-gradients Resource for the browser support
+     * @link  http://caniuse.com/css-gradients Resource for the browser support
      * @return string CSS3 gradient for chrome, safari, firefox, opera and IE10
      */
     public function getCssGradient( $amount = self::DEFAULT_ADJUST, $vintageBrowsers = FALSE, $suffix = "" , $prefix = "" ) {
@@ -443,7 +437,7 @@ class Color {
      * @param int $amount ranged -100..0..+100
      * @return array $rgb
      *
-     * 	ported from https://phpxref.pagelines.com/nav.html?includes/class.colors.php.source.html
+     * 	ported from http://phpxref.pagelines.com/nav.html?includes/class.colors.php.source.html
      */
     private function _mix($rgb1, $rgb2, $amount = 0) {
 
@@ -505,7 +499,7 @@ class Color {
 		}
 
 		if ( strlen( $color ) !== 6 ) {
-			throw new \Exception( "HEX color ($hex) needs to be 6 or 3 digits long" );
+			throw new Exception( "HEX color ($hex) needs to be 6 or 3 digits long" );
 		}
 
 		return $color;

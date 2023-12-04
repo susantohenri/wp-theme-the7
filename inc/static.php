@@ -15,62 +15,65 @@ if ( ! function_exists( 'presscore_register_scripts' ) ) :
 	 * @since 5.4.0
 	 */
 	function presscore_register_scripts() {
-		$register_styles = [
-			'dt-main'                 => [
+		$register_styles = array(
+			'dt-main'                 => array(
 				'src' => PRESSCORE_THEME_URI . '/css/main',
-			],
-			'the7-custom-scrollbar' => [
-				'src' => PRESSCORE_THEME_URI . '/lib/custom-scrollbar/custom-scrollbar',
-			],
-		];
+			),
+			'the7-font'               => array(
+				'src' => PRESSCORE_THEME_URI . '/fonts/icomoon-the7-font/icomoon-the7-font',
+			),
+			'the7-awesome-fonts-back' => array(
+				'src' => PRESSCORE_THEME_URI . '/fonts/FontAwesome/back-compat',
+			),
+		);
 
+		if ( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ) {
+			$register_styles['dt-main']  =  [ 'src' => PRESSCORE_THEME_URI . '/css-lite/main'];
+		}
 		foreach ( $register_styles as $name => $props ) {
 			the7_register_style( $name, $props['src'] );
 		}
 
-		$register_scripts = [
-			'dt-above-fold'     => [
-				'src'       => PRESSCORE_THEME_URI . '/js/above-the-fold',
-				'deps'      => [ 'jquery' ],
-				'in_footer' => false,
-			],
-			'dt-main'           => [
-				'src'       => PRESSCORE_THEME_URI . '/js/main',
-				'deps'      => [ 'jquery' ],
-				'in_footer' => true,
-			],
-			'dt-legacy'         => [
-				'src'       => PRESSCORE_THEME_URI . '/js/legacy',
-				'deps'      => [ 'jquery' ],
-				'in_footer' => true,
-			],
-			'dt-photo-scroller' => [
-				'src'       => PRESSCORE_THEME_URI . '/js/photo-scroller',
-				'deps'      => [ 'dt-main' ],
-				'in_footer' => true,
-			],
-			'the7-cookies'      => [
-				'src'       => PRESSCORE_THEME_URI . '/js/cookies',
-				'deps'      => [],
-				'in_footer' => true,
-			],
-			'jquery-mousewheel' => [
-				'src'       => PRESSCORE_THEME_URI . '/lib/jquery-mousewheel/jquery-mousewheel',
-				'deps'      =>  [ 'jquery' ],
-				'in_footer' => true,
-			],
-            'the7-custom-scrollbar' => [
-				'src'       => PRESSCORE_THEME_URI . '/lib/custom-scrollbar/custom-scrollbar',
-				'deps'      => ['jquery-mousewheel'],
-				'in_footer' => true,
-			],
-		];
+		if ( The7_Icon_Manager::is_fontawesome_enabled() ) {
+			the7_register_fontawesome_style( 'the7-awesome-fonts' );
+		}
 
-		$register_scripts['dt-woocommerce'] = [
-			'src'       => PRESSCORE_THEME_URI . '/js/compatibility/woocommerce/woocommerce',
-			'deps'      => [ 'jquery' ],
-			'in_footer' => false,
-		];
+		$register_scripts = array(
+			'dt-above-fold' => array(
+				'src'       => PRESSCORE_THEME_URI . '/js/above-the-fold',
+				'deps'      => array( 'jquery' ),
+				'in_footer' => false,
+			),
+			'dt-main'       => array(
+				'src'       => PRESSCORE_THEME_URI . '/js/main',
+				'deps'      => array( 'jquery'),
+				'in_footer' => true,
+			),
+			'dt-legacy'     => array(
+				'src'       => PRESSCORE_THEME_URI . '/js/legacy',
+				'deps'      => array( 'jquery' ),
+				'in_footer' => true,
+			),
+
+			'dt-photo-scroller'     => array(
+				'src'       => PRESSCORE_THEME_URI . '/js/photo-scroller',
+				'deps'      => array( 'dt-main' ),
+				'in_footer' => true,
+			),
+		);
+
+		if ( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ) {
+		    foreach ($register_scripts as $key => $script ) {
+			    $script['src'] = str_replace('/js/', '/js-lite/', $script['src']);
+			    $register_scripts[$key] = $script;
+		    }
+
+			$register_scripts['dt-woocommerce'] = array(
+				'src'       =>  PRESSCORE_THEME_URI . '/js-lite/compatibility/woocommerce/woocommerce',
+				'deps'      => array( 'jquery' ),
+				'in_footer' => false,
+			);
+		}
 
 		foreach ( $register_scripts as $name => $props ) {
 			the7_register_script( $name, $props['src'], $props['deps'], false, $props['in_footer'] );
@@ -113,6 +116,23 @@ if ( ! function_exists( 'presscore_localize_main_script' ) ) :
 			$page_data = false;
 		}
 
+		switch ( $config->get( 'template.accent.color.mode' ) ) {
+			case 'gradient':
+				$gradient_obj            = the7_less_create_gradient_obj( of_get_option( 'general-accent_bg_color_gradient' ) );
+				list( $first_color, $_ ) = the7_less_prepare_gradient_var( $gradient_obj );
+				$accent_color            = array(
+					'mode'  => 'gradient',
+					'color' => $first_color,
+				);
+				break;
+			case 'color':
+			default:
+				$accent_color = array(
+					'mode'  => 'solid',
+					'color' => of_get_option( 'general-accent_bg_color' ),
+				);
+		}
+
 		$custom_error_messages_validation = of_get_option( 'custom_error_messages_validation' );
 		if ( empty( $custom_error_messages_validation ) ) {
 			$custom_error_messages_validation = _x( 'One or more fields have an error. Please check and try again.', 'feedback msg', 'the7mk2' );
@@ -150,6 +170,7 @@ if ( ! function_exists( 'presscore_localize_main_script' ) ) :
 			'themeSettings'   => array(
 				'smoothScroll'                   => of_get_option( 'general-smooth_scroll', 'on' ),
 				'lazyLoading'                    => ( 'lazy_loading' === $config->get( 'load_style' ) ),
+				'accentColor'                    => $accent_color,
 				'desktopHeader'                  => array(
 					'height' => $header_height,
 				),
@@ -191,10 +212,28 @@ if ( ! function_exists( 'presscore_localize_main_script' ) ) :
 						'html' => presscore_get_logo_image( presscore_get_floating_mobile_logos_meta_second() ),
 					),
 				),
+				'content'                        => array(
+					'textColor'   => of_get_option( 'content-primary_text_color', '#000000' ),
+					'headerColor' => of_get_option( 'content-headers_color', '#000000' ),
+				),
 				'sidebar'                        => array(
 					'switchPoint' => (int) of_get_option( 'sidebar-responsiveness' ),
 				),
 				'boxedWidth'                     => of_get_option( 'general-box_width' ),
+				'stripes'                        => array(
+					'stripe1' => array(
+						'textColor'   => of_get_option( 'stripes-stripe_1_text_color', '#000000' ),
+						'headerColor' => of_get_option( 'stripes-stripe_1_headers_color', '#000000' ),
+					),
+					'stripe2' => array(
+						'textColor'   => of_get_option( 'stripes-stripe_2_text_color', '#000000' ),
+						'headerColor' => of_get_option( 'stripes-stripe_2_headers_color', '#000000' ),
+					),
+					'stripe3' => array(
+						'textColor'   => of_get_option( 'stripes-stripe_3_text_color', '#000000' ),
+						'headerColor' => of_get_option( 'stripes-stripe_3_headers_color', '#000000' ),
+					),
+				),
 			),
 		);
 
@@ -216,6 +255,7 @@ if ( ! function_exists( 'presscore_enqueue_scripts' ) ) :
 		presscore_register_scripts();
 
 		wp_enqueue_style( 'dt-main' );
+		wp_enqueue_style( 'the7-font' );
 
 		// Get theme config.
 		$config = presscore_config();
@@ -223,6 +263,15 @@ if ( ! function_exists( 'presscore_enqueue_scripts' ) ) :
 		// Loader inline css.
 		if ( $config->get_bool( 'template.beautiful_loading.enabled' ) ) {
 			wp_add_inline_style( 'dt-main', presscore_get_loader_inline_css() );
+		}
+
+		// Enqueue fonts.
+		$fa_status = The7_Icon_Manager::is_fontawesome_enabled();
+		if ( $fa_status !== false ) {
+			wp_enqueue_style( 'the7-awesome-fonts' );
+			if ( $fa_status === 'fa4' ) {
+				wp_enqueue_style( 'the7-awesome-fonts-back' );
+			}
 		}
 
 		// Enqueue base js.
@@ -264,12 +313,6 @@ if ( ! function_exists( 'presscore_enqueue_scripts' ) ) :
 		if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 			wp_enqueue_script( 'comment-reply' );
 		}
-
-		//TODO check when we need scrool in the menu
-		//if (presscore_header_layout_is_side()){
-			wp_enqueue_style( 'the7-custom-scrollbar' );
-			wp_enqueue_script( 'the7-custom-scrollbar' );
-        //}
 	}
 
 endif;
@@ -326,8 +369,8 @@ if ( ! function_exists( 'presscore_print_beautiful_loading_scripts_in_footer' ) 
 			return;
 		}
 		?>
-<script type="text/javascript" id="the7-loader-script">
-document.addEventListener("DOMContentLoaded", function(event) {
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function(event) { 
 	var load = document.getElementById("load");
 	if(!load.classList.contains('loader-removed')){
 		var removeLoading = setTimeout(function() {
@@ -518,7 +561,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 		if( $config->get( 'header.mixed.menu-close_icon.position' ) == 'outside'){
 			$classes[] ='ouside-menu-close-icon';
 		}
-
+	
 		switch ( $config->get( 'header.mobile.close.hamburger.caption' )){
 			case 'left':
 				$classes[] = 'mobile-close-left-caption';
@@ -554,20 +597,20 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 			$classes[] = 'left-side-line';
 			$classes[] = 'header-above-side-line';
 		}
-		$classes[] = the7_array_match( $config->get( 'header.mobile.hamburger.close.bg' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.mobile.hamburger.close.bg' ), array(
 			'enabled' => 'mobile-hamburger-close-bg-enable',
 		) );
-		$classes[] = the7_array_match( $config->get( 'header.mobile.hamburger.close.bg.hover' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.mobile.hamburger.close.bg.hover' ), array(
 			'enabled' => 'mobile-hamburger-close-bg-hover-enable',
 		) );
-		$classes[] = the7_array_match( $config->get( 'header.mobile.hamburger.close.border' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.mobile.hamburger.close.border' ), array(
 			'enabled' => 'mobile-hamburger-close-border-enable',
 		) );
-		$classes[] = the7_array_match( $config->get( 'header.mobile.hamburger.close.border.hover' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.mobile.hamburger.close.border.hover' ), array(
 			'enabled' => 'mobile-hamburger-close-border-hover-enable',
 		) );
-
-		$classes[] = the7_array_match( $config->get( 'header.mobile.menu-close_icon.size' ), array(
+		
+		$classes[] = presscore_array_value( $config->get( 'header.mobile.menu-close_icon.size' ), array(
 			//'small' => 'small-mobile-menu-close-icon',
 			'minus-medium' => 'minus-medium-mobile-menu-close-icon',
 			'fade_medium' => 'fade-medium-mobile-menu-close-icon',
@@ -579,7 +622,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 			'h_dots' => 'h-dots-mobile-menu-close-icon',
 			'scale_dot' => 'scale-dot-mobile-menu-close-icon',
 		) );
-		$classes[] = the7_array_match( $config->get( 'header.mixed.menu-close_icon.size' ), array(
+		$classes[] = presscore_array_value( $config->get( 'header.mixed.menu-close_icon.size' ), array(
 
 			'minus-medium' => 'medium-menu-close-icon',
 			'fade_medium' => 'fade-medium-menu-close-icon',
@@ -600,7 +643,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 		}
 		$classes[] = 'srcset-enabled';
 
-		/*switch ( $config->get( 'buttons.style' ) ) {
+		switch ( $config->get( 'buttons.style' ) ) {
 			case '3d':
 				$classes[] = 'btn-3d';
 				break;
@@ -610,8 +653,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 			case 'shadow':
 				$classes[] = 'btn-shadow';
 				break;
-		}*/
-		$classes[] = 'btn-flat';
+		}
 
 		switch ( $config->get( 'buttons.text.color' ) ) {
 			case 'accent':
@@ -658,7 +700,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 
 		if ( $config->get( 'header.floating_navigation.enabled' ) && ( $config->get( 'header.layout' ) === 'classic' || $config->get( 'header.layout' ) === 'inline' || $config->get( 'header.layout' ) === 'split' ) ) {
 
-			$classes[] = the7_array_match(
+			$classes[] = presscore_array_value(
 				$config->get( 'header.floating_navigation.style' ),
 				array(
 					'fade'   => 'phantom-fade',
@@ -667,7 +709,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 				)
 			);
 
-			$classes[] = the7_array_match(
+			$classes[] = presscore_array_value(
 				$config->get( 'header.floating_navigation.decoraion' ),
 				array(
 					'disabled' => 'phantom-disable-decoration',
@@ -677,7 +719,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 				)
 			);
 
-			$classes[] = the7_array_match(
+			$classes[] = presscore_array_value(
 				$config->get( 'header.floating_navigation.logo.style' ),
 				array(
 					'custom' => 'phantom-custom-logo-on',
@@ -690,23 +732,14 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 		if ( $config->get( 'header.floating_top-bar.enabled' ) ) {
 			$classes[] = 'floating-top-bar';
 		}
-		if ( $config->get( 'header.layout' ) !== 'disabled' ) {
-			$classes[] = the7_array_match(
-				$config->get( 'header.mobile.floatin_navigation' ),
-				array(
-					'sticky'    => 'sticky-mobile-header',
-					'menu_icon' => 'floating-mobile-menu-icon',
-				)
-			);
-		}
 
-		// $classes[] = the7_array_match(
-		// 	$config->get( 'header.mobile.floatin_navigation' ),
-		// 	array(
-		// 		'sticky'    => 'sticky-mobile-header',
-		// 		'menu_icon' => 'floating-mobile-menu-icon',
-		// 	)
-		// );
+		$classes[] = presscore_array_value(
+			$config->get( 'header.mobile.floatin_navigation' ),
+			array(
+				'sticky'    => 'sticky-mobile-header',
+				'menu_icon' => 'floating-mobile-menu-icon',
+			)
+		);
 
 		if ( 'disabled' !== $config->get( 'sidebar_position' ) && $config->get( 'sidebar_hide_on_mobile' ) ) {
 			$classes[] = 'mobile-hide-sidebar';
@@ -720,7 +753,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 			$classes[] = 'top-header';
 		}
 
-		$classes[] = the7_array_match(
+		$classes[] = presscore_array_value(
 			$config->get( 'header.mobile.logo.first_switch.layout' ),
 			array(
 				'left_right'   => 'first-switch-logo-right first-switch-menu-left',
@@ -730,7 +763,7 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 			)
 		);
 
-		$classes[] = the7_array_match(
+		$classes[] = presscore_array_value(
 			$config->get( 'header.mobile.logo.second_switch.layout' ),
 			array(
 				'left_right'   => 'second-switch-logo-right second-switch-menu-left',
@@ -770,6 +803,10 @@ if ( ! function_exists( 'presscore_body_class' ) ) :
 		} else {
 			$classes[] = 'inline-message-style';
 		}
+
+		if ( The7_Icon_Manager::is_fontawesome_enabled() ) {
+		    $classes[] = 'dt-fa-compatibility';
+        }
 
 		if ( 'fullscreen' === $config->get( 'post.media.photo_scroller.layout' ) ) {
 			$classes[] = 'fullscreen-photo-scroller';
@@ -822,7 +859,7 @@ if ( ! function_exists( 'presscore_get_default_thumbnail_image' ) ) :
 	 * @return array.
 	 */
 	function presscore_get_default_thumbnail_image() {
-		return array( PRESSCORE_THEME_URI . '/images/noimage-150x150.jpg', 150, 150 );
+		return array( PRESSCORE_THEME_URI . '/images/noimage-thumbnail.jpg', 150, 150 );
 	}
 
 endif;
@@ -837,17 +874,10 @@ if ( ! function_exists( 'presscore_get_default_small_image' ) ) :
 	 * @return array.
 	 */
 	function presscore_get_default_small_image() {
-		return presscore_get_default_thumbnail_image();
+		return array( PRESSCORE_THEME_URI . '/images/noimage-small.jpg', 119, 119 );
 	}
 
 endif;
-
-/**
- * @return array
- */
-function the7_get_gray_square_svg() {
-	return [ PRESSCORE_THEME_URI . '/images/gray-square.svg', 1500, 1500 ];
-}
 
 if ( ! function_exists( 'presscore_get_widgetareas_options' ) ) :
 
@@ -868,10 +898,6 @@ if ( ! function_exists( 'presscore_enqueue_web_fonts' ) ) :
 	 * Web fonts override.
 	 */
 	function presscore_enqueue_web_fonts() {
-		if ( the7_is_elementor_theme_mode_active() ) {
-			return;
-		}
-
 		$fonts         = array();
 		$websafe_fonts = array_keys( presscore_options_get_safe_fonts() );
 		$options       = _optionsframework_get_clean_options();

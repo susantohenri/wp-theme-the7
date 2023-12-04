@@ -131,7 +131,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 		 * Do shortcode here.
 		 */
 		protected function do_shortcode( $atts, $content = '' ) {
-
+			
 			//Hover icon
 			$show_icon_zoom = '';
 			if ( $this->get_att( 'show_zoom' ) === 'y' ) {
@@ -165,7 +165,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 			}
 
 			$data_atts_str = presscore_get_inlide_data_attr( $data_atts_array );
-
+			
 
 			echo '<div ' . $this->get_container_html_class( array( 'owl-carousel gallery-carousel-shortcode gallery-shortcode  dt-gallery-container dt-owl-carousel-call' ) ) . ' ' . $this->get_container_data_atts() . '>';
 
@@ -249,17 +249,17 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 
 			do_action( 'presscore_after_shortcode_loop', $this->sc_name, $this->atts );
 		}
-
+		
 		protected function get_container_html_class( $class = array() ) {
 			$el_class = $this->atts['el_class'];
 			$config = presscore_config();
 			// Unique class.
 			$class[] = $this->get_unique_class();
-
+			
 
 			if ( $this->atts['image_scale_animation_on_hover']  === 'quick_scale' ) {
 				$class[] = 'quick-scale-img';
-			} elseif ( $this->atts['image_scale_animation_on_hover'] === 'slow_scale' ) {
+			}else if($this->atts['image_scale_animation_on_hover']  === 'slow_scale') {
 				$class[] = 'scale-img';
 			}
 			if ( 'disabled' != $this->get_att( 'image_hover_bg_color' ) ) {
@@ -274,7 +274,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 			if($this->atts['arrow_icon_border_hover'] === 'y'){
 				$class[] = 'dt-arrow-hover-border-on';
 			}
-
+			
 			if ( 'shadow' === $this->atts['image_decoration'] ) {
 				$class[] = 'enable-img-shadow';
 			}
@@ -311,7 +311,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 			} else {
 				$class[] = 'dt-icon-bg-off';
 			}
-
+			
 			if($this->atts['arrows_bg_show'] === 'y'){
 				$class[] = 'arrows-bg-on';
 			}else{
@@ -334,8 +334,8 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 
 			return 'class="' . esc_attr( implode( ' ', $class ) ) . '"';
 		}
-
-
+		
+		
 		protected function get_container_data_atts() {
 			$data_atts = array(
 				'scroll-mode' => ($this->atts['slide_to_scroll'] == "all") ? 'page' : '1',
@@ -368,10 +368,10 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 
 			$config->set( 'load_style', 'default' );
 
-
+			
 			$config->set( 'post.preview.hover.animation', $this->get_att( 'hover_animation' ) );
 			$config->set( 'image_layout', ( 'resize' === $this->get_att( 'image_sizing' ) ? $this->get_att( 'image_sizing' ) : 'original' ) );
-
+		
 
 		}
 		/**
@@ -421,7 +421,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 					) );
 			}
 			$less_vars->add_keyword( 'portfolio-img-shadow', $shadow_style );
-			$less_vars->add_pixel_number( 'shadow-v-length', abs( (int) $this->get_att( 'shadow_v_length' ) ) );
+			$less_vars->add_pixel_number( 'shadow-v-length',abs($this->get_att('shadow_v_length' )));
 
 			$less_vars->add_pixel_number( 'icon-size', $this->get_att( 'arrow_icon_size' ) );
 			$less_vars->add_paddings( array(
@@ -447,7 +447,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 			$less_vars->add_keyword( 'icon-color-hover', $this->get_att( 'arrow_icon_color_hover', '~""' ) );
 			$less_vars->add_keyword( 'arrow-border-color-hover', $this->get_att( 'arrow_border_color_hover', '~""' ) );
 			$less_vars->add_keyword( 'arrow-bg-hover', $this->get_att( 'arrow_bg_color_hover', '~""' ) );
-
+			
 			$less_vars->add_keyword( 'arrow-right-v-position', $this->get_att( 'r_arrow_v_position' ) );
 			$less_vars->add_keyword( 'arrow-right-h-position', $this->get_att( 'r_arrow_h_position' ) );
 			$less_vars->add_pixel_number( 'r-arrow-v-position', $this->get_att( 'r_arrow_v_offset' ) );
@@ -470,7 +470,7 @@ if ( ! class_exists( 'DT_Shortcode_Media_Gallery_Carousel', false ) ) :
 			$less_vars->add_keyword( 'bullets-h-position', $this->get_att( 'bullets_h_position' ) );
 			$less_vars->add_pixel_number( 'bullet-v-position', $this->get_att( 'bullets_v_offset' ) );
 			$less_vars->add_pixel_number( 'bullet-h-position', $this->get_att( 'bullets_h_offset' ) );
-
+			
 
 			return $less_vars->get_vars();
 		}

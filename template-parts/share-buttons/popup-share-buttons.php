@@ -25,14 +25,13 @@ defined( 'ABSPATH' ) || exit;
 		<?php
 		foreach ( $share_buttons as $share_button ) {
 			printf(
-				'<a class="%1$s" href="%2$s" title="%3$s" target="_blank" %4$s>%7$s<span class="social-text">%5$s</span><span class="screen-reader-text">%6$s</span></a>' . "\n",
+				'<a class="%1$s" href="%2$s" title="%3$s" target="_blank" %4$s><span class="soc-font-icon"></span><span class="social-text">%5$s</span><span class="screen-reader-text">%6$s</span></a>' . "\n",
 				esc_attr( $share_button['icon_class'] ),
 				esc_url( $share_button['url'] ),
 				esc_attr( $share_button['name'] ),
 				$share_button['custom_atts'],
 				esc_html( $share_button['alt_title'] ),
-				esc_html( $share_button['title'] ),
-				$share_button['svg_icon']
+				esc_html( $share_button['title'] )
 			);
 		}
 		?>

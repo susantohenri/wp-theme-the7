@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 class The7_Less_Gradient_Color_Stop implements The7_Less_Gradient_Color_Stop_Interface {
 
 	/**
-	 * @var The7\Vendor\Color\Color
+	 * @var Color
 	 */
 	protected $color;
 
@@ -113,10 +113,10 @@ class The7_Less_Gradient_Color_Stop implements The7_Less_Gradient_Color_Stop_Int
 	 *
 	 * @param string $str
 	 *
-	 * @return The7\Vendor\Color\Color
+	 * @return Color
 	 */
 	protected function create_color( $str ) {
-		return new The7\Vendor\Color\Color( $str );
+		return new Color( $str );
 	}
 
 }

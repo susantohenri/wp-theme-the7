@@ -28,7 +28,9 @@ if ( ! class_exists( 'The7_Compatibility_EDD', false ) ) {
 		}
 
 		public static function enqueue_scripts( ) {
-			wp_enqueue_script( 'dt-woocommerce' );
+			if ( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ) {
+				wp_enqueue_script( 'dt-woocommerce' );
+			}
 		}
 
 		public static function register_dynamic_stylesheet( $stylesheets ) {

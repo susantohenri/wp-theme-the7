@@ -168,7 +168,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 
 			if ( 'disabled' == $loading_mode ) {
 				$data_pagination_mode = 'none';
-			} elseif ( in_array( $loading_mode, [ 'js_more', 'js_lazy_loading' ] ) ) {
+			} else if ( in_array( $loading_mode, array( 'js_more', 'js_lazy_loading' ) ) ) {
 				$data_pagination_mode = 'load-more';
 			} else {
 				$data_pagination_mode = 'pages';
@@ -336,15 +336,15 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 
 			if ( 'disabled' == $loading_mode ) {
 				// Do not output pagination.
-			} elseif ( in_array( $loading_mode, [ 'js_more', 'js_lazy_loading' ] ) ) {
+			} else if ( in_array( $loading_mode, array( 'js_more', 'js_lazy_loading' ) ) ) {
 				// JS load more.
 				echo dt_get_next_page_button( 2, 'paginator paginator-more-button', $cur_page = 1 );
-			} elseif ( 'js_pagination' == $loading_mode ) {
+			} else if ( 'js_pagination' == $loading_mode ) {
 				// JS pagination.
 				echo '<div class="paginator" role="navigation"></div>';
 			} else {
 				// Pagination.
-				dt_paginator( $query, [ 'class' => 'paginator' ] );
+				dt_paginator( $query, array( 'class' => 'paginator' ) );
 			}
 
 			echo '</div>';
@@ -439,7 +439,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 			if ( $this->get_flag( 'jsp_show_all_pages' ) ) {
 				$class[] = 'show-all-pages';
 			}
-
+			
 			switch ( $this->get_att('filter_position') ) {
 				case 'left':
 					$class[] = 'filter-align-left';
@@ -459,7 +459,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 
 			if ( $this->atts['image_scale_animation_on_hover']  === 'quick_scale' ) {
 				$class[] = 'quick-scale-img';
-			} elseif ( $this->atts['image_scale_animation_on_hover'] === 'slow_scale' ) {
+			}else if($this->atts['image_scale_animation_on_hover']  === 'slow_scale') {
 				$class[] = 'scale-img';
 			}
 
@@ -571,7 +571,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 				foreach ( $columns as $column => $data_att ) {
 					$val = ( isset( $bwb_columns[ $column ] ) ? absint( $bwb_columns[ $column ] ) : '' );
 					$data_atts[] = 'data-' . $data_att . '-columns-num="' . esc_attr( $val ) . '"';
-
+			
 				}
 
 			}
@@ -749,9 +749,9 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 				foreach ( $columns as $column => $data_att ) {
 					$val = ( isset( $bwb_columns[ $column ] ) ? absint( $bwb_columns[ $column ] ) : '' );
 					$data_atts[] = 'data-' . $data_att . '-columns-num="' . esc_attr( $val ) . '"';
-
+					
 					$less_vars->add_keyword( $data_att. '-columns-num', esc_attr( $val ) );
-
+			
 				}
 			};
 			$less_vars->add_pixel_number( 'grid-posts-gap', $this->get_att( 'gap_between_posts' ) );
@@ -770,7 +770,7 @@ if ( ! class_exists( 'DT_Shortcode_BlogMasonry', false ) ):
 				'post-content-padding-bottom',
 				'post-content-padding-left',
 			), $this->get_att( 'post_content_paddings' ) );
-
+			
 			switch ( $this->get_att( 'image_hover_bg_color' ) ) {
 				case 'gradient_rollover_bg':
 					$first_color = 'rgba(0,0,0,0.6)';

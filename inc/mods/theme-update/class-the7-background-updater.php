@@ -2,17 +2,25 @@
 /**
  * Background Updater
  *
- * Uses https://github.com/A5hleyRich/wp-background-processing to handle DB updates in the background.
- *
- * @package The7
+ * Uses https://github.com/A5hleyRich/wp-background-processing to handle DB
+ * updates in the background.
  */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-defined( 'ABSPATH' ) || exit;
+if ( ! class_exists( 'WP_Async_Request', false ) ) {
+	include_once( dirname( __FILE__ ) . '/libraries/wp-async-request.php' );
+}
+
+if ( ! class_exists( 'WP_Background_Process', false ) ) {
+	include_once( dirname( __FILE__ ) . '/libraries/wp-background-process.php' );
+}
 
 /**
  * The7_Background_Updater Class.
  */
-class The7_Background_Updater extends \The7\Vendor\WP_Background_Processing\WP_Background_Process {
+class The7_Background_Updater extends WP_Background_Process {
 
 	/**
 	 * @var string
@@ -96,8 +104,7 @@ class The7_Background_Updater extends \The7\Vendor\WP_Background_Processing\WP_B
 	}
 
 	/**
-	 * Return true if updater is running.
-	 *
+	 * Is the updater running?
 	 * @return boolean
 	 */
 	public function is_updating() {
@@ -126,24 +133,19 @@ class The7_Background_Updater extends \The7\Vendor\WP_Background_Processing\WP_B
 
 		$key = $this->identifier . '_batch_%';
 
-		$query = $wpdb->get_results(
-			$wpdb->prepare(
-				"
-				SELECT *
-				FROM {$table}
-				WHERE {$column} LIKE %s
-				ORDER BY {$key_column} ASC
-				",
-				$key
-			)
-		);
+		$query = $wpdb->get_results( $wpdb->prepare( "
+		SELECT *
+		FROM {$table}
+		WHERE {$column} LIKE %s
+		ORDER BY {$key_column} ASC
+		", $key ) );
 
 		$batches = array();
-		foreach ( $query as $row ) {
-			$batch       = new \stdClass();
+		foreach($query as $row) {
+			$batch       = new stdClass();
 			$batch->key  = $row->$column;
 			$batch->data = maybe_unserialize( $row->$value_column );
-			$batches[]   = $batch;
+			$batches[] = $batch;
 		}
 
 		return $batches;
@@ -157,8 +159,7 @@ class The7_Background_Updater extends \The7\Vendor\WP_Background_Processing\WP_B
 	 * in the next pass through. Or, return false to remove the
 	 * item from the queue.
 	 *
-	 * @param string $callback Update callback function.
-	 *
+	 * @param string $callback Update callback function
 	 * @return mixed
 	 */
 	protected function task( $callback ) {
@@ -175,9 +176,7 @@ class The7_Background_Updater extends \The7\Vendor\WP_Background_Processing\WP_B
 		}
 
 		$task = false;
-		if ( isset( $callback['callback'], $callback['args'] ) && is_callable( $callback['callback'] ) ) {
-			$task = call_user_func_array( $callback['callback'], (array) $callback['args'] );
-		} elseif ( is_callable( $callback ) ) {
+		if ( is_callable( $callback ) ) {
 			$task = $callback();
 		}
 

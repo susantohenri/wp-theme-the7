@@ -241,6 +241,7 @@ if ( ! function_exists( 'presscore_options_get_safe_fonts' ) ) :
 	 */
 	function presscore_options_get_safe_fonts() {
 		  $fonts = array(
+			'Andale Mono'                   => 'Andale Mono',
 			'Arial'                         => 'Arial',
 			'Arial Black'                   => 'Arial Black',
 			'Comic Sans MS'                 => 'Comic Sans MS',
@@ -286,7 +287,7 @@ if ( ! function_exists( 'presscore_options_get_all_fonts' ) ) :
 
 	/**
 	 * Returns merged safe and web fonts.
-	 *
+	 * 
 	 * @return array
 	 */
 	function presscore_options_get_all_fonts() {

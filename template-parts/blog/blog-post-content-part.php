@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	</h3>
 
 	<?php
-	if ( presscore_config()->get( 'show_excerpts' ) ) {
+	if ( presscore_get_config()->get( 'show_excerpts' ) ) {
 		presscore_the_excerpt();
 	}
 	?>

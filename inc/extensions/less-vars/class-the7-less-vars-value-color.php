@@ -62,7 +62,7 @@ class The7_Less_Vars_Value_Color extends The7_Less_Vars_Builder {
 
 		$opacity = $this->opacity;
 		if ( $opacity > 0 && $opacity < 1 ) {
-			$decimals = (intval($opacity * 100) % 10) ? 2 : 1;
+			$decimals = (($opacity * 100) % 10) ? 2 : 1;
 			$opacity = number_format( (float) $opacity, $decimals, '.', '' );
 		}
 
@@ -81,7 +81,7 @@ class The7_Less_Vars_Value_Color extends The7_Less_Vars_Builder {
 
 	protected function create_color( $color ) {
 		try {
-			return new The7\Vendor\Color\Color( $color );
+			return new Color( $color );
 		} catch ( Exception $e ) {
 			return null;
 		}

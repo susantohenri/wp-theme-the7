@@ -31,23 +31,18 @@ class DT_Shortcode_BlogPostsSmall extends DT_Shortcode {
 	}
 
 	public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts(
-			[
-				'featured_images' => 'true',
-				'round_images'    => '',
-				'images_width'    => '60',
-				'images_height'   => '60',
-				'category'        => '',
-				'order'           => 'desc',
-				'orderby'         => 'date',
-				'number'          => '6',
-				'columns'         => '1',
-				'show_excerpts'   => '',
-			],
-			$atts,
-			$this->shortcode_name
-		);
-		extract( $shortcode_atts );
+		extract( shortcode_atts( array(
+			'featured_images' => 'true',
+			'round_images' => '',
+			'images_width' => '60',
+			'images_height' => '60',
+			'category' => '',
+			'order' => 'desc',
+			'orderby' => 'date',
+			'number' => '6',
+			'columns' => '1',
+			'show_excerpts' => '',
+		), $atts, $this->shortcode_name ) );
 
 		// sanitize attributes
 		$featured_images = apply_filters('dt_sanitize_flag', $featured_images );

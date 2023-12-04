@@ -48,24 +48,6 @@
   'breadcrumbs_border_width' => '0px',
   'breadcrumbs_margin' => '5px 0px 0px 0px',
   'breadcrumbs_padding' => '0px 0px 0px 0px',
-  'button-shadow' => 
-  array (
-    'color' => 'rgba(0, 0, 0, 0)',
-    'horizontal' => '0',
-    'vertical' => '0',
-    'blur' => '10',
-    'spread' => '0',
-    'position' => 'outline',
-  ),
-  'button-shadow-hover' => 
-  array (
-    'color' => 'rgba(0, 0, 0, 0)',
-    'horizontal' => '0',
-    'vertical' => '0',
-    'blur' => '10',
-    'spread' => '0',
-    'position' => 'outline',
-  ),
   'buttons-border-color' => '#ffffff',
   'buttons-border-color_mode' => 'accent',
   'buttons-color' => '#81d742',
@@ -76,7 +58,6 @@
   'buttons-hover_color' => '#81d742',
   'buttons-hover_color_gradient' => '135deg|#23aadd 30%|#37ce9d 100%',
   'buttons-hover_color_mode' => 'accent',
-  'buttons-l-custom-icon-size' => 1,
   'buttons-l-icon-size' => 18,
   'buttons-l-typography' => 
   array (
@@ -86,12 +67,6 @@
   'buttons-l_border_radius' => '3px',
   'buttons-l_border_width' => '0px',
   'buttons-l_padding' => '16px 24px 16px 24px',
-  'buttons-lg-custom-icon-size' => 1,
-  'buttons-lg-typography' => 
-  array (
-    'font_family' => 'Roboto:700',
-  ),
-  'buttons-m-custom-icon-size' => 1,
   'buttons-m-icon-size' => 14,
   'buttons-m-typography' => 
   array (
@@ -101,7 +76,6 @@
   'buttons-m_border_radius' => '3px',
   'buttons-m_border_width' => '0px',
   'buttons-m_padding' => '12px 18px 12px 18px',
-  'buttons-s-custom-icon-size' => 1,
   'buttons-s-icon-size' => 12,
   'buttons-s-typography' => 
   array (
@@ -111,15 +85,11 @@
   'buttons-s_border_radius' => '3px',
   'buttons-s_border_width' => '0px',
   'buttons-s_padding' => '8px 14px 7px 14px',
+  'buttons-style' => 'flat',
   'buttons-text_color' => '#ffffff',
   'buttons-text_color_mode' => 'color',
   'buttons-text_hover_color' => '#ededed',
   'buttons-text_hover_color_mode' => 'color',
-  'buttons-xl-custom-icon-size' => 1,
-  'buttons-xl-typography' => 
-  array (
-    'font_family' => 'Roboto:700',
-  ),
   'contact_form_message' => '1',
   'content-headers_color' => '#333333',
   'content-links_color' => '#1ebbf0',
@@ -136,8 +106,8 @@
   ),
   'fonts-big_size' => 
   array (
-    'font_size' => '16px',
-    'line_height' => '1.6em',
+    'font_size' => '15px',
+    'line_height' => '27px',
   ),
   'fonts-font_family' => 'Roboto',
   'fonts-h1-typography' => 
@@ -216,13 +186,13 @@
   ),
   'fonts-normal_size' => 
   array (
-    'font_size' => '15px',
-    'line_height' => '1.5em',
+    'font_size' => '14px',
+    'line_height' => '25px',
   ),
   'fonts-small_size' => 
   array (
     'font_size' => '13px',
-    'line_height' => '1.4em',
+    'line_height' => '23px',
   ),
   'footer-accent_text_color' => '',
   'footer-bg_color' => 'rgba(26,28,32,1)',
@@ -560,7 +530,7 @@
   'header-elements-login-logout_url' => '',
   'header-elements-login-on-desktops' => 'show',
   'header-elements-login-second-header-switch' => 'in_menu',
-  'header-elements-login-url' => 'https://themeforest.net',
+  'header-elements-login-url' => 'http://themeforest.net',
   'header-elements-login-use_logout_url' => false,
   'header-elements-logout-caption' => 'Logout',
   'header-elements-menu-first-header-switch' => 'near_logo',
@@ -653,19 +623,6 @@
   'header-elements-woocommerce_cart-counter-style' => 'round',
   'header-elements-woocommerce_cart-custom-icon' => 'the7-mw-icon-cart-bold',
   'header-elements-woocommerce_cart-first-header-switch' => 'near_logo',
-  'header-elements-woocommerce_cart-font-content' => 
-  array (
-    'font_family' => 'Roboto',
-    'responsive_font_size' => 
-    array (
-      'desktop' => '15px',
-    ),
-    'responsive_line_height' => 
-    array (
-      'desktop' => '1.4em',
-    ),
-    'text_transform' => 'none',
-  ),
   'header-elements-woocommerce_cart-icon' => 'custom',
   'header-elements-woocommerce_cart-on-desktops' => 'show',
   'header-elements-woocommerce_cart-second-header-switch' => 'near_logo',
@@ -1354,7 +1311,6 @@
   ),
   'top_bar_mobile_paddings' => '5px 20px 5px 20px',
   'wc_view_mode' => 'view_mode',
-  'widget_gap' => '20px',
   'woocommerce-product_zoom' => '1',
   'woocommerce_cart_padding' => '60px 0px',
   'woocommerce_cart_switch' => '990px',

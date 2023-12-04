@@ -3,7 +3,7 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor\Page_Settings;
+namespace The7\Adapters\Elementor\Page_Settings;
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\PageTemplates\Module as PageTemplatesModule;

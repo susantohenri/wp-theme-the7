@@ -567,7 +567,7 @@ if ( ! class_exists( 'Presscore_Modules_OptionsWizardModule', false ) ) :
 		 */
 		protected static function sanitize_options( $used_options, $defaults = array() ) {
 			// Use all options for sanitizing.
-			$options = self::get_wizard_options_definition();
+			$options =& self::get_wizard_options_definition();
 			$clean = array();
 			foreach ( $options as $option ) {
 				if ( ! isset( $option['id'], $option['type'] ) ) {

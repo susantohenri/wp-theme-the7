@@ -120,7 +120,7 @@ if ( ! class_exists( 'DT_Shortcode_Products_Carousel', false ) ) :
 		 * Do shortcode here.
 		 */
 		protected function do_shortcode( $atts, $content = '' ) {
-			$query = $this->get_query();
+			$query =  new WP_Query( $this->get_query_args() );
 
 			if ( !$this->display_shortcode_content( $query ) ){
 				return;
@@ -369,10 +369,10 @@ if ( ! class_exists( 'DT_Shortcode_Products_Carousel', false ) ) :
 
 		protected function less_vars( $less_vars ){
 			$less_vars->add_keyword( 'unique-shortcode-class-name', 'products-carousel-shortcode.' . $this->get_unique_class(), '~"%s"' );
-			$less_vars->add_rgba_color( 'post-title-color', $this->get_att( 'custom_title_color', '') );
-			$less_vars->add_rgba_color( 'post-content-color', $this->get_att( 'custom_content_color', '' ) );
+			$less_vars->add_keyword( 'post-title-color', $this->get_att( 'custom_title_color', '~""') );
+			$less_vars->add_keyword( 'post-content-color', $this->get_att( 'custom_content_color', '~""' ) );
 
-			$less_vars->add_rgba_color( 'price-color', $this->get_att( 'custom_price_color', '' ) );
+			$less_vars->add_keyword( 'price-color', $this->get_att( 'custom_price_color', '~""' ) );
 
 			$less_vars->add_pixel_number( 'icon-size', $this->get_att( 'arrow_icon_size' ) );
 			$less_vars->add_paddings( array(
@@ -391,12 +391,13 @@ if ( ! class_exists( 'DT_Shortcode_Products_Carousel', false ) ) :
 			$less_vars->add_pixel_number( 'arrow-height', $this->get_att( 'arrow_bg_height' ) );
 			$less_vars->add_pixel_number( 'arrow-border-radius', $this->get_att( 'arrow_border_radius' ) );
 			$less_vars->add_pixel_number( 'arrow-border-width', $this->get_att( 'arrow_border_width' ) );
-			$less_vars->add_rgba_color ( 'icon-color', $this->get_att( 'arrow_icon_color', '' ) );
-			$less_vars->add_rgba_color ( 'arrow-border-color', $this->get_att( 'arrow_border_color', '' ) );
-			$less_vars->add_rgba_color ( 'arrow-bg', $this->get_att( 'arrow_bg_color', '' ) );
-			$less_vars->add_rgba_color ( 'icon-color-hover', $this->get_att( 'arrow_icon_color_hover', '' ) );
-			$less_vars->add_rgba_color ( 'arrow-border-color-hover', $this->get_att( 'arrow_border_color_hover', '' ) );
-			$less_vars->add_rgba_color ( 'arrow-bg-hover', $this->get_att( 'arrow_bg_color_hover', '' ) );
+
+			$less_vars->add_keyword( 'icon-color', $this->get_att( 'arrow_icon_color', '~""' ) );
+			$less_vars->add_keyword( 'arrow-border-color', $this->get_att( 'arrow_border_color', '~""' ) );
+			$less_vars->add_keyword( 'arrow-bg', $this->get_att( 'arrow_bg_color', '~""' ) );
+			$less_vars->add_keyword( 'icon-color-hover', $this->get_att( 'arrow_icon_color_hover', '~""' ) );
+			$less_vars->add_keyword( 'arrow-border-color-hover', $this->get_att( 'arrow_border_color_hover', '~""' ) );
+			$less_vars->add_keyword( 'arrow-bg-hover', $this->get_att( 'arrow_bg_color_hover', '~""' ) );
 
 			$less_vars->add_keyword( 'arrow-right-v-position', $this->get_att( 'r_arrow_v_position' ) );
 			$less_vars->add_keyword( 'arrow-right-h-position', $this->get_att( 'r_arrow_h_position' ) );
@@ -413,8 +414,8 @@ if ( ! class_exists( 'DT_Shortcode_Products_Carousel', false ) ) :
 			$less_vars->add_pixel_number( 'arrow-right-h-position-mobile', $this->get_att( 'r_arrows_mobile_h_position' ) );
 
 			$less_vars->add_pixel_number( 'bullet-size', $this->get_att( 'bullet_size' ) );
-			$less_vars->add_rgba_color( 'bullet-color', $this->get_att( 'bullet_color', '' ) );
-			$less_vars->add_rgba_color( 'bullet-color-hover', $this->get_att( 'bullet_color_hover', '' ) );
+			$less_vars->add_keyword( 'bullet-color', $this->get_att( 'bullet_color', '~""' ) );
+			$less_vars->add_keyword( 'bullet-color-hover', $this->get_att( 'bullet_color_hover', '~""' ) );
 			$less_vars->add_pixel_number( 'bullet-gap', $this->get_att( 'bullet_gap' ) );
 			$less_vars->add_keyword( 'bullets-v-position', $this->get_att( 'bullets_v_position' ) );
 			$less_vars->add_keyword( 'bullets-h-position', $this->get_att( 'bullets_h_position' ) );
@@ -538,15 +539,6 @@ if ( ! class_exists( 'DT_Shortcode_Products_Carousel', false ) ) :
 			$query_args['tax_query'] = the7_product_visibility_tax_query( $query_args['tax_query'] );
 
 			return $query_args;
-		}
-
-		/**
-		 * Return products query.
-		 *
-		 * @return WP_Query Products query.
-		 */
-		protected function get_query() {
-			return new WP_Query( $this->get_query_args() );
 		}
 	}
 	

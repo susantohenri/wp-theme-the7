@@ -17,10 +17,10 @@
 }
 .nav-v-position(@position, @offset) when (@position = bottom) {
     top: auto;
-    bottom: calc(0% ~'+' @offset ~'+' var(--thumbs-position));
+    bottom: calc(0% ~'+' @offset);
 }
 .nav-centered(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = center)  {
-    transform: translate3d(calc(-50% ~'+' @offset-h), calc(-50% ~'+' @offset-v  ~'-' var(--thumbs-position)/2), 0);
+    transform: translate3d(calc(-50% ~'+' @offset-h), calc(-50% ~'+' @offset-v), 0);
 }
 .nav-h-position(@position,@offset) when (@position = left) {
     left: @offset;
@@ -35,13 +35,13 @@
     }
 }
 .nav-centered-right(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = right)  {
-    transform: translate3d(0, calc(-50% ~'+' @offset-v  ~'-' var(--thumbs-position)/2), 0);
+    transform: translate3d(0, calc(-50% ~'+' @offset-v), 0);
     right: @offset;
     left: auto;
     // transform: translateX(0);
 }
 .nav-centered-left(@position-v, @position-h, @offset-v, @offset-h) when (@position-v = center)and (@position-h = left)  {
-    transform: translate3d(0, calc(-50% ~'+' @offset-v  ~'-' var(--thumbs-position)/2), 0);
+    transform: translate3d(0, calc(-50% ~'+' @offset-v), 0);
     left: @offset;
     // transform: translateX(0);
 }

@@ -5,14 +5,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * The7_Demo_Url_Import_Actions_Builder class.
- */
 class The7_Demo_Url_Import_Actions_Builder extends The7_Demo_Actions_Builder_Base {
 
-	/**
-	 * @return void
-	 */
 	protected function init() {
 		if ( empty( $this->external_data['the7_post_url'] ) ) {
 			$this->add_nothing_to_import_error();
@@ -42,16 +36,13 @@ class The7_Demo_Url_Import_Actions_Builder extends The7_Demo_Actions_Builder_Bas
 
 		$this->setup_starting_text(
 			sprintf(
-				// translators: %s: resource url.
+				// translators: %s: resource url
 				esc_html( _x( 'Importing %s ...', 'admin', 'the7mk2' ) ),
 				'<code>' . esc_html( $provided_url ) . '</code>'
 			)
 		);
 	}
 
-	/**
-	 * @return void
-	 */
 	protected function setup_data() {
 		$demo = $this->demo();
 
@@ -59,11 +50,8 @@ class The7_Demo_Url_Import_Actions_Builder extends The7_Demo_Actions_Builder_Bas
 		if ( ! $demo->plugins()->is_plugins_active() ) {
 			$actions[] = 'install_plugins';
 		}
-		$actions[] = 'download_package';
-		$actions[] = 'add_the7_dashboard_settings';
-		if ( in_array( 'dt-the7-core', $demo->required_plugins, true ) ) {
-			$actions[] = 'import_post_types_builder_data';
-		}
+		$actions[]           = 'download_package';
+		$actions[]           = 'add_the7_dashboard_settings';
 		$actions[]           = 'clear_importer_session';
 		$actions[]           = 'import_by_url';
 		$users               = [];
@@ -87,11 +75,11 @@ class The7_Demo_Url_Import_Actions_Builder extends The7_Demo_Actions_Builder_Bas
 	}
 
 	/**
-	 * @param string $url Url.
+	 * @param string $url
 	 */
 	protected function add_invalid_url_error( $url ) {
 		$text = sprintf(
-			// translators: %s: resource url.
+			// translators: %s: resource url
 			'<p>' . esc_html_x( 'Cannot find demo that match provided url %s.', 'admin', 'the7mk2' ) . '</p>',
 			'<code>' . esc_html( $url ) . '</code>'
 		);
@@ -105,7 +93,7 @@ class The7_Demo_Url_Import_Actions_Builder extends The7_Demo_Actions_Builder_Bas
 	}
 
 	/**
-	 * @param string $url Url.
+	 * @param string $url
 	 *
 	 * @return bool|string
 	 */

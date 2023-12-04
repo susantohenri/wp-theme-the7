@@ -30,12 +30,11 @@ class DT_Shortcode_Tooltip extends DT_Shortcode {
     }
 
     public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'title' => '',
-		], $atts, $this->shortcode_name );
-		extract( $shortcode_atts );
+        extract( shortcode_atts( array(
+            'title'         => '',
+        ), $atts, $this->shortcode_name ) );
 
-		$title = wp_kses( $title, array() );
+        $title = wp_kses( $title, array() );
 
         if ( !$title ) return $content;
 
@@ -44,7 +43,7 @@ class DT_Shortcode_Tooltip extends DT_Shortcode {
             $content = strip_shortcodes($content)
         );
 
-        return $output;
+        return $output; 
     }
 
 }

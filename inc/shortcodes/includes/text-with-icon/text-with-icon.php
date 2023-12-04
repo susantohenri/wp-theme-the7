@@ -111,7 +111,7 @@ if ( ! class_exists( 'DT_Shortcode_Icon_Text', false ) ) {
 				'dt_text_icon_paddings' => '0px 0px 0px 0px',
 
 				'icon_animation'		 => 'none',
-
+				
 				'css_dt_carousel'         => '',
 				'el_class' => '',
 			);
@@ -193,7 +193,7 @@ if ( ! class_exists( 'DT_Shortcode_Icon_Text', false ) ) {
 						if ( preg_match( '/^fa[a-z]*\s/', $this->atts['icon'] ) ) {
 							$icon_html = '<i class="' . esc_attr( $this->atts['icon'] ) . '"></i>';
 						} else {
-							$icon_html = wp_kses( rawurldecode( the7_base_64_decode( $this->atts['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
+							$icon_html = wp_kses( rawurldecode( base64_decode( $this->atts['icon'] ) ), array( 'i' => array( 'class' => array() ) ) );
 						}
 					} elseif ( ! empty( $this->atts[ "btn_icon_{$icon_type}" ] ) ) {
 						$icon_html = '<i class="' . esc_attr( $this->atts[ "btn_icon_{$icon_type}" ] ) . '"></i>';
@@ -249,7 +249,7 @@ if ( ! class_exists( 'DT_Shortcode_Icon_Text', false ) ) {
 			// Unique class.
 			$class[] = $this->get_unique_class();
 
-
+			
 			$layout_classes = array(
 				'layout_1' => 'layout-1',
 				'layout_2' => 'layout-2',
@@ -257,13 +257,13 @@ if ( ! class_exists( 'DT_Shortcode_Icon_Text', false ) ) {
 				'layout_4' => 'layout-4',
 				'layout_5' => 'layout-5',
 			);
-
+			
 
 			$layout = $this->get_att( 'layout' );
 			if ( array_key_exists( $layout, $layout_classes ) ) {
 				$class[] = $layout_classes[ $layout ];
 			}
-
+			
 			if ( function_exists( 'vc_shortcode_custom_css_class' ) ) {
 				$class[] = vc_shortcode_custom_css_class( $this->atts['css_dt_carousel'], ' ' );
 			};
@@ -577,7 +577,7 @@ if ( ! class_exists( 'DT_Shortcode_Icon_Text', false ) ) {
 
 				if ( $this->get_flag( 'link_hover' ) ) {
 					$less_vars->add_keyword( 'link-color-hover', $this->get_att( 'link_text_hover_color' ) );
-
+					
 
 					// Take care of border width on hover.
 					$less_vars->add_pixel_number( 'btn-border-width-hover', $border_width );

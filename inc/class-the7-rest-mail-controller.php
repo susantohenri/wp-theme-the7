@@ -145,7 +145,7 @@ class The7_REST_Mail_Controller {
 				$fields
 			);
 
-			$send = the7_mail(
+			$send = wp_mail(
 				$em,
 				$subject,
 				$msg_mail,

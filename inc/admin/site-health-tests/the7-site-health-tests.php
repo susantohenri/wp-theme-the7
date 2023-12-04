@@ -19,12 +19,10 @@ defined( 'ABSPATH' ) || exit;
  * @return array
  */
 function the7_add_site_health_tests( $tests ) {
-	$async = &$tests['async'];
-
-	$async['the7_server'] = [
-		'label' => esc_html__( 'The7 remote content server availability', 'the7mk2' ),
+	$tests['async']['the7_server'] = array(
+		'label' => __( 'The7 remote content server availability', 'the7mk2' ),
 		'test'  => 'the7_site_health_server_availability_test',
-	];
+	);
 
 	return $tests;
 }
@@ -37,7 +35,7 @@ add_filter( 'site_status_tests', 'the7_add_site_health_tests' );
  * @since 7.6.1
  */
 function the7_site_health_server_availability_test() {
-	check_ajax_referer( 'health-check-site-status' );
+	wp_verify_nonce( 'health-check-site-status' );
 
 	if ( ! current_user_can( 'install_plugins' ) ) {
 		wp_send_json_error();

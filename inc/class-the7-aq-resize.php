@@ -1,6 +1,23 @@
 <?php
 /**
- * The7 image resize utility.
+ * Title         : Aqua Resizer
+ * Description   : Resizes WordPress images on the fly
+ * Version       : 1.2.0
+ * Author        : Syamil MJ
+ * Author URI    : http://aquagraphite.com
+ * License       : WTFPL - http://sam.zoy.org/wtfpl/
+ * Documentation : https://github.com/sy4mil/Aqua-Resizer/
+ *
+ * @param string  $url    - (required) must be uploaded using wp media uploader
+ * @param int     $width  - (required)
+ * @param int     $height - (optional)
+ * @param bool    $crop   - (optional) default to soft crop
+ * @param bool    $single - (optional) returns an array if false
+ * @uses  wp_upload_dir()
+ * @uses  image_resize_dimensions()
+ * @uses  wp_get_image_editor()
+ *
+ * @return str|array
  *
  * @package The7
  */
@@ -37,7 +54,7 @@ class The7_Aq_Resize
 	 */
 	static public function getInstance() {
 		if(self::$instance == null) {
-			self::$instance = new self();
+			self::$instance = new self;
 		}
 
 		return self::$instance;
@@ -71,7 +88,7 @@ class The7_Aq_Resize
 		if(!strncmp($url,$https_prefix,strlen($https_prefix))){ //if url begins with https:// make $upload_url begin with https:// as well
 			$upload_url = str_replace($http_prefix,$https_prefix,$upload_url);
 		}
-		elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with https:// make $upload_url begin with https:// as well
+		elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with http:// make $upload_url begin with http:// as well
 			$upload_url = str_replace($https_prefix,$http_prefix,$upload_url);
 		}
 

@@ -27,14 +27,13 @@ if ( ! class_exists( 'DT_Shortcode_List', false ) ) {
 		}
 
 		public function shortcode_list( $atts, $content = null ) {
-			$shortcode_atts = shortcode_atts( [
-				'style'           => '1',
-				'dividers'        => '1',
-				'bullet_position' => 'middle',
-				'start'           => '1'
-			], $atts, 'dt_list' );
-			extract( $shortcode_atts );
-
+			extract( shortcode_atts( array(
+				'style'				=> '1',
+				'dividers'			=> '1',
+				'bullet_position'	=> 'middle',
+				'start'				=> '1'
+			), $atts, 'dt_list' ) );
+			
 			$style = in_array( $style, array('1', '2', '3') ) ? $style : '1';
 			$bullet_position = in_array( $bullet_position, array('top', 'middle') ) ? $bullet_position : 'middle';
 			$dividers = apply_filters('dt_sanitize_flag', $dividers);
@@ -81,14 +80,13 @@ if ( ! class_exists( 'DT_Shortcode_List', false ) ) {
 			// restore atts
 			self::$atts = $atts_backup;
 
-			return $output;
+			return $output; 
 		}
 
 		public function shortcode_item( $atts, $content = null ) {
-			$shortcode_atts = shortcode_atts( [
+			extract( shortcode_atts( array(
 				'image' => '',
-			], $atts, 'dt_list_item' );
-			extract( $shortcode_atts );
+			), $atts, 'dt_list_item' ) );
 
 			$image = esc_url( $image );
 

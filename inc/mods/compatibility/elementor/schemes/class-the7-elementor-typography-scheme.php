@@ -1,6 +1,6 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Schemes;
+namespace The7\Adapters\Elementor\Schemes;
 
 use Elementor\Core\Schemes\Typography;
 use Elementor\Settings;

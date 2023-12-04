@@ -17,22 +17,11 @@ if ( ! function_exists( 'presscore_config_base_init' ) ) :
 			return;
 		}
 
-		if ( apply_filters( 'the7_bypass_config_init', false ) ) {
-			$init_done = true;
-
-			return;
-		}
-
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 		$post_id = $config->get('post_id');
 		if ( ! $post_id ) {
 
 			$new_post_id = apply_filters( 'presscore_config_post_id_filter', $new_post_id );
-
-			if ( ! $new_post_id && ( is_single() || is_page() ) ) {
-				$new_post_id = get_the_ID();
-			}
-
 			if ( $new_post_id ) {
 				$post_id = $new_post_id;
 				$config->set( 'post_id', $post_id );
@@ -43,9 +32,6 @@ if ( ! function_exists( 'presscore_config_base_init' ) ) :
 
 		if ( ! $post_id ) {
 			presscore_config_populate_archive_vars();
-
-			do_action( 'presscore_config_base_init', false, null );
-
 			$init_done = true;
 			return;
 		}
@@ -107,7 +93,7 @@ if ( ! function_exists( 'presscore_config_populate_archive_vars' ) ) :
 		presscore_config_populate_header_options();
 		presscore_config_logo_options();
 
-		$config = presscore_config();
+		$config = presscore_get_config();
 
 		$config->set( 'logo.header.regular', of_get_option( 'header-logo_regular', array('', 0) ) );
 		$config->set( 'logo.header.hd', of_get_option( 'header-logo_hd', array('', 0) ) );
@@ -163,7 +149,7 @@ endif;
 if ( ! function_exists( 'presscore_congif_populate_single_post_vars' ) ) :
 
 	function presscore_congif_populate_single_post_vars() {
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 		$post_id = $config->get( 'post_id' );
 
 		/////////////////////////////
@@ -228,7 +214,7 @@ if ( ! function_exists( 'presscore_congif_populate_blog_vars' ) ) :
 
 	function presscore_congif_populate_blog_vars() {
 
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 		$post_id = $config->get( 'post_id' );
 
 		$prefix = '_dt_blog_options_';
@@ -299,7 +285,7 @@ if ( ! function_exists( 'presscore_congif_populate_blog_vars' ) ) :
 			$config->set( 'post.preview.description.style', 'under_image' );
 
 			$config->set( 'layout', get_post_meta( $post_id, "{$prefix}layout", true ), 'masonry' );
-		} elseif ( 'list' == $current_layout_type ) {
+		} else if ( 'list' == $current_layout_type ) {
 			$config->set( 'post.preview.background.enabled', get_post_meta( $post_id, "{$prefix}bg_under_list_posts", true ), false );
 			$config->set( 'post.preview.media.width', get_post_meta( $post_id, "{$prefix}thumb_width", true ), 30 );
 
@@ -332,7 +318,7 @@ if ( ! function_exists( 'presscore_config_populate_header_options' ) ) :
 
 	function presscore_config_populate_header_options( $post_id = null) {
 
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 		if (! $post_id ) {
 			$post_id = $config->get( 'post_id' );
 		}
@@ -373,16 +359,13 @@ if ( ! function_exists( 'presscore_config_populate_header_options' ) ) :
 				break;
 		}
 		$show_header = true;
-		if (the7_elementor_is_active() && $post_id){
+		if (the7_elementor_is_active()){
 			$show_header = get_post_meta( $post_id, "{$prefix}show", true );
 		}
 		$config->set( 'header.show', $show_header, true );
 
 		if ($config->get( 'header.layout' ) === 'disabled'){
 			$config->set( 'header.show', false);
-		}
-		if (!$config->get( 'header.show')) {
-			$config->set( 'header.floating_navigation.enabled', false);
 		}
 
 		////////////////////////////
@@ -400,7 +383,7 @@ if ( ! function_exists( 'presscore_config_populate_header_options' ) ) :
 		$config->set( 'fancy_header.subtitle', get_post_meta( $post_id, "{$prefix}subtitle", true ), '' );
 		$config->set( 'fancy_header.title.color.mode', get_post_meta( $post_id, "{$prefix}title_color_mode", true ), 'color' );
 		$config->set( 'fancy_header.subtitle.color.mode', get_post_meta( $post_id, "{$prefix}subtitle_color_mode", true ), 'color' );
-
+		
 
 
 		// background
@@ -531,7 +514,7 @@ if ( ! function_exists( 'presscore_config_populate_sidebar_and_footer_options' )
 		$prefix = '_dt_sidebar_';
 
 		// Sidebar options
-		$config->set( 'sidebar_position', get_post_meta( $post_id, "{$prefix}position", true ), is_page() ? 'right' : 'disabled' );
+		$config->set( 'sidebar_position', get_post_meta( $post_id, "{$prefix}position", true ), 'disabled' );
 		$config->set( 'sidebar_hide_on_mobile', get_post_meta( $post_id, "{$prefix}hide_on_mobile", true ), false );
 		$config->set( 'sidebar_widgetarea_id', get_post_meta( $post_id, "{$prefix}widgetarea_id", true ) );
 
@@ -563,7 +546,7 @@ if ( ! function_exists( 'presscore_populate_post_config' ) ) :
 
 	function presscore_populate_post_config( $target_post_id = 0 ) {
 
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 		global $post;
 
 		if ( $target_post_id ) {
@@ -625,7 +608,7 @@ if ( ! function_exists( 'presscore_congif_populate_single_attachment_vars' ) ) :
 
 		}
 
-		$config = presscore_config();
+		$config = presscore_get_config();
 
 		$config->set( 'sidebar_position', 'disabled' );
 		$config->set( 'footer_show', false );
@@ -663,7 +646,7 @@ if ( ! function_exists( 'presscore_config_get_theme_option' ) ) :
 			'header.floating_navigation.show_after'               => array( 'option', 'header-floating_navigation-show_after', '150' ),
 			'header.floating_navigation.decoraion'                => array( 'option', 'header-floating_navigation-decoration' ),
 			'header.floating_top-bar.enabled'                => array( 'option', 'header-floating_navigation-top-bar', '0' ),
-
+			
 			'header.top_bar.background.mode'                      => array( 'option', 'top_bar-bg-style', 'content_line' ),
 			'header.top_bar.transparent.line'                      => array( 'option', 'top_bar-line-in-transparent-header' ),
 			'page_title.enabled'                                  => array( 'option', 'general-show_titles' ),
@@ -824,16 +807,16 @@ if ( ! function_exists( 'presscore_config_get_theme_option' ) ) :
 			'header.menu.submenu.hover.color.style'                    => array( 'option', 'header-menu-submenu-hover-font-color-style' ),
 			'header.menu.submenu.show_next_lvl_icons'                  => array( 'option', 'header-menu-submenu-show_next_lvl_icons', true ),
 			'header.menu.submenu.background.hover.style'               => array( 'option', 'header-menu-submenu-bg-hover' ),
-
+			
 			'header.layout.slide_out.animation'                        => array( 'option', "header-slide_out-overlay-animation" ),
-
+			
 			'header.layout.side.menu.submenu.position'                 => array( 'option', 'header-side-menu-submenu-position' ),
 			'header.decoration'                                        => array( 'option', 'header-decoration' ),
 			'header.mixed.decoration'                                  => array( 'option', 'header-mixed-decoration' ),
 			'header.mixed.menu_icon.size'                              => array( 'option', 'header-menu_icon-size' ),
 			'header.mixed.menu-close_icon.size'                              => array( 'option', 'header-menu-close_icon-size' ),
 			'header.mixed.menu-close_icon.position'                              => array( 'option', 'header-menu-close_icon-position' ),
-
+			
 			'header.mixed.view'                                        => array( 'option', "{$header}layout" ),
 			'header.mixed.navigation'                                  => array( 'option', 'header_navigation' ),
 			'header.mixed.view.menu_icon.floating_logo.enabled'        => array( 'option', "layout-menu_icon-show_floating_logo" ),
@@ -841,7 +824,7 @@ if ( ! function_exists( 'presscore_config_get_theme_option' ) ) :
 			'header.mixed.view.top_line.is_fullwidth'                  => array( 'option', "layout-top_line-is_fullwidth" ),
 			'header.mixed.view.top_line.is_sticky'                     => array( 'option', "layout-top_line-is_sticky" ),
 			'header.mixed.view.top_line.logo.position'                 => array( 'option', "layout-top_line-logo-position" ),
-
+			
 			'header.mixed.floating_top-bar.enabled'                => array( 'option', 'header-mixed-floating-top-bar', '0' ),
 		) );
 	}
@@ -851,7 +834,7 @@ endif;
 if ( ! function_exists( 'presscore_config_filter_values' ) ) :
 
 	function presscore_config_filter_values() {
-		$config = presscore_config();
+		$config = presscore_get_config();
 
 		if ( $config->get( 'justified_grid' ) ) {
 

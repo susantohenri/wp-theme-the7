@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 /**
  * Shortcode map class.
- * Inspired by https://www.wprecipes.com/wordpress-shortcode-to-easily-integrate-a-google-map-on-your-blog
+ * Inspired by http://www.wprecipes.com/wordpress-shortcode-to-easily-integrate-a-google-map-on-your-blog
  */
 class DT_Shortcode_Map extends DT_Shortcode {
 
@@ -26,15 +26,14 @@ class DT_Shortcode_Map extends DT_Shortcode {
 	}
 
 	public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'fullwidth'     => 'true',
-			'height'        => '500',
-			'src'           => '',
-			'margin_top'    => '0',
-			'margin_bottom' => '0'
-		], $atts, $this->shortcode_name );
-		extract($shortcode_atts );
-
+		extract(shortcode_atts(array(
+			'fullwidth'      => 'true',
+			'height'         => '500',
+			'src'            => '',
+			'margin_top'     => '0',
+			'margin_bottom'  => '0'
+		), $atts, $this->shortcode_name));
+		
 		$fullwidth = apply_filters( 'dt_sanitize_flag', $fullwidth );
 		$margin_top = intval( $margin_top );
 		$margin_bottom = intval( $margin_bottom );

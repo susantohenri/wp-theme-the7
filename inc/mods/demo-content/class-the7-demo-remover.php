@@ -16,7 +16,7 @@ class The7_Demo_Remover {
 
 	public function __construct( $content_tracker ) {
 		$this->content_tracker = $content_tracker;
-		$this->demo_type       = $content_tracker->get_demo_type();
+		$this->demo_type = $content_tracker->get_demo_type();
 	}
 
 	public function remove_content() {
@@ -29,14 +29,12 @@ class The7_Demo_Remover {
 		$this->revert_wp_settings();
 		$this->revert_menus();
 		$this->revert_widgets();
-		$this->revert_post_type_builder_data();
 	}
 
 	public function remove_theme_options() {
 		$this->revert_the7_options();
 		$this->remove_ultimate_google_fonts();
 		$this->revert_elementor_options();
-		$this->revert_site_identity();
 	}
 
 	public function remove_rev_sliders() {
@@ -63,10 +61,8 @@ class The7_Demo_Remover {
 	protected function remove_posts() {
 		global $wpdb;
 
-		$demo     = $this->demo_type;
+		$demo = $this->demo_type;
 		$post_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key='_the7_imported_item' AND meta_value='{$demo}'" );
-		// Force remove Elementor Kit if eny was imported accidetally.
-		$_GET['force_delete_kit'] = true;
 
 		foreach ( $post_ids as $post_id ) {
 			wp_delete_post( $post_id, true );
@@ -76,7 +72,7 @@ class The7_Demo_Remover {
 	protected function remove_terms() {
 		global $wpdb;
 
-		$demo     = $this->demo_type;
+		$demo = $this->demo_type;
 		$term_ids = $wpdb->get_col( "SELECT term_id FROM {$wpdb->termmeta} WHERE meta_key='_the7_imported_item' AND meta_value='{$demo}'" );
 
 		foreach ( $term_ids as $term_id ) {
@@ -191,43 +187,5 @@ class The7_Demo_Remover {
 		}
 
 		$this->content_tracker->remove( 'origin_elementor_options' );
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function revert_site_identity() {
-		$custom_logo = $this->content_tracker->get( 'custom_logo' );
-		if ( $custom_logo ) {
-			set_theme_mod( 'custom_logo', $custom_logo );
-		}
-
-		$site_icon = $this->content_tracker->get( 'site_icon' );
-		if ( $site_icon ) {
-			update_option( 'site_icon', $site_icon );
-		}
-
-		$this->content_tracker->remove( 'custom_logo' );
-		$this->content_tracker->remove( 'site_icon' );
-	}
-
-	/**
-	 * @return void
-	 */
-	protected function revert_post_type_builder_data() {
-		$data_to_restore = [
-			The7_Post_Types_Builder_Data_Importer::DATA_POST_TYPES_KEY => $this->content_tracker->get(
-				The7_Post_Types_Builder_Data_Importer::TRACKER_POST_TYPES_KEY
-			),
-			The7_Post_Types_Builder_Data_Importer::DATA_TAXONOMIES_KEY => $this->content_tracker->get(
-				The7_Post_Types_Builder_Data_Importer::TRACKER_TAXONOMIES_KEY
-			),
-		];
-
-		$importer = new The7_Post_Types_Builder_Data_Importer( new The7_Demo_Null_Tracker( $this->demo_type ) );
-		$importer->import( $data_to_restore );
-
-		$this->content_tracker->remove( The7_Post_Types_Builder_Data_Importer::TRACKER_POST_TYPES_KEY );
-		$this->content_tracker->remove( The7_Post_Types_Builder_Data_Importer::TRACKER_TAXONOMIES_KEY );
 	}
 }

@@ -31,8 +31,7 @@ if ( ! class_exists( 'DT_Shortcode_AnimatedText', false ) ) {
 				'animation' => 'none',
 			);
 
-			$shortcode_atts = shortcode_atts( $default_atts, $atts, $this->shortcode_name );
-			extract( $shortcode_atts );
+			extract( shortcode_atts( $default_atts, $atts, $this->shortcode_name ) );
 
 			$classes = array();
 

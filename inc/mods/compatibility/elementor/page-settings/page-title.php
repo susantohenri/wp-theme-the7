@@ -3,7 +3,7 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor\Page_Settings;
+namespace The7\Adapters\Elementor\Page_Settings;
 
 use Elementor\Controls_Manager;
 use Elementor\Modules\PageTemplates\Module as PageTemplatesModule;
@@ -237,11 +237,11 @@ return [
 				'opacity' => '_dt_header_disabled_transparent_top_bar_bg_opacity',
 			],
 			'on_save'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'update_alpha_color',
 			],
 			'on_read'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'get_alpha_color',
 			],
 			'on_change' => 'do_not_reload_page',
@@ -263,11 +263,11 @@ return [
 				'opacity' => '_dt_header_disabled_transparent_bg_opacity',
 			],
 			'on_save'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'update_alpha_color',
 			],
 			'on_read'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'get_alpha_color',
 			],
 			'on_change' => 'do_not_reload_page',
@@ -351,11 +351,11 @@ return [
 				'opacity' => '_dt_header_transparent_top_bar_bg_opacity',
 			],
 			'on_save'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'update_alpha_color',
 			],
 			'on_read'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'get_alpha_color',
 			],
 			'on_change' => 'do_not_reload_page',
@@ -376,11 +376,11 @@ return [
 				'opacity' => '_dt_header_transparent_bg_opacity',
 			],
 			'on_save'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'update_alpha_color',
 			],
 			'on_read'   => [
-				\The7\Mods\Compatibility\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
+				\The7\Adapters\Elementor\Meta_Adapters\The7_Elementor_Color_Meta_Adapter::class,
 				'get_alpha_color',
 			],
 			'on_change' => 'do_not_reload_page',

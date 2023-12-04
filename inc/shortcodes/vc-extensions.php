@@ -422,7 +422,7 @@ class The7_Inc_Shortcodes_VCParams {
 
 					$img_info = '<div class="of-radio-img-label"' . $img_title_style . '>' . esc_html( $title ) . '</div>';
 				}
-			} elseif ( $option !== $key ) {
+			} else if ( $option !== $key ) {
 				$img   = $dir . $option;
 				$title = $option;
 			} else {
@@ -763,62 +763,19 @@ if ( class_exists( 'WPBakeryVisualComposerAbstract' ) ) {
 	 */
 	function presscore_vc_register_custom_vc_pie_script() {
 		if ( version_compare( WPB_VC_VERSION, '6.0.2', '<' ) ) {
-			$dependencies = [
+			$dependencies = array(
 				'jquery',
 				'waypoints',
 				'progressCircle',
-			];
+			);
 		} else {
-			$dependencies = [
+			$dependencies = array(
 				'jquery',
 				'vc_waypoints',
 				'progressCircle',
-			];
+			);
 		}
 		wp_register_script( 'vc_dt_pie', PRESSCORE_THEME_URI . '/inc/shortcodes/vc_extend/jquery.vc_chart.js', $dependencies, THE7_VERSION );
-
-		$config = presscore_config();
-
-		switch ( $config->get( 'template.accent.color.mode' ) ) {
-			case 'gradient':
-				$gradient_obj            = the7_less_create_gradient_obj( of_get_option( 'general-accent_bg_color_gradient' ) );
-				list( $first_color, $_ ) = the7_less_prepare_gradient_var( $gradient_obj );
-				$accent_color            = [
-					'mode'  => 'gradient',
-					'color' => $first_color,
-				];
-				break;
-			case 'color':
-			default:
-				$accent_color = [
-					'mode'  => 'solid',
-					'color' => of_get_option( 'general-accent_bg_color' ),
-				];
-		}
-
-		wp_localize_script(
-			'vc_dt_pie',
-			'the7StripeColors',
-			[
-				'accentColor' => $accent_color,
-				'stripe1'     => [
-					'textColor'   => of_get_option( 'stripes-stripe_1_text_color', '#000000' ),
-					'headerColor' => of_get_option( 'stripes-stripe_1_headers_color', '#000000' ),
-				],
-				'stripe2'     => [
-					'textColor'   => of_get_option( 'stripes-stripe_2_text_color', '#000000' ),
-					'headerColor' => of_get_option( 'stripes-stripe_2_headers_color', '#000000' ),
-				],
-				'stripe3'     => [
-					'textColor'   => of_get_option( 'stripes-stripe_3_text_color', '#000000' ),
-					'headerColor' => of_get_option( 'stripes-stripe_3_headers_color', '#000000' ),
-				],
-				'content'     => [
-					'textColor'   => of_get_option( 'content-primary_text_color', '#000000' ),
-					'headerColor' => of_get_option( 'content-headers_color', '#000000' ),
-				],
-			]
-		);
 	}
 
 	add_action( 'wp_enqueue_scripts', 'presscore_vc_register_custom_vc_pie_script', 15 );

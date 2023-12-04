@@ -87,7 +87,7 @@ class The7_Option_Field_Slider extends The7_Option_Field_Abstract {
 		if ( ! empty( $this->option['options']['java_hide_if_not_max'] ) ) {
 			$classes[] = 'of-js-hider';
 			$classes[] = 'js-hide-if-not-max';
-		} elseif ( ! empty( $this->option['options']['java_hide_global_not_max'] ) ) {
+		} else if ( ! empty( $this->option['options']['java_hide_global_not_max'] ) ) {
 			$classes[] = 'of-js-hider-global';
 			$classes[] = 'js-hide-if-not-max';
 		}
@@ -185,7 +185,7 @@ class The7_Option_Field_Slider extends The7_Option_Field_Abstract {
 	public static function decode( $slider_value ) {
 		preg_match( '/(-?\d+\.?\d*)(.*)/', $slider_value, $matches );
 		$cur_val = '';
-		if ( isset( $matches[1] ) ) {
+		if ( ! empty( $matches[1] ) ) {
 			$cur_val = $matches[1];
 		}
 		$cur_units = '';

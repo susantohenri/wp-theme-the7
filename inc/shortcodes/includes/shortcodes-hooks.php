@@ -22,6 +22,10 @@ if ( ! function_exists( 'the7_save_shortcode_inline_css' ) ) {
 			return;
 		}
 
+		if ( ! class_exists( 'the7_lessc', false ) ) {
+			include PRESSCORE_DIR . '/vendor/lessphp/the7_lessc.inc.php';
+		}
+
 		$css = the7_generate_shortcode_css( $post->post_content );
 
 		if ( $css ) {

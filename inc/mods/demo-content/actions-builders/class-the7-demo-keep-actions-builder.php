@@ -5,9 +5,6 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * @see The7_Demo_Content_Admin::get_actions_builder()
- */
 class The7_Demo_Keep_Actions_Builder extends The7_Demo_Actions_Builder_Base {
 
 	protected function init() {

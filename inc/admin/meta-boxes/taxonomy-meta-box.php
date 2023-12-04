@@ -55,10 +55,6 @@ class The7_Taxonomy_Meta_Box {
 
 		// Finish meta mox declaration.
 		$meta_box->Finish();
-
-		if ( did_action( 'admin_init' ) || doing_action( 'admin_init' ) ) {
-			$meta_box->add();
-		}
 	}
 
 }

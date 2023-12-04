@@ -277,6 +277,7 @@ return array(
 			'edit_field_class' => 'vc_col-xs-12 vc_column dt_row-6',
 			'dependency'       => array(
 				'element' => 'image_hover_bg_color',
+				'value'   => 'gradient_overlay',
 				'value'   => array( 'solid_rollover_bg', 'gradient_rollover_bg' ),
 			),
 		),
@@ -343,7 +344,7 @@ return array(
 		array(
 			'group'            => __( 'Hover Icon', 'the7mk2' ),
 			'heading'          => __( 'Icon color', 'the7mk2' ),
-			'description'      => __( 'Leave empty to use accent color.', 'the7mk2' ),
+			'description'      => __( 'Live empty to use accent color.', 'the7mk2' ),
 			'param_name'       => 'project_icon_color',
 			'type'             => 'colorpicker',
 			'value'            => 'rgba(255,255,255,1)',
@@ -393,7 +394,7 @@ return array(
 				'element' => 'project_icon_bg',
 				'value'   => 'y',
 			),
-			'description'      => __( 'Leave empty to use accent color.', 'the7mk2' ),
+			'description'      => __( 'Live empty to use accent color.', 'the7mk2' ),
 			'edit_field_class' => 'the7-icons-dependent vc_col-xs-12',
 		),
 		array(
@@ -425,7 +426,7 @@ return array(
 		array(
 			'group'            => __( 'Hover Icon', 'the7mk2' ),
 			'heading'          => __( 'Border color', 'the7mk2' ),
-			'description'      => __( 'Leave empty to use accent color.', 'the7mk2' ),
+			'description'      => __( 'Live empty to use accent color.', 'the7mk2' ),
 			'param_name'       => 'project_icon_border_color',
 			'type'             => 'colorpicker',
 			'value'            => '',

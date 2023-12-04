@@ -30,7 +30,7 @@ class DT_Shortcode_ContactForm extends DT_Shortcode {
 	}
 
 	public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
+		extract( shortcode_atts( array(
 			'message_height' => '6',
 			'fields'         => '',
 			'required'       => '',
@@ -38,8 +38,7 @@ class DT_Shortcode_ContactForm extends DT_Shortcode {
 			'button_title'   => 'Send message',
 			'terms'          => 'n',
 			'terms_msg'      => '',
-		], $atts, 'dt_contact_form' );
-		extract( $shortcode_atts, EXTR_OVERWRITE );
+		), $atts, 'dt_contact_form' ), EXTR_OVERWRITE );
 
 		if ( ! class_exists( 'Presscore_Inc_Widgets_ContactForm' ) ) {
 			return '';
@@ -77,7 +76,7 @@ class DT_Shortcode_ContactForm extends DT_Shortcode {
 			'msg_height'   => $message_height,
 			'button_title' => $button_title,
 			'terms'        => $terms === 'y' ? '1' : '',
-			'terms_msg'    => rawurldecode( the7_base_64_decode( $terms_msg ) ),
+			'terms_msg'    => rawurldecode( base64_decode( $terms_msg ) ),
 		);
 
 		ob_start();

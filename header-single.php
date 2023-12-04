@@ -19,14 +19,14 @@ defined( 'ABSPATH' ) || exit;
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
 	<?php endif ?>
 	<?php presscore_theme_color_meta(); ?>
-	<link rel="profile" href="https://gmpg.org/xfn/11" />
+	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<?php
+	presscore_js_resize_event_hack();
 	wp_head();
 	?>
 </head>
-<body id="the7-body" <?php body_class(); ?>>
+<body <?php body_class(); ?>>
 <?php
-wp_body_open();
 do_action( 'presscore_body_top' );
 
 $config = presscore_config();

@@ -20,18 +20,18 @@ class Dt_Inc_Classes_WidgetsCustomMenu_Walker extends Walker_Nav_Menu {
 		if ( method_exists( 'Walker_Nav_Menu','__construct' ) ) {
 			parent::__construct();
 		}
-
+		
 		if ( is_array( $options ) ) {
 			$this->dt_options = $options;
 		}
 	}
-
+	
 	/**
 	 * Traverse elements to create list from elements.
 	 *
 	 * Calls parent function in wp-includes/class-wp-walker.php
 	 */
-	function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
+	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 
 		if ( !$element ) {
 			return;
@@ -51,11 +51,11 @@ class Dt_Inc_Classes_WidgetsCustomMenu_Walker extends Walker_Nav_Menu {
 		$output .= $args->dt_submenu_wrap_start;
 		$this->dt_is_first = true;
 	}
-
+	
 	function end_lvl( &$output, $depth = 0, $args = array() ) {
 		$output .= $args->dt_submenu_wrap_end;
 	}
-
+	
 	function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
 			$class_names = $value = '';
 			$classes = empty( $item->classes ) ? array() : (array) $item->classes;
@@ -82,12 +82,12 @@ class Dt_Inc_Classes_WidgetsCustomMenu_Walker extends Walker_Nav_Menu {
 			}
 
 			$dt_is_parent = in_array( $item->ID, $this->dt_menu_parents );
-
+			
 			// add parent class
 			if ( $dt_is_parent ) {
 				$classes[] = 'has-children';
 			}
-
+			
 			// nonclicable parent menu items
 			$attributes = '';
 
@@ -97,38 +97,36 @@ class Dt_Inc_Classes_WidgetsCustomMenu_Walker extends Walker_Nav_Menu {
 			$before_link = $after_link = '';
 
 			$class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
+			$id = apply_filters( 'nav_menu_item_id', 'menu-item-'. $item->ID, $item, $args );
+			$id = strlen( $id ) ? ' id="' . esc_attr( $id ) . '"' : '';
 
-			$dt_title = apply_filters( 'the_title', $item->title, $item->ID );
-			$submenu_indicator = ( $dt_is_parent && isset( $args->dt_submenu_indicator ) ) ? $args->dt_submenu_indicator : '';
+			$dt_title = apply_filters( 'the_title', $item->title, $item->ID ); 
 
 			$output .= str_replace(
 				array(
 					'%ITEM_HREF%',
 					'%ITEM_TITLE%',
 					'%ESC_ITEM_TITLE%',
-					'%ITEM_CLASS%',
-					'%IS_FIRST%',
+					'%ITEM_CLASS%', '%IS_FIRST%',
 					'%BEFORE_LINK%',
 					'%AFTER_LINK%',
 					'%DEPTH%',
 					'%ACT_CLASS%',
 					'%RAW_ITEM_HREF%',
-					'%IF_PARENT_NOT_CLICKABLE%',
-					'%SUBMENU_INDICATOR%',
+					'%IF_PARENT_NOT_CLICKABLE%'
 				),
 				array(
-					esc_attr( $item->url ) . $attributes,
+					esc_attr($item->url) . $attributes,
 					$args->link_before . $dt_title . $args->link_after,
-					! empty( $item->attr_title ) ? ' title="' . esc_attr( $item->attr_title ) . '"' : '',
+					!empty($item->attr_title) ? ' title="'. esc_attr( $item->attr_title ). '"':'',
 					esc_attr( $class_names ),
 					$first_class,
 					$before_link,
 					$after_link,
 					$depth + 1,
 					$act_class,
-					esc_attr( $item->url ),
-					$if_parent_not_clickable,
-					$submenu_indicator,
+					esc_attr($item->url),
+					$if_parent_not_clickable
 				),
 				$args->dt_item_wrap_start
 			);

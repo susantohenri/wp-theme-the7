@@ -29,12 +29,11 @@ if ( ! class_exists( 'DT_Shortcode_List_Vc', false ) ) {
 		}
 
 		public function shortcode_list( $atts, $content = null ) {
-			$shortcode_atts = shortcode_atts( [
-				'style'           => '1',
-				'dividers'        => 'true',
+			extract( shortcode_atts( array(
+				'style' => '1',
+				'dividers' => 'true',
 				'bullet_position' => 'top',
-			], $atts, 'dt_vc_list' );
-			extract( $shortcode_atts );
+			), $atts, 'dt_vc_list' ) );
 
 			$style = in_array( $style, array('1', '2', '3') ) ? $style : '1';
 			$bullet_position = in_array( $bullet_position, array('top', 'middle') ) ? $bullet_position : 'middle';
@@ -66,7 +65,7 @@ if ( ! class_exists( 'DT_Shortcode_List_Vc', false ) ) {
 
 			// store atts
 			$atts_backup = self::$atts;
-
+			
 			// change atts
 			self::$atts = array(
 				'style'     => $style,
@@ -78,14 +77,13 @@ if ( ! class_exists( 'DT_Shortcode_List_Vc', false ) ) {
 			// restore atts
 			self::$atts = $atts_backup;
 
-			return $output;
+			return $output; 
 		}
 
 		public function shortcode_item( $atts, $content = null ) {
-			$shortcode_atts = shortcode_atts( [
-				'image' => '',
-			], $atts, 'dt_vc_list_item' );
-			extract( $shortcode_atts );
+			extract( shortcode_atts( array(
+				'image'         => '',
+			), $atts, 'dt_vc_list_item' ) );
 
 			$image = esc_url($image);
 
@@ -102,7 +100,7 @@ if ( ! class_exists( 'DT_Shortcode_List_Vc', false ) ) {
 
 			$output = sprintf( '<li>%s</li>', presscore_remove_wpautop( $content, true ) );
 
-			return $output;
+			return $output; 
 		}
 
 	}

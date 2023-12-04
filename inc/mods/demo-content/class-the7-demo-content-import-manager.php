@@ -50,15 +50,13 @@ class The7_Demo_Content_Import_Manager {
 	 * @param string $content_dir
 	 * @param array  $demo
 	 */
-	public function __construct( $content_dir, $demo, $tracker ) {
+	public function __construct( $content_dir = '', $demo = [], $tracker ) {
 		$this->content_dir        = trailingslashit( $content_dir );
 		$this->xml_file_to_import = $this->content_dir . 'full-content.xml';
 		$this->demo               = $demo;
 		$this->tracker            = $tracker;
 
-		if ( $this->importer_bootstrap() ) {
-			register_shutdown_function( [ $this, 'fatal_errors_log_handler' ] );
-		} else {
+		if ( ! $this->importer_bootstrap() ) {
 			$this->add_error( __( 'The auto importing script could not be loaded.', 'the7mk2' ) );
 		}
 	}
@@ -90,12 +88,12 @@ class The7_Demo_Content_Import_Manager {
 
 			if ( 'the7_auto_deactivated' !== $download_response->get_error_code() ) {
 				$error .= ' ' . sprintf(
-					__(
-						'Please don\'t hesitate to contact our <a href="%s" target="_blank" rel="noopener">support</a>.',
-						'the7mk2'
-					),
-					'https://support.dream-theme.com/'
-				);
+						__(
+							'Please don\'t hesitate to contact our <a href="%s" target="_blank" rel="noopener">support</a>.',
+							'the7mk2'
+						),
+						'https://support.dream-theme.com/'
+					);
 			}
 
 			$this->add_error( $error );
@@ -137,33 +135,17 @@ class The7_Demo_Content_Import_Manager {
 	}
 
 	/**
-	 * @return void
-	 */
-	public function import_the7_core_post_types_builder_data() {
-		$data = (array) $this->get_site_meta( 'the7_core_post_types_builder' );
-
-		( new \The7_Post_Types_Builder_Data_Importer( $this->tracker ) )->import( $data );
-	}
-
-	/**
 	 * Import post types dummy.
 	 */
 	public function import_post_types() {
 		$this->rename_existing_menus();
 
 		$this->tracker->track_imported_items();
-
-		$wc_importer = new The7_WC_Importer( $this->importer );
-		$wc_importer->import_wc_attributes( $this->get_site_meta( 'wc_attributes' ) );
-		$wc_importer->add_hooks();
-
 		$this->import_file( $this->xml_file_to_import );
-
-		$wc_importer->remove_hooks();
-		$wc_importer->import_wc_settings( $this->get_site_meta( 'woocommerce' ) );
-		$wc_importer->regenerate_wc_cache();
-
 		$this->importer->cache_processed_data();
+
+		$elementor_importer = new \The7_Elementor_Importer( $this->importer, $this->tracker );
+		$elementor_importer->fix_elementor_data();
 	}
 
 	/**
@@ -175,6 +157,9 @@ class The7_Demo_Content_Import_Manager {
 		$this->import_file( $this->xml_file_to_import );
 		$this->importer->cache_processed_data();
 
+		$elementor_importer = new \The7_Elementor_Importer( $this->importer, $this->tracker );
+		$elementor_importer->fix_elementor_data();
+
 		return $this->importer->get_processed_filtered_post();
 	}
 
@@ -184,15 +169,12 @@ class The7_Demo_Content_Import_Manager {
 		$this->import_file( $this->xml_file_to_import );
 		$this->importer->cache_processed_data();
 
+		$elementor_importer = new \The7_Elementor_Importer( $this->importer, $this->tracker );
+		$elementor_importer->fix_elementor_data();
+
 		return $this->importer->get_processed_filtered_post();
 	}
 
-	/**
-	 * @param bool $include_attachments Include attachments if true.
-	 * @param int  $batch               How many attachments to import.
-	 *
-	 * @return array|false
-	 */
 	public function import_attachments( $include_attachments = false, $batch = 27 ) {
 		if ( ! $this->importer ) {
 			return false;
@@ -227,9 +209,6 @@ class The7_Demo_Content_Import_Manager {
 
 			update_option( 'widget_text', json_decode( $widgets_str, true ) );
 		}
-
-		$wc_importer = new The7_WC_Importer( $this->importer );
-		$wc_importer->fix_product_cat_thumbnail_id();
 
 		return $status;
 	}
@@ -280,20 +259,12 @@ class The7_Demo_Content_Import_Manager {
 			require __DIR__ . '/importers/class-the7-content-importer.php';
 		}
 
-		$this->importer = new The7_Content_Importer();
+		$this->importer    = new The7_Content_Importer();
 
 		return true;
 	}
 
-	/**
-	 * Import xml file.
-	 *
-	 * @param string $file_name File to import.
-	 * @param array  $options   Options array.
-	 *
-	 * @return bool
-	 */
-	public function import_file( $file_name, $options = [] ) {
+	public function import_file( $file_name, $options = array() ) {
 		if ( ! $this->file_exists( $file_name ) ) {
 			return false;
 		}
@@ -301,43 +272,24 @@ class The7_Demo_Content_Import_Manager {
 		/**
 		 * Fix Fatal Error while process orphaned variations.
 		 */
-		remove_filter( 'post_type_link', [ 'WC_Post_Data', 'variation_post_link' ] );
-		add_filter( 'post_type_link', [ $this, 'variation_post_link' ], 10, 2 );
+		remove_filter( 'post_type_link', array( 'WC_Post_Data', 'variation_post_link' ) );
+		add_filter( 'post_type_link', array( $this, 'variation_post_link' ), 10, 2 );
 
 		// Fix elementor data import alongside with installed wordpress-importer plugin.
 		if ( class_exists( 'Elementor\Compatibility' ) ) {
 			remove_filter( 'wp_import_post_meta', [ 'Elementor\Compatibility', 'on_wp_import_post_meta' ] );
 		}
 
-		add_filter( 'wp_import_post_meta', [ $this, 'fix_menus_for_microsite' ] );
-		add_filter( 'wxr_menu_item_args', [ $this, 'menu_item_args_filter' ] );
-
-		$this->importer->log_reset();
-
-		$demo_title = isset( $this->demo['title'] ) ? $this->demo['title'] : 'demo';
-		$this->importer->log_add( "Importing {$demo_title}\n" );
-
-		$start = microtime( true );
-
-		$elementor_importer = new \The7_Elementor_Importer( $this->importer, $this->tracker );
-		$elementor_importer->do_before_importing_content();
+		add_filter( 'wp_import_post_meta', array( $this, 'fix_menus_for_microsite' ) );
+		add_filter( 'wxr_menu_item_args', array( $this, 'menu_item_args_filter' ) );
 
 		$this->importer->fetch_attachments = ! empty( $options['fetch_attachments'] );
 		$this->importer->import( $file_name );
 
-		$elementor_importer->do_after_importing_content();
-
-		$this->importer->log_add( 'Content was imported in: ' . ( microtime( true ) - $start ) . "\n" );
-
 		return true;
 	}
 
-	/**
-	 * @param arrays $post_types Post types list.
-	 *
-	 * @return array|false
-	 */
-	public function get_posts_list( $post_types ) {
+	public function getPostsList( $post_types ) {
 		if ( ! $this->file_exists( $this->xml_file_to_import ) ) {
 			return false;
 		}
@@ -375,15 +327,14 @@ class The7_Demo_Content_Import_Manager {
 	 *
 	 * @since 7.4.1
 	 *
-	 * @param array $args Menu item args.
+	 * @param array $args
 	 *
 	 * @return array
 	 */
 	public function menu_item_args_filter( $args ) {
-		$demo_path = untrailingslashit( $this->importer->base_url );
-
-		if ( $demo_path && $demo_path !== '/' ) {
-			$home_url              = home_url();
+		$home_url  = home_url( '/' );
+		$demo_path = $this->get_demo_url_path();
+		if ( $demo_path !== '/' ) {
 			$args['menu-item-url'] = preg_replace( "#^{$demo_path}(.*)#", "{$home_url}$1", $args['menu-item-url'] );
 		}
 
@@ -482,8 +433,6 @@ class The7_Demo_Content_Import_Manager {
 	public function import_wp_settings() {
 		$site_meta = $this->get_site_meta();
 
-		$this->importer->log_add( 'WP settings importing...' );
-
 		$wp_settings_importer = new The7_WP_Settings_Importer( $this->importer, $this->tracker );
 
 		if ( ! empty( $site_meta['wp_settings'] ) ) {
@@ -497,8 +446,6 @@ class The7_Demo_Content_Import_Manager {
 		if ( ! empty( $site_meta['widgets_settings'] ) ) {
 			$wp_settings_importer->import_widgets( $site_meta['widgets_settings'] );
 		}
-
-		$this->importer->log_add( 'Done' );
 	}
 
 	/**
@@ -532,15 +479,11 @@ class The7_Demo_Content_Import_Manager {
 			return false;
 		}
 
-		$this->importer->log_add( 'Configure FontAwesome...' );
-
 		if ( $site_meta['the7_fontawesome_version'] === 'fa5' ) {
 			The7_Icon_Manager::enable_fontawesome5();
 		} else {
 			The7_Icon_Manager::enable_fontawesome4();
 		}
-
-		$this->importer->log_add( 'Done' );
 
 		return true;
 	}
@@ -584,16 +527,6 @@ class The7_Demo_Content_Import_Manager {
 		if ( ! empty( $site_meta['elementor_kit_settings'] ) && the7_is_elementor3() ) {
 			$elementor_importer->import_kit_settings( $site_meta['elementor_kit_settings'] );
 		}
-
-		$site_identity = $this->get_site_meta( 'site_identity' );
-
-		if ( ! empty( $site_identity['custom_logo'] ) ) {
-			$elementor_importer->import_custom_logo( (int) $site_identity['custom_logo'] );
-		}
-
-		if ( ! empty( $site_identity['site_icon'] ) ) {
-			$elementor_importer->import_site_icon( (int) $site_identity['site_icon'] );
-		}
 	}
 
 	public function import_tinvwl_settings() {
@@ -607,7 +540,7 @@ class The7_Demo_Content_Import_Manager {
 			return;
 		}
 
-		$ti_settings_object      = TInvWL_Admin_Settings_General::instance();
+		$ti_settings_object = TInvWL_Admin_Settings_General::instance();
 		$ti_settings_declaration = (array) $ti_settings_object->constructor_data();
 		$settings_to_import      = $site_meta['ti_wish_list_settings'];
 		foreach ( $ti_settings_declaration as $settings_group ) {
@@ -616,6 +549,63 @@ class The7_Demo_Content_Import_Manager {
 				update_option( $option_id, $settings_to_import[ $option_id ] );
 			}
 		}
+	}
+
+	public function import_woocommerce_settings() {
+		$site_meta = $this->get_site_meta();
+
+		if ( empty( $site_meta['woocommerce'] ) ) {
+			return;
+		}
+
+		if ( ! function_exists( 'WC' ) ) {
+			return;
+		}
+
+		$woocommerce_meta = (array) $site_meta['woocommerce'];
+
+		$woocommerce_page_settings = wp_parse_args(
+			$woocommerce_meta,
+			array(
+				'woocommerce_shop_page_id'      => false,
+				'woocommerce_cart_page_id'      => false,
+				'woocommerce_checkout_page_id'  => false,
+				'woocommerce_myaccount_page_id' => false,
+				'woocommerce_terms_page_id'     => false,
+			)
+		);
+		foreach ( $woocommerce_page_settings as $opt_id => $post_id ) {
+			if ( ! $post_id ) {
+				continue;
+			}
+
+			$imported_post_id = $this->importer->get_processed_post( $post_id );
+			if ( $imported_post_id ) {
+				$post_id = $imported_post_id;
+			}
+
+			update_option( $opt_id, $post_id );
+		}
+
+		$wc_image_settings = array(
+			'woocommerce_single_image_width',
+			'woocommerce_thumbnail_image_width',
+			'woocommerce_thumbnail_cropping',
+			'woocommerce_thumbnail_cropping_custom_width',
+			'woocommerce_thumbnail_cropping_custom_height',
+		);
+
+		$options_to_export = [];
+		foreach ( $wc_image_settings as $wc_option ) {
+			if ( isset( $woocommerce_meta[ $wc_option ] ) ) {
+				update_option( $wc_option, $woocommerce_meta[ $wc_option ] );
+			}
+		}
+
+		// Clear any unwanted data and flush rules.
+		update_option( 'woocommerce_queue_flush_rewrite_rules', 'yes' );
+		WC()->query->init_query_vars();
+		WC()->query->add_endpoints();
 	}
 
 	/**
@@ -628,14 +618,10 @@ class The7_Demo_Content_Import_Manager {
 			return false;
 		}
 
-		$this->importer->log_add( 'VC settings importing...' );
-
 		require_once __DIR__ . '/importers/class-the7-vc-importer.php';
 		$vc_importer = new The7_VC_Importer();
 		if ( $vc_importer->import_settings( $site_meta['vc_settings'] ) ) {
 			$vc_importer->show_notification();
-
-			$this->importer->log_add( 'Done' );
 
 			return true;
 		}
@@ -652,14 +638,7 @@ class The7_Demo_Content_Import_Manager {
 	 */
 	public function get_site_meta( $meta = null ) {
 		if ( $this->site_meta === null ) {
-			$wp_filesystem = the7_get_filesystem();
-			if ( is_wp_error( $wp_filesystem ) ) {
-				$this->add_error( $wp_filesystem->get_error_message() );
-
-				return null;
-			}
-
-			$this->site_meta = json_decode( $wp_filesystem->get_contents( $this->content_dir . 'site-meta.json' ), true );
+			$this->site_meta = json_decode( file_get_contents( $this->content_dir . 'site-meta.json' ), true );
 		}
 
 		if ( $meta === null ) {
@@ -714,17 +693,6 @@ class The7_Demo_Content_Import_Manager {
 	}
 
 	/**
-	 * Log fatal errors.
-	 */
-	public function fatal_errors_log_handler() {
-		$error = error_get_last();
-
-		if ( $error && in_array( $error['type'], array( E_ERROR, E_PARSE, E_COMPILE_ERROR, E_USER_ERROR, E_RECOVERABLE_ERROR ), true ) ) {
-			$this->importer->log_add( 'Error: ' . $error['message'] );
-		}
-	}
-
-	/**
 	 * @param string $file_name
 	 *
 	 * @return bool
@@ -769,5 +737,12 @@ class The7_Demo_Content_Import_Manager {
 		}
 
 		return PRESSCORE_ADMIN_URI . "/assets/images/noimage.{$ext}";
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function get_demo_url_path() {
+		return parse_url( $this->demo['link'], PHP_URL_PATH );
 	}
 }

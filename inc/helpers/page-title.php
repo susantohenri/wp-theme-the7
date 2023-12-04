@@ -217,7 +217,7 @@ endif;
 if ( ! function_exists( 'presscore_get_page_title_breadcrumbs' ) ) :
 
 	function presscore_get_page_title_breadcrumbs( $args = array() ) {
-		$config            = presscore_config();
+		$config            = Presscore_Config::get_instance();
 		$breadcrumbs_class = 'breadcrumbs text-small';
 
 		switch ( $config->get( 'page_title.breadcrumbs.background.mode' ) ) {

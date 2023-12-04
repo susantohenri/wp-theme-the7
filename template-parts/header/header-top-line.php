@@ -26,7 +26,7 @@ if ( ! presscore_get_header_elements_list( 'top_line_right' ) ) {
 if ( $config->get( 'header.mixed.view.top_line.is_sticky' ) && !presscore_header_is_transparent()){
 ?>
 <div class="top-line-space"></div>
-<?php
+<?php 
 }
 ?>
 <div <?php presscore_mixed_header_class( 'masthead mixed-header' ); ?> <?php presscore_header_inline_style(); ?> role="banner">
@@ -45,7 +45,7 @@ if ( $config->get( 'header.mixed.view.top_line.is_sticky' ) && !presscore_header
 			presscore_render_header_elements( 'top_line_right', 'right-widgets' );
 			presscore_header_menu_icon();
 			echo '</div>';
-		} elseif ( 'left_btn-right_logo' === $config->get( 'header.mixed.view.top_line.logo.position' ) || 'left_btn-center_logo' === $config->get( 'header.mixed.view.top_line.logo.position' ) ) {
+		} else if ( 'left_btn-right_logo' === $config->get( 'header.mixed.view.top_line.logo.position' ) || 'left_btn-center_logo' === $config->get( 'header.mixed.view.top_line.logo.position' ) ) {
 			echo '<div class="top-line-left ' . $top_line_left_classes . '">';
 			presscore_header_menu_icon();
 			presscore_render_header_elements( 'side_top_line', 'left-widgets' );

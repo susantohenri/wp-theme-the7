@@ -16,7 +16,7 @@ class The7_Extended_Microwidgets_Menu extends The7_Mega_Menu {
 	 * Add mega menu hooks.
 	 */
 	public function add_hooks() {
-		add_filter( 'presscore_nav_menu_item', array( $this, 'menu_item' ), 10, 6 );
+		add_filter( 'presscore_nav_menu_item', array( $this, 'menu_item' ), 10, 5 );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class The7_Extended_Microwidgets_Menu extends The7_Mega_Menu {
 	 *
 	 * @return string
 	 */
-	public function menu_item( $menu_item, $title, $description, $item, $depth, $args ) {
+	public function menu_item( $menu_item, $title, $description, $item, $depth ) {
 		if ( $menu_item ) {
 			return $menu_item;
 		}
@@ -46,6 +46,6 @@ class The7_Extended_Microwidgets_Menu extends The7_Mega_Menu {
 			return '';
 		}
 
-		return parent::menu_item( $menu_item, $title, $description, $item, $depth, $args );
+		return parent::menu_item( $menu_item, $title, $description, $item, $depth );
 	}
 }

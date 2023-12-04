@@ -36,8 +36,7 @@ class DT_Shortcode_Fancy_Separator extends DT_Shortcode {
 			'el_width' => '100%',
 		);
 
-		$shortcode_atts = shortcode_atts( $default_atts, $atts, 'dt_fancy_separator' );
-		extract( $shortcode_atts );
+		extract(shortcode_atts($default_atts, $atts, 'dt_fancy_separator'));
 
 		/////////////////////
 		// sanitize atts //
@@ -48,7 +47,7 @@ class DT_Shortcode_Fancy_Separator extends DT_Shortcode {
 
 		if ( '' === $el_width ) {
 			$el_width = $default_atts['el_width'];
-		} elseif ( ! preg_match( '/^\d*(%|px)$/', $el_width ) ) {
+		} else if ( ! preg_match( '/^\d*(%|px)$/', $el_width ) ) {
 			$el_width = absint( $el_width ) . '%';
 		}
 
