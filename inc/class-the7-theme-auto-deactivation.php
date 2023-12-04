@@ -33,7 +33,7 @@ class The7_Theme_Auto_Deactivation {
 	/**
 	 * Add hooks.
 	 */
-	public static function init() {
+	public static function add_hooks() {
 		add_action( 'admin_notices', array( __CLASS__, 'add_admin_notice' ) );
 		add_action( 'the7_after_theme_activation', array( __CLASS__, 'dismiss_admin_notice_on_theme_activation' ) );
 		add_action( 'the7_demo_content_before_content_import', array( __CLASS__, 'add_auto_deactivation_check' ) );

@@ -1,0 +1,430 @@
+(function($) {
+    var total_today = 0.00;
+    var total_one_off = 0.00;
+    var total_monthly = 0;
+
+    function displayTotalPrice() {
+        $(".total-one-off p").text("$" + total_one_off.toFixed(2));
+        $(".total-to-pay p").text("$" + total_today.toFixed(2));
+        $(".total-monthly p").text("$" + total_monthly.toFixed(2));
+    }
+
+    function addProduct(item, product_id) {
+        var title = $(item).find("h1");
+        var description = $(item).find("h2");
+        var price = $(item).find(".product-price");
+        var data_no = $(item).attr("data-no");
+        var input_text = "<div class='summary-item' data-id='"+product_id+"' data-no='"+data_no+"'><div class='remove-order'></div><div style='width: 100%;'><h1>"+title.html()+"</h1><h2>"+description.html()+"</h2></div><p>"+price.html()+"</p></div>";
+        $(".order-summary").append(input_text);
+        var sd = price.text().match(/[0-9.]+/g);
+        
+        total_today += parseFloat(sd);
+        if (price.text().indexOf("mth") > 0) {
+            total_monthly += parseFloat(sd);
+        } else {
+            total_one_off += parseFloat(sd);
+        }
+        displayTotalPrice();
+    }
+
+    function removeProdct(item, product_id) {
+        var summary = $(".summary-item");
+        for (var i = 0; i < summary.length; i ++) {
+            var id = $(summary[i]).attr("data-id");
+            if (product_id == id) {
+                $(summary[i]).remove();
+                break;
+            }
+        }
+
+        var price = $(item).find(".product-price");
+        var sd = price.text().match(/[0-9.]+/g);
+        
+        total_today -= parseFloat(sd);
+        if (price.text().indexOf("mth") > 0) {
+            total_monthly -= parseFloat(sd);
+        } else {
+            total_one_off -= parseFloat(sd);
+        }
+        displayTotalPrice();
+    }
+    
+    function addToCart(product_id) {
+        $.get({url:'https://airtel.net.au/?post_type=product&add-to-cart=' + product_id, async:false}, function() {
+        });
+    }
+
+    function removeProductOnCart(product_id) {
+        $.ajax({
+            type: "POST",
+            url: 'https://airtel.net.au/wp-admin/admin-ajax.php',
+            async: false,
+            data: {action : 'remove_item_from_cart', product_id : product_id},
+            success: function (res) {
+                if (res) {
+                }
+            }
+        });   
+    }
+
+    function loadProductsFromCart() {
+        $.ajax({
+            type: "POST",
+            url: 'https://airtel.net.au/wp-admin/admin-ajax.php',
+            async: false,
+            data: {action : 'load_item_from_cart'},
+            success: function (res) {
+                if (res) {
+                    var result = JSON.parse(res);
+                    
+                    for (var i = 0; i < result.ID.length; i ++) {
+                        var product = $("body").find(".product-item[data-id='"+result.ID[i]+"']");
+                        $(product).addClass("selected");
+                        $(product).find(".select-product-item").text("Selected");
+                        addProduct(product, result.ID[i]);
+                    }
+                }
+            }
+        });   
+    }
+
+    // Search Address
+    var adresDB = new Bloodhound({
+        datumTokenizer: function (datum) {
+        return Bloodhound.tokenizers.whitespace(datum.value);
+    },
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote: {
+        //url: '/aus_addr.php/d?q=%QUERY',
+        url: '/aus_addr.php/d?address=%QUERY',
+              filter: function (adresDB) {
+                  console.log(adresDB);
+/*                  
+                return jQuery.map(adresDB.features, function (mm) {
+                    return {
+                        id:                     mm.properties.id,
+                        highlighted:            mm.properties.formattedAddress,
+                        address:                mm.properties.formattedAddress,
+                        building_name:          mm.building_name,
+                        flat_type:              mm.flat_type,
+                        flat_number_prefix:     mm.flat_number_prefix,
+                        flat_number:            mm.flat_number,
+                        flat_number_suffix:     mm.flat_number_suffix,
+                        level_type:             mm.level_type,
+                        level_number:           mm.level_number,
+                        number_first_prefix:    mm.number_first_prefix,
+                        number_first:           mm.properties.streetNumber1,
+                        number_first_suffix:    mm.number_first_suffix,
+                        number_last_prefix:     mm.number_last_prefix,
+                        number_last:            mm.number_last,
+                        number_last_suffix:     mm.number_last_suffix,
+                        street_name:            mm.properties.streetName,
+                        street_type_code:       mm.properties.streetType,
+                        street_suffix_type:     mm.street_suffix_type,
+                        locality_name:          mm.properties.localityName,
+                        state_abbreviation:     mm.properties.stateTerritory,
+                        postcode:               mm.properties.postcode,
+                        location:               mm.location
+                    };
+                });
+
+               "unitNumber": datum.flat_number,
+                "streetNumber": datum.number_first,
+                "streetAddress": datum.street_name,
+                "streetType": datum.street_type_code,
+                "suburb": datum.locality_name,
+                "state": datum.state_abbreviation,
+                "postcode": datum.postcode                
+                
+*/                
+                return jQuery.map(adresDB.features, function (mm) {
+                    res =  {
+                        id:                     mm.properties.addressId,
+                        highlighted:            mm.properties.formattedAddress,
+                        address:                mm.properties.formattedAddress,
+                        flat_number:            mm.properties.complexUnitNumber,
+                        number_first:           mm.properties.streetNumber1,
+                        street_name:            mm.properties.streetName,
+                        street_type_code:       mm.properties.streetType,
+                        locality_name:          mm.properties.localityName,
+                        state_abbreviation:     mm.properties.stateTerritory,
+                        postcode:               mm.properties.postcode,
+                    };
+                    console.log(res);
+                    return res;
+                });
+              },
+        wildcard: '%QUERY'
+    }
+    });
+    
+
+    // Initialize the Bloodhound suggestion engine
+    adresDB.initialize();
+    
+    // Instantiate the Typeahead UI
+    jQuery('#location').typeahead(null, {
+        name: 'make-model',
+        highlight: true,
+        displayKey: 'address',
+        source: adresDB.ttAdapter(),
+                templates: {
+    	      notFound: [
+    	        '<div class="empty-message">',
+    	          '&nbsp;address not found! ',
+    	        '</div>'
+    	      ].join('\n'),
+            suggestion: function (adresDB) {
+                return '<div>' + adresDB.highlighted + '</div>';
+            }
+    
+        }
+    });
+
+	$('.close-search').click(function() {
+		$('#location').val('')
+        $("#row_qualify_fail").addClass("hidden");
+        $("#row_qualify_success").addClass("hidden");		
+	});
+	
+    /*$('.search-location').on('typeahead:selected', function (e, datum) {
+        var request = $.ajax({
+            type: "POST",
+            url: "https://service.airtel.net.au/api/qualify_service",
+            data: JSON.stringify({
+                "unitNumber": datum.flat_number,
+                "streetNumber": datum.number_first,
+                "streetAddress": datum.street_name,
+                "streetType": datum.street_type_code,
+                "suburb": datum.locality_name,
+                "state": datum.state_abbreviation,
+                "postcode": datum.postcode
+            }),
+            dataType: "json",
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' 
+            },            
+        });
+        
+        $("#row_qualify_fail").addClass("hidden");
+        $("#row_qualify_success").addClass("hidden");
+        
+        $("#row_checking").removeClass("hidden");
+        
+        request.done(function( data ) {
+            $("#row_checking").addClass("hidden");
+            if (data.status == "200") {
+                if (data.locationID === undefined) {
+                    $("#row_qualify_fail").removeClass("hidden");
+                } else {
+                    $("#row_qualify_success").removeClass("hidden");
+                }
+            } else {
+                $("#row_qualify_fail").removeClass("hidden");
+            }
+            console.log(data)
+        });
+         
+        request.fail(function( jqXHR, textStatus ) {
+            $("#row_checking").addClass("hidden");
+            $("#row_qualify_fail").removeClass("hidden");
+            console.log( "Request failed: " + textStatus );
+        });
+        
+        
+    });*/
+	$('.search-location').on('typeahead:selected', function (e, datum) {
+        var request = $.ajax({
+            type: "POST",
+            url: "https://service.airtel.net.au/api/qualify_service",
+            data: JSON.stringify({
+                "unitNumber": datum.flat_number,
+                "streetNumber": datum.number_first,
+                "streetAddress": datum.street_name,
+                "streetType": datum.street_type_code,
+                "suburb": datum.locality_name,
+                "state": datum.state_abbreviation,
+                "postcode": datum.postcode
+            }),
+            dataType: "json",
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' 
+            },            
+        });
+
+		var opticomm_request = $.ajax({
+            type: "POST",
+            url: "?sp_action=ajax_opticomm_address",
+            data: JSON.stringify({
+                "roadNumber1": datum.number_first,
+                "roadName": datum.street_name,
+                "localityName": datum.locality_name,
+                "stateTerritoryCode": datum.state_abbreviation,
+                "postcode": datum.postcode
+            }),
+            dataType: "json",
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' 
+            },            
+        });
+		
+		var redtrain_request = $.ajax({
+            type: "POST",
+            url: "?sp_action=ajax_redtrain_address",
+            data: JSON.stringify({
+                "streetNumber": datum.number_first,
+                "streetName": datum.street_name,
+				"streetTypeCode": datum.street_type_code,
+                "suburb": datum.locality_name,
+                "state": datum.state_abbreviation,
+                "postcode": datum.postcode
+            }),
+            dataType: "json",
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' 
+            },            
+        });
+        
+        $("#row_qualify_fail").addClass("hidden");
+        $("#row_qualify_success").addClass("hidden");
+		$("#row_qualify_opticomm").addClass("hidden");
+		$("#row_qualify_redtrain").addClass("hidden");
+        
+        $("#row_checking").removeClass("hidden");
+        
+		$.when(request, opticomm_request, redtrain_request).done(function(r1, r2, r3) {
+			console.log('TTB:');
+			console.log(r1[0]);
+			console.log('Opticomm:');
+			console.log(r2[0]);
+			console.log('Redtrain:');
+			console.log(r3[0]);
+			$("#row_checking").addClass("hidden");
+			data = r1[0];
+			data_opticomm = r2[0];
+			data_redtrain = r3[0];
+            if (data.status == "200" && data.locationID !== undefined) {
+				$("#row_qualify_success").removeClass("hidden");
+            } else if (data_opticomm.error == 0 && data_opticomm.data !== null && data_opticomm.data.id !== undefined) {
+				$("#row_qualify_opticomm").removeClass("hidden");
+            } else if (data_redtrain.error == 0 && data_redtrain.data !== null && data_redtrain.data.id !== null) {
+				$("#row_qualify_redtrain").removeClass("hidden");
+            } else {
+                $("#row_qualify_fail").removeClass("hidden");
+            }
+		});
+		
+        /*request.done(function( data ) {
+            $("#row_checking").addClass("hidden");
+            if (data.status == "200") {
+                if (data.locationID === undefined) {
+                    $("#row_qualify_fail").removeClass("hidden");
+                } else {
+                    $("#row_qualify_success").removeClass("hidden");
+                }
+            } else {
+                $("#row_qualify_fail").removeClass("hidden");
+            }
+            console.log(data)
+        });
+         
+        request.fail(function( jqXHR, textStatus ) {
+            $("#row_checking").addClass("hidden");
+            $("#row_qualify_fail").removeClass("hidden");
+            console.log( "Request failed: " + textStatus );
+        });*/
+        
+        
+    });
+    
+    $(".build-plan-button").click(function() {
+        var next_section = $(".category-section");
+        $('html, body').animate({
+            scrollTop: $(next_section).offset().top - 100  
+        }, 1000);
+    });
+
+
+	$( ".select-product-item" ).click(function() {
+        var product = $(this).parent();
+        var category_idx = parseInt($(product).attr("data-no"));
+        
+        if (category_idx < 4) {
+            category_idx = 0;
+        } else if (category_idx > 3 && category_idx < 7) {
+            category_idx = 1;
+        } else if (category_idx > 6 && category_idx < 10) {
+            category_idx = 2;
+        } else {
+            category_idx = 3;
+        }
+
+        var category = $(".category-section")[category_idx];
+
+        if (category_idx < 3) {
+            var next_section = $(".category-section")[category_idx + 1];
+        } else {
+            var next_section = $(".order-summary-section");
+        }
+        
+        if ($(product).hasClass("selected")) {
+            var product_id = $(product).attr("data-id");
+            removeProductOnCart(product_id);
+            removeProdct(product, product_id);
+            $(product).removeClass("selected");
+            $(this).text("Select");
+        } else {
+            var products = $(category).find(".product-item");
+            for (var i = 0; i < products.length; i ++) {
+                if ($(products[i]).hasClass("selected")) {
+                    var product_id = $(products[i]).attr("data-id");
+                    removeProductOnCart(product_id);
+                    removeProdct(products[i], product_id);
+                    $(products[i]).removeClass("selected");
+                    $(products[i]).find(".select-product-item").text("Select");
+                }
+            }
+
+            var product_id = $(product).attr("data-id");
+
+            addToCart(product_id);
+            addProduct(product, product_id);
+            $(product).addClass("selected");
+            $(this).text("Selected");
+            $('html, body').animate({
+                scrollTop: $(next_section).offset().top - 100  
+            }, 1000);
+        }
+    });
+
+    $(document).on( 'click', '.remove-order', function () {
+        var data_id = $(this).parent().attr("data-id");
+        var data_no = parseFloat($(this).parent().attr("data-no"));
+        var item = $(".product-item")[data_no];
+
+        $(this).parent().remove();
+
+        var price = $(item).find(".product-price");
+        var sd = price.text().match(/[0-9.]+/g);
+        
+        total_today -= parseFloat(sd);
+        if (price.text().indexOf("mth") > 0) {
+            total_monthly -= parseFloat(sd);
+        } else {
+            total_one_off -= parseFloat(sd);
+        }
+        removeProductOnCart(data_id);
+        $(item).removeClass("selected");
+        $(item).find(".select-product-item").text("Select");
+        displayTotalPrice();
+    });
+
+    $( document ).ready(function() {
+        loadProductsFromCart();
+    });
+	
+})( jQuery );

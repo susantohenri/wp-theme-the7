@@ -1,6 +1,6 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Pro\Modules\Theme_Support;
+namespace The7\Adapters\Elementor\Pro\ThemeSupport;
 
 use Elementor\Plugin;
 use ElementorPro\Modules\ThemeBuilder\Documents\Footer;
@@ -24,13 +24,7 @@ class The7_Theme_Support {
 	public function overwrite_config_base_init() {
 		$header_id = The7_Elementor_Compatibility::get_document_id_for_location( 'header' );
 		if ( $header_id ) {
-			if ( the7_is_elementor_theme_mode_active() ) {
-				presscore_config()->set( 'header_title', 'false' );
-				presscore_config()->set( 'header.floating_navigation.enabled', false );
-				add_filter( 'presscore_show_header', '__return_false' );
-			} else {
-				presscore_config_populate_header_options( $header_id );
-			}
+			presscore_config_populate_header_options( $header_id );
 			add_filter( 'presscore_before_main_container', [ $this, 'do_header' ], 17 );
 		}
 
@@ -39,18 +33,11 @@ class The7_Theme_Support {
 			presscore_config()->set( 'template.bottom_bar.enabled', false );
 			add_filter( 'presscore_replace_footer', '__return_true' );
 			add_action( 'presscore_before_footer_widgets', [ $this, 'do_footer' ], 0 );
-			add_action(
-				'presscore_footer_html_class',
-				static function ( $output ) {
-					$output[] = 'elementor-footer';
+			add_action( 'presscore_footer_html_class', static function ( $output ) {
+				$output[] = 'elementor-footer';
 
-					return $output;
-				}
-			);
-		}
-
-		if ( the7_is_elementor_theme_mode_active() ) {
-			presscore_config()->set( 'sidebar_position', 'disabled' );
+				return $output;
+			} );
 		}
 	}
 

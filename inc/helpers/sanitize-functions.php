@@ -42,7 +42,7 @@ if ( ! function_exists( 'presscore_remove_wpautop' ) ) :
 	 * Inspired by wpb_js_remove_wpautop() from js_composer
 	 *
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param  string  $content Some text
 	 * @param  boolean $autop   Apply wpautop to $content ?
 	 * @return string           Text with computed shortcodes
@@ -65,8 +65,8 @@ if ( ! function_exists( 'presscore_assure_is_array' ) ) {
 	function presscore_assure_is_array( &$var ) {
 		if ( empty( $var ) ) {
 			return array();
-		} elseif ( ! is_array( $var ) ) {
-			return [ $var ];
+		} else if ( ! is_array( $var ) ) {
+			return array( $var );
 		}
 
 		return $var;
@@ -78,15 +78,13 @@ if ( ! function_exists( 'presscore_array_value' ) ) :
 
 	/**
 	 * @since 3.0.0
-	 *
-	 * @depreacted 10.0.0
-	 *
+	 * 
 	 * @param  int|string $key
 	 * @param  array $array
 	 * @return mixed Returns null if $key not in $array
 	 */
 	function presscore_array_value( $key, $array, $default = null ) {
-		return the7_array_match( $key, $array, $default );
+		return isset( $array[ $key ] ) ? $array[ $key ] : $default;
 	}
 
 endif;

@@ -1,7 +1,5 @@
 <?php
 
-defined( 'ABSPATH' ) || exit;
-
 class The7_WC_Mini_Cart {
 
 	/**
@@ -50,13 +48,6 @@ class The7_WC_Mini_Cart {
 		dt_woocommerce_configure_mini_cart();
 		self::render_cart_inner();
 		$fragments['.wc-shopping-cart'] = ob_get_clean();
-
-		//TODO move this to woocommerce elementor module
-		if ( class_exists( '\The7\Mods\Compatibility\Elementor\Widgets\Woocommerce\Menu_Cart', false ) ) {
-			ob_start();
-			\The7\Mods\Compatibility\Elementor\Widgets\Woocommerce\Menu_Cart::render_subtotal();
-			$fragments['.elementor-widget-the7-woocommerce-menu-cart .dt-cart-subtotal'] = ob_get_clean();
-		}
 
 		return $fragments;
 	}

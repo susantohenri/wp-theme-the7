@@ -440,7 +440,9 @@ if ( ! class_exists( 'The7_RW_Meta_Box' ) )
 			$desc = ! empty( $field['desc'] ) ? "<p id='{$id}_description' class='description'>{$field['desc']}</p>" : '';
 
 			// Closes the container
-			return "{$button}{$desc}</div>";
+			$html = "{$button}{$desc}</div>";
+
+			return $html;
 		}
 
 		/**

@@ -1,12 +1,11 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Shortcode_Adapters;
+namespace The7\Adapters\Elementor\ShortcodeAdapters;
 
 defined( 'ABSPATH' ) || exit;
 
-use The7\Mods\Compatibility\Elementor\Shortcode_Adapters\Query_Adapters\Products_Current_Query;
-use The7\Mods\Compatibility\Elementor\Shortcode_Adapters\Query_Adapters\Products_Query;
-use WP_Query;
+use The7\Adapters\Elementor\ShortcodeAdapters\Queries\Products_Current_Query;
+use The7\Adapters\Elementor\ShortcodeAdapters\Queries\Products_Query;
 
 class DT_Shortcode_Products_Carousel_Adapter extends \DT_Shortcode_Products_Carousel implements The7_Shortcode_Adapter_Interface {
 
@@ -31,18 +30,13 @@ class DT_Shortcode_Products_Carousel_Adapter extends \DT_Shortcode_Products_Caro
 		$this->default_atts = array_merge( $this->default_atts, $default_atts );
 	}
 
-	/**
-	 * Return products query.
-	 *
-	 * @return mixed|WP_Query
-	 */
-	protected function get_query() {
+	protected function get_query_args() {
 		if ( 'current_query' === $this->get_att( self::QUERY_CONTROL_NAME . '_post_type' ) ) {
-			return $GLOBALS['wp_query'];
+			$query = new Products_Current_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
+		} else {
+			$query = new Products_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
 		}
 
-		$query = new Products_Query( $this->get_atts(), self::QUERY_CONTROL_NAME . '_' );
-
-		return new WP_Query( $query->parse_query_args() );
+		return $query->parse_query_args();
 	}
 }

@@ -115,6 +115,10 @@ if ( ! class_exists( 'Presscore_Modules_ArchiveExtModule', false ) ) :
 				return $page_id;
 			}
 
+			if ( is_single() || is_page() ) {
+				return get_the_ID();
+			}
+
 			$archive_template_id = self::get_archive_template_id();
 			if ( $archive_template_id ) {
 				return $archive_template_id;
@@ -158,7 +162,6 @@ if ( ! class_exists( 'Presscore_Modules_ArchiveExtModule', false ) ) :
 				case 'dt_portfolio_masonry':
 				case 'dt_team_masonry':
 				case 'dt_testimonials_masonry':
-				case 'dt_albums_masonry':
 					if ( isset( $atts['loading_mode'] ) ) {
 						$mode    = $atts['loading_mode'];
 						$ppp_map = array(
@@ -197,13 +200,13 @@ if ( ! class_exists( 'Presscore_Modules_ArchiveExtModule', false ) ) :
 			$page_id = 0;
 			if ( is_search() ) {
 				$page_id = of_get_option( 'template_page_id_search', null );
-			} elseif ( is_category() ) {
+			} else if ( is_category() ) {
 				$page_id = of_get_option( 'template_page_id_blog_category', null );
-			} elseif ( is_tag() ) {
+			} else if ( is_tag() ) {
 				$page_id = of_get_option( 'template_page_id_blog_tags', null );
-			} elseif ( is_author() ) {
+			} else if ( is_author() ) {
 				$page_id = of_get_option( 'template_page_id_author', null );
-			} elseif ( is_date() || is_day() || is_month() || is_year() ) {
+			} else if ( is_date() || is_day() || is_month() || is_year() ) {
 				$page_id = of_get_option( 'template_page_id_date', null );
 			}
 
@@ -226,13 +229,13 @@ if ( ! class_exists( 'Presscore_Modules_ArchiveExtModule', false ) ) :
 
 			if ( is_search() ) {
 				$display_full_content = of_get_option( 'template_page_id_search_full_content' );
-			} elseif ( is_category() ) {
+			} else if ( is_category() ) {
 				$display_full_content = of_get_option( 'template_page_id_blog_category_full_content' );
-			} elseif ( is_tag() ) {
+			} else if ( is_tag() ) {
 				$display_full_content = of_get_option( 'template_page_id_blog_tags_full_content' );
-			} elseif ( is_author() ) {
+			} else if ( is_author() ) {
 				$display_full_content = of_get_option( 'template_page_id_author_full_content' );
-			} elseif ( is_date() || is_day() || is_month() || is_year() ) {
+			} else if ( is_date() || is_day() || is_month() || is_year() ) {
 				$display_full_content = of_get_option( 'template_page_id_date_full_content' );
 			}
 

@@ -1,5 +1,5 @@
 <?php
-namespace The7\Mods\Compatibility\Elementor;
+namespace The7\Adapters\Elementor;
 
 defined( 'ABSPATH' ) || exit;
 

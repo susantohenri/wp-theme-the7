@@ -612,7 +612,7 @@ if ( ! function_exists( 'presscore_get_share_buttons_list' ) ) :
 					break;
 				case 'facebook':
 					$icon_class = 'facebook';
-					$url = add_query_arg( array( 'u' => rawurlencode( $u ), 't' => urlencode( $t ) ), 'https://www.facebook.com/sharer.php' );
+					$url = add_query_arg( array( 'u' => rawurlencode( $u ), 't' => urlencode( $t ) ), 'http://www.facebook.com/sharer.php' );
 					break;
 				case 'pinterest':
 					$icon_class = 'pinterest pinit-marklet';
@@ -625,7 +625,7 @@ if ( ! function_exists( 'presscore_get_share_buttons_list' ) ) :
 							$url = add_query_arg( array(
 													  'url'         => rawurlencode( $u ),
 													  'media'       => rawurlencode( $image[0] ),
-													  'description' => rawurlencode( apply_filters( 'get_the_excerpt', $_post->post_content, $_post ) )
+													  'description' => rawurlencode( apply_filters( 'get_the_excerpt', $_post->post_content ) )
 												  ), $url );
 							$custom = ' data-pin-config="above" data-pin-do="buttonPin"';
 							$icon_class = 'pinterest';
@@ -794,7 +794,7 @@ endif;
  */
 function presscore_set_image_width_options() {
 
-	$config = presscore_config();
+	$config = presscore_get_config();
 	$target_image_width = $config->get('post.preview.width.min');
 
 	if ( 'wide' == $config->get( 'post.preview.width' ) && !$config->get('all_the_same_width') ) {
@@ -1085,7 +1085,7 @@ if ( ! function_exists( 'presscore_post_navigation' ) ) :
 			return '';
 		}
 
-		$config = presscore_config();
+		$config = Presscore_Config::get_instance();
 
 		$output = '';
 
@@ -1190,89 +1190,6 @@ if ( ! function_exists( 'presscore_microsite_has_mobile_menu_filter' ) ) :
 		}
 
 		return $has_menu;
-	}
-
-endif;
-
-/**
- * Determine if the WooCommerce plugin is active.
- *
- * @depreacted 9.6.1
- * @return bool
- */
-function dt_is_woocommerce_enabled() {
-	return class_exists( 'WooCommerce' );
-}
-
-/**
- * Create html tag.
- *
- * @since 0.1
- * @depreacted 11.0.0
- *
- * @param string $type    Type.
- * @param array  $options Options.
- *
- * @return object.
- */
-function dt_create_tag( $type, $options ) {
-	return The7_Option_Field_Fields_Generator::create_tag( $type, $options );
-}
-
-if ( ! function_exists( 'presscore_get_config' ) ) :
-
-	/**
-	 * @depreacted 11.0.0
-	 *
-	 * @return Presscore_Config
-	 */
-	function presscore_get_config() {
-		return presscore_config();
-	}
-
-endif;
-
-if ( ! function_exists( 'presscore_post_edit_link' ) ) :
-
-	/**
-	 * Return post edit button HTML.
-	 *
-	 * @deprecated 11.1.0
-	 *
-	 * @param null|int  $post_id Post ID.
-	 * @param array     $class   Classes array.
-	 *
-	 * @return string
-	 */
-	function presscore_post_edit_link( $post_id = null, $class = array() ) {
-		return '';
-	}
-
-endif;
-
-if ( ! function_exists( 'presscore_gallery_post_exclude_featured_image_from_gallery' ) ) :
-
-	/**
-	 * Attempt to exclude featured image from hovered gallery in albums.
-	 * Works only in the loop.
-	 *
-	 * @deprecated 11.1.0
-	 */
-	function presscore_gallery_post_exclude_featured_image_from_gallery( $args = array(), $default_args = array(), $options = array() ) {
-		return $args;
-	}
-
-endif;
-
-if ( ! function_exists( 'presscore_js_resize_event_hack' ) ) :
-
-	/**
-	 * Not used anymore.
-	 *
-	 * @deprecated 11.4.0
-	 */
-	function presscore_js_resize_event_hack() {
-		// Do nothing.
 	}
 
 endif;

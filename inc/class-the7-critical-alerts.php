@@ -95,7 +95,7 @@ class The7_Critical_Alerts {
 	/**
 	 * Add all necessary hooks and schedule critical alert check twice a day.
 	 */
-	public function init() {
+	public function bootstrap() {
 		add_action( self::SPAWN_ALERT_CRON_EVENT, array( $this, 'spawn_critical_alert' ) );
 		add_action( self::CHECK_FOR_CRITICAL_ALERTS_EVENT, array( $this, 'check_for_critical_alerts' ) );
 		add_action( 'the7_dashboard_before_settings_save', array( $this, 'maybe_erase_presence' ), 10, 2 );
@@ -161,7 +161,7 @@ class The7_Critical_Alerts {
 	 * @param The7_Critical_Alert $alert Alert object.
 	 */
 	public function spawn_critical_alert( The7_Critical_Alert $alert ) {
-		if ( $this->send_mail( $this->email, $alert->get_subject(), $alert->get_message() ) ) {
+		if ( $this->mail( $this->email, $alert->get_subject(), $alert->get_message() ) ) {
 			self::alert_was_sent( $alert );
 		}
 	}
@@ -175,11 +175,11 @@ class The7_Critical_Alerts {
 	 *
 	 * @return bool
 	 */
-	public function send_mail( $email, $subject, $message ) {
+	public function mail( $email, $subject, $message ) {
 		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 		$subject  = sprintf( '[%s] %s', $blogname, $subject );
 		$message  = str_replace( array( '###SITEURL###' ), array( home_url( '/' ) ), $message );
 
-		return the7_mail( $email, $subject, $message );
+		return wp_mail( $email, $subject, $message );
 	}
 }

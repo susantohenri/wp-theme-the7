@@ -64,34 +64,34 @@
                 /*changes 02.09.2014 by  Alla*/
                 if( this.color === 'dt-title' ){
                     if($(this.el).parents(".stripe-style-1").length > 0){
-                        this.color = the7StripeColors.stripe1.headerColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe1.headerColor;
                     }else if($(this.el).parents(".stripe-style-2").length > 0){
-                        this.color = the7StripeColors.stripe2.headerColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe2.headerColor;
                     }else if($(this.el).parents(".stripe-style-3").length > 0){
-                        this.color = the7StripeColors.stripe3.headerColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe3.headerColor;
                     }else if($(this.el).parents(".stripe-style-4").length > 0){
                         this.color = "#ffffff";
                     }else if($(this.el).parents(".stripe-style-5").length > 0){
                         this.color = "#333333";
                     }else{
-                        this.color = the7StripeColors.content.headerColor;
+                        this.color = dtLocal.themeSettings.content.headerColor;
                     }
                 }else if( this.color === 'dt-content' ){
                     if($(this.el).parents(".stripe-style-1").length > 0){
-                        this.color = the7StripeColors.stripe1.textColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe1.textColor;
                     }else if($(this.el).parents(".stripe-style-2").length > 0){
-                        this.color = the7StripeColors.stripe2.textColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe2.textColor;
                     }else if($(this.el).parents(".stripe-style-3").length > 0){
-                        this.color = the7StripeColors.stripe3.textColor;
+                        this.color = dtLocal.themeSettings.stripes.stripe3.textColor;
                     }else if($(this.el).parents(".stripe-style-4").length > 0){
                         this.color = "#ffffff";
                     }else if($(this.el).parents(".stripe-style-5").length > 0){
                         this.color = "#333333";
                     }else{
-                        this.color = the7StripeColors.content.textColor;
+                        this.color = dtLocal.themeSettings.content.textColor;
                     }
                 }else if( this.color === "dt-accent" ){
-                    this.color = the7StripeColors.accentColor.color;
+                    this.color = dtLocal.themeSettings.accentColor.color;
                 }
             } else {
                 this.color = 'rgba(247, 247, 247, 0.2)';
@@ -99,7 +99,7 @@
         },
         setResponsive: function() {
             var that = this;
-            $(window).on("resize", function(){
+            $(window).resize(function(){
                 if(that.animated === true) that.circle.stop();
                 that.draw(true);
             });
@@ -154,10 +154,10 @@
                  this.circle.canvas.fillStyle=my_gradient;*/
             }
         },
-         setWayPoint: function() {
-                    void 0 !== $.fn.vcwaypoint ? this.$el.vcwaypoint($.proxy(this.animate, this), {
-                        offset: "85%"
-                    }) : this.animate() } ,
+         setWayPoint: function() { 
+                    void 0 !== $.fn.vcwaypoint ? this.$el.vcwaypoint($.proxy(this.animate, this), { 
+                        offset: "85%" 
+                    }) : this.animate() } , 
     };
     /**
      * jQuery plugin

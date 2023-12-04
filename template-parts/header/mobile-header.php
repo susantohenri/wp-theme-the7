@@ -27,13 +27,13 @@ if ( $show_outside ) {
 	echo $menu_icon;
 }
 ?>
-<div role="navigation" class="dt-mobile-header <?php echo $classes; ?>">
+<div class="dt-mobile-header <?php echo $classes; ?>">
 	<?php
 	if ( ! $show_outside ) {
 		echo $menu_icon;
 	}
 	?>
-	<ul id="mobile-menu" class="mobile-main-nav">
+	<ul id="mobile-menu" class="mobile-main-nav" role="menubar">
 		<?php
 		if ( ! isset( $location ) ) {
 			$location = ( presscore_has_mobile_menu() ? 'mobile' : 'primary' );

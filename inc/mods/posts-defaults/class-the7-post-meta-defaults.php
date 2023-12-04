@@ -13,6 +13,6 @@ class The7_Post_Meta_Defaults {
 	}
 
 	public function get() {
-		return (array) get_option( $this->meta_key, array() );
+		return get_option( $this->meta_key, array() );
 	}
 }

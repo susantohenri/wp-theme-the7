@@ -219,6 +219,8 @@ add_action('admin_footer-upload.php', 'presscore_add_media_bulk_actions');
 
 /**
  * Add handler to close and resolve bulk actions.
+ *
+ * see http://www.foxrunsoftware.net/articles/wordpress/add-custom-bulk-action/
  */
 function presscore_media_bulk_actions_handler() {
 	global $typenow;

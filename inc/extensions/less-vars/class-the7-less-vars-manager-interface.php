@@ -111,16 +111,6 @@ interface The7_Less_Vars_Manager_Interface {
 	public function add_paddings( $vars, $value, $units = '', $wrap = null );
 
 	/**
-	 * Register less var as a padding onliner.
-	 *
-	 * @param  string      $var Var name.
-	 * @param  string      $value Var value.
-	 * @param  string      $units Units, px by default.
-	 * @param  string|null $wrap Wrap.
-	 */
-	public function add_padding( $var, $value, $units = 'px', $wrap = null );
-
-	/**
 	 * Register less var in pixels or percents.
 	 *
 	 * @param string      $var

@@ -4,7 +4,7 @@ if ( ! class_exists( 'DT_WC_Template_Config', false ) ) :
 
 	class DT_WC_Template_Config {
 		private $config_back = array();
-		private $config;
+		private $config = null;
 
 		public function __construct( Presscore_Config_Interface $config ) {
 			$this->config = $config;
@@ -89,9 +89,9 @@ if ( ! class_exists( 'DT_WC_Template_Config', false ) ) :
 				$icons_count++;
 			}
 
-			$show_product_content = $config->get( 'product.preview.show_price' )
-				|| $config->get( 'product.preview.show_rating' )
-				|| $config->get( 'show_titles' )
+			$show_product_content = $config->get( 'product.preview.show_price' ) 
+				|| $config->get( 'product.preview.show_rating' ) 
+				|| $config->get( 'show_titles' ) 
 				|| $icons_count > 0;
 
 			return $show_product_content;

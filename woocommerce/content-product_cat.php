@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <article <?php wc_product_cat_class( 'post', $category ); ?>>
 
 	<?php
-	presscore_config()->set( 'subcategory', $category );
+	presscore_get_config()->set( 'subcategory', $category );
 
 	dt_woocommerce_template_subcategory_desc_under();
 	?>

@@ -13,9 +13,7 @@ global $post;
 
 $config = presscore_config();
 
-$post_classes = [
-	'single-postlike',
-];
+$post_classes = array();
 if ( $config->get_bool( 'post.fancy_date.enabled' ) ) {
 	$post_classes[] = presscore_blog_fancy_date_class();
 }

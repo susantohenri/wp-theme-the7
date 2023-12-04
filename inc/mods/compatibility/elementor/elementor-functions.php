@@ -5,15 +5,17 @@
 
 defined( 'ABSPATH' ) || exit;
 
-function the7_elementor_elements_widget_post_types( $exclude = null ) {
-	if ( ! $exclude ) {
-		$exclude = [
-			'page',
-			'product',
-		];
-	}
-
-	$post_types = array_diff_key( get_post_types( [ 'show_in_nav_menus' => true ], 'object' ), array_fill_keys( $exclude, '' ) );
+function the7_elementor_elements_widget_post_types() {
+	$post_types = array_intersect_key(
+		get_post_types( [], 'object' ),
+		[
+			'post'            => '',
+			'dt_portfolio'    => '',
+			'dt_team'         => '',
+			'dt_testimonials' => '',
+			'dt_gallery'      => '',
+		]
+	);
 
 	$supported_post_types = [];
 	foreach ( $post_types as $post_type ) {
@@ -29,7 +31,6 @@ function the7_get_public_post_types( $args = [] ) {
 	$post_type_args = [
 		// Default is the value $public.
 		'show_in_nav_menus' => true,
-		'public'            => true,
 	];
 
 	// Keep for backwards compatibility
@@ -48,9 +49,6 @@ function the7_get_public_post_types( $args = [] ) {
 		$post_types[ $post_type ] = $object->label;
 	}
 
-	// Exclude Elementor `Landing page` post type.
-	unset( $post_types['e-landing-page'] );
-
 	/**
 	 * Public Post types
 	 *
@@ -61,34 +59,6 @@ function the7_get_public_post_types( $args = [] ) {
 	return apply_filters( 'the7_get_public_post_types', $post_types );
 }
 
-function the7_get_taxonomies( $args = [], $output = 'names', $operator = 'and' ) {
-	global $wp_taxonomies;
-
-	$field = ( 'names' === $output ) ? 'name' : false;
-
-	// Handle 'object_type' separately.
-	if ( isset( $args['object_type'] ) ) {
-		$object_type = (array) $args['object_type'];
-		unset( $args['object_type'] );
-	}
-
-	$taxonomies = wp_filter_object_list( $wp_taxonomies, $args, $operator );
-
-	if ( isset( $object_type ) ) {
-		foreach ( $taxonomies as $tax => $tax_data ) {
-			if ( ! array_intersect( $object_type, $tax_data->object_type ) ) {
-				unset( $taxonomies[ $tax ] );
-			}
-		}
-	}
-
-	if ( $field ) {
-		$taxonomies = wp_list_pluck( $taxonomies, $field );
-	}
-
-	return $taxonomies;
-}
-
 /**
  * @return string
  */
@@ -97,9 +67,7 @@ function the7_elementor_get_message_about_disabled_post_type() {
 }
 
 /**
- * Return Elementor content width as a string.
- *
- * @return string
+ * @return mixed
  */
 function the7_elementor_get_content_width_string() {
 	$content_width = \The7_Elementor_Compatibility::get_elementor_settings( 'container_width' );
@@ -108,21 +76,7 @@ function the7_elementor_get_content_width_string() {
 		return $content_width['size'] . $content_width['unit'];
 	}
 
-	return (string) $content_width;
-}
-
-/**
- * Return description string for the wide columns control in widgets.
- *
- * @since 9.15.0
- *
- * @return string
- */
-function the7_elementor_get_wide_columns_control_description() {
-	// translators: %s: elementor content width.
-	$description = esc_html__( 'Leave empty to use %s (value of "Content Width" from Elementor setting).', 'the7mk2' );
-
-	return sprintf( $description, the7_elementor_get_content_width_string() );
+	return $content_width;
 }
 
 /**
@@ -135,26 +89,4 @@ function the7_is_elementor_schemes_disabled() {
 	$typography_schemes_disabled = get_option( 'elementor_disable_typography_schemes' );
 
 	return the7_is_elementor3() || ( $custom_colors_disabled && $typography_schemes_disabled );
-}
-
-/**
- * @param  array $widget_names Widget names.
- *
- * @return array
- */
-function the7_find_posts_with_elementor_widgets( array $widget_names ) {
-	global $wpdb;
-
-	$query_meta_value_equasion = [];
-
-	foreach ( $widget_names as $widget_name ) {
-		$query_meta_value_equasion[] = '`meta_value` LIKE \'%"widgetType":"' . $widget_name . '"%\'';
-	}
-
-	$query = 'SELECT `post_id` 
-		FROM `' . $wpdb->postmeta . '` 
-		WHERE `meta_key` = "_elementor_data" 
-		AND (' . implode( ' OR ', $query_meta_value_equasion ) . ');';
-
-	return $wpdb->get_col( $query );
 }

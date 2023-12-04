@@ -6,7 +6,6 @@ return array(
 	"weight" => -1,
 	"name" => __("Contact Form", 'the7mk2'),
 	"base" => "dt_contact_form",
-	'description' => '',
 	"icon" => "dt_vc_ico_contact_form",
 	"class" => "dt_vc_sc_contact_form",
 	"category" => __('by Dream-Theme', 'the7mk2'),
@@ -78,7 +77,7 @@ return array(
 			'type' => 'textarea_raw_html',
 			'edit_field_class' => 'vc_col-xs-12 vc_column the7-form-terms-field',
 			'param_name' => 'terms_msg',
-			'value' => the7_base_64_encode( esc_html_x( 'By using this form you agree with the storage and handling of your data by this website.', 'widget', 'the7mk2' ) ),
+			'value' => base64_encode( rawurlencode( wp_kses_post( _x( 'By using this form you agree with the storage and handling of your data by this website.', 'widget', 'the7mk2' ) ) ) ),
 			'dependency' => array(
 				'element' => 'terms',
 				'value' => 'y',

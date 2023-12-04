@@ -10,13 +10,9 @@
  * happen. When this occurs the version of the template file will be bumped and
  * the readme will list any important changes.
  *
- * @see         https://docs.woocommerce.com/document/template-structure/
- * @package     WooCommerce\Templates
- * @version     7.1.0
- */
-
-/**
- * Important! Strings with the7mk2 textdomain.
+ * @see 	    https://docs.woocommerce.com/document/template-structure/
+ * @package 	WooCommerce/Templates
+ * @version     3.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,11 +33,11 @@ if ( is_user_logged_in() ) {
 		echo '<div class="log-message">' . wpautop( wptexturize( $message ) ) . '</div>';
 	}
 	?>
-	<p class="form-row form-row-first name-row">
-		<input type="text" class="input-text" name="username" id="username" autocomplete="username" placeholder="<?php esc_attr_e( 'Username or email *', 'the7mk2' ); ?>" />
+		<p class="form-row form-row-first name-row">
+			<input type="text" class="input-text" placeholder="<?php esc_attr_e( 'Username or email *', 'the7mk2' ); ?>" name="username" id="username" />
 	</p>
-	<p class="form-row form-row-last password-row">
-		<input class="input-text" type="password" name="password" id="password" autocomplete="current-password" placeholder="<?php esc_attr_e( 'Password *', 'the7mk2' ); ?>" />
+		<p class="form-row form-row-last password-row">
+			<input class="input-text" placeholder="<?php esc_attr_e( 'Password *', 'the7mk2' ); ?>" type="password" name="password" id="password" />
 	</p>
 	<div class="clear"></div>
 

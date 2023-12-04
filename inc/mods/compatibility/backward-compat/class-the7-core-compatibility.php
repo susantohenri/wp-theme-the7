@@ -1,11 +1,7 @@
 <?php
-/**
- * @package The7
- */
-
-defined( 'ABSPATH' ) || exit;
 
 class The7_Core_Compatibility {
+
 
 	/**
 	 * Initiate compatibility actions.
@@ -15,19 +11,18 @@ class The7_Core_Compatibility {
 
 		if ( version_compare( $plugin_version, '1.4.1', '>=' ) ) {
 			self::hide_modules_options();
-			add_action( 'the7_before_meta_box_registration', [ __CLASS__, 'exclude_meta_fields_from_presets' ], 9999 );
+			add_action( 'the7_before_meta_box_registration', array(
+				__CLASS__,
+				'exclude_meta_fields_from_presets',
+			), 9999 );
 		}
 
-		if ( the7_is_elementor_theme_mode_active() ) {
-			add_action( 'the7_before_meta_box_registration', [ __CLASS__, 'exclude_legacy_meta_fields' ], 9999 );
-		}
-
-		add_action( 'admin_notices', [ __CLASS__, 'display_outdated_plugin_notice' ] );
+		add_action( 'admin_notices', array( __CLASS__, 'display_outdated_plugin_notice' ) );
 	}
 
 	/**
-	 * Determine is dt-the7-core has compatible version or not.
-	 *
+     * Determine is dt-the7-core has compatible version or not.
+     *
 	 * @return bool
 	 */
 	public static function plugin_is_compatible() {
@@ -39,14 +34,14 @@ class The7_Core_Compatibility {
 	 */
 	public static function display_outdated_plugin_notice() {
 		if ( ! current_user_can( 'update_plugins' ) || self::plugin_is_compatible() ) {
-			return;
-		}
-		?>
-		<div class="the7-dashboard-notice the7-notice notice notice-error">
-			<p>
-				<?php echo wp_kses_post( sprintf( __( '<strong>Important notice</strong>: You have an outdated version of <strong>The7 Elements</strong> plugin. For better compatibility with theme it is required to <a href="%s">update the plugin</a>.', 'the7mk2' ), admin_url( 'admin.php?page=the7-plugins' ) ) ); ?>
-			</p>
-		</div>
+		    return;
+        }
+	    ?>
+        <div class="the7-dashboard-notice the7-notice notice notice-error">
+            <p>
+				<?php echo wp_kses_post( sprintf( __( '<strong>Important notice</strong>: You have an outdated version of <strong>The7 Elements</strong> plugin. For better compatibility with theme it is required to <a href="%s">update the plugin</a>.', 'the7mk2' ), admin_url( 'admin.php?page=the7-plugins' ) ) ) ?>
+            </p>
+        </div>
 		<?php
 	}
 
@@ -79,33 +74,6 @@ class The7_Core_Compatibility {
 
 					$field['exclude_from_presets'] = true;
 				}
-			}
-		}
-	}
-
-	/**
-	 * Exclude meta fields not used in Elementor context.
-	 *
-	 * @return void
-	 */
-	public static function exclude_legacy_meta_fields() {
-		global $DT_META_BOXES;
-
-		foreach ( $DT_META_BOXES as &$meta_box ) {
-			if ( $meta_box['id'] === 'dt_page_box-portfolio_post' && isset( $meta_box['fields'] ) ) {
-				$meta_box['fields'] = array_filter(
-					$meta_box['fields'],
-					function( $field ) {
-						$include = [
-							'_dt_project_options_show_link',
-							'_dt_project_options_link',
-							'_dt_project_options_link_target',
-						];
-						return in_array( $field['id'], $include, true );
-					}
-				);
-				$meta_box['fields'] = array_values( $meta_box['fields'] );
-				unset( $meta_box['fields'][0]['options']['1'] );
 			}
 		}
 	}

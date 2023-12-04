@@ -6,7 +6,7 @@ if ( ! function_exists( 'presscore_list_container_data_atts' ) ) :
 	 * [presscore_list_container_data_atts description]
 	 *
 	 * @since 2.1.0
-	 *
+	 * 
 	 * @return string [description]
 	 */
 	function presscore_list_container_data_atts( $custom_atts = array() ) {
@@ -24,12 +24,12 @@ if ( ! function_exists( 'presscore_list_container_html_class' ) ) :
 
 	/**
 	 * @since 1.0.0
-	 *
+	 * 
 	 * @param  array  $class
 	 * @return string
 	 */
 	function presscore_list_container_html_class( $custom_class = array() ) {
-		$config = presscore_config();
+		$config = presscore_get_config();
 
 		$html_class = array();
 

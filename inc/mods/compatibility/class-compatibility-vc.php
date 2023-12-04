@@ -39,8 +39,9 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_VC', false ) ) :
 			if ( presscore_vc_is_inline() ) {
 				add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_vc_inline_assets' ), 20 );
 			}
-
-			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_wpbakery_styles' ), 15  );
+			if ( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ) {
+				add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_wpbakery_styles' ) );
+			}
 
 			add_action( 'vc_after_init_base', array( __CLASS__, 'remove_vc_the_excerpt_filter' ) );
 
@@ -156,7 +157,7 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_VC', false ) ) :
 		}
 
 		public static function  enqueue_wpbakery_styles() {
-			the7_register_style( 'the7-wpbakery', PRESSCORE_THEME_URI . '/css/wpbakery' );
+			the7_register_style( 'the7-wpbakery', PRESSCORE_THEME_URI . '/css-lite/wpbakery' );
 			wp_enqueue_style( 'the7-wpbakery' );
 		}
 

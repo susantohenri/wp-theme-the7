@@ -1,12 +1,14 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Pro\Modules\Dynamic_Tags\The7\Tags;
+namespace The7\Adapters\Elementor\Pro\DynamicTags\The7\Tags;
 
 use Elementor\Controls_Manager;
 use Elementor\Core\DynamicTags\Tag;
-use The7\Mods\Compatibility\Elementor\Pro\Modules\Dynamic_Tags\The7\Module;
+use The7\Adapters\Elementor\Pro\DynamicTags\The7\Module;
 
-defined( 'ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly
+}
 
 class The7_Color extends Tag {
 
@@ -26,7 +28,7 @@ class The7_Color extends Tag {
 		return 'the7-color';
 	}
 
-	protected function register_controls() {
+	protected function _register_controls() {
 		$this->add_control( 'color-type', [
 			'label'  => __( 'Color', 'the7mk2' ),
 			'type'   => Controls_Manager::SELECT,

@@ -14,8 +14,10 @@ if ( The7_Admin_Dashboard_Settings::get( 'rows' ) && $use_the7_rows ) {
 	} else {
 		return include dirname( __FILE__ ) . '/dt_vc_row.php';
 	}
-} elseif ( $echo_shortcode_content ) {
-	include trailingslashit( $vc_manager->getDefaultShortcodesTemplatesDir() ) . 'vc_row.php';
 } else {
-	return include trailingslashit( $vc_manager->getDefaultShortcodesTemplatesDir() ) . 'vc_row.php';
+	if ( $echo_shortcode_content ) {
+		include trailingslashit( $vc_manager->getDefaultShortcodesTemplatesDir() ) . 'vc_row.php';
+	} else {
+		return include trailingslashit( $vc_manager->getDefaultShortcodesTemplatesDir() ) . 'vc_row.php';
+	}
 }

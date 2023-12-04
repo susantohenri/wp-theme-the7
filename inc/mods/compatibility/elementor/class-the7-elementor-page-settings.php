@@ -4,13 +4,11 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor;
+namespace The7\Adapters\Elementor;
 
 use Elementor\Controls_Manager;
 use Elementor\Plugin;
 use ElementorPro\Modules\ThemeBuilder\Documents\Theme_Page_Document;
-use The7\Mods\Compatibility\Elementor\Modules\Mega_Menu\Module as Mega_Menu_Module;
-use The7\Mods\Compatibility\Elementor\Modules\Slider\Module as Slider_Module;
 use The7_Elementor_Compatibility;
 
 defined( 'ABSPATH' ) || exit;
@@ -186,28 +184,14 @@ class The7_Elementor_Page_Settings {
 		the7_update_post_css( $post_id );
 	}
 
-
-
 	/**
 	 * Add scripts to auto save and reload preview.
 	 */
 	public function enqueue_editor_scripts() {
-
 		the7_register_style( 'the7-elementor-editor', PRESSCORE_ADMIN_URI . '/assets/css/elementor-editor' );
 		wp_enqueue_style( 'the7-elementor-editor' );
 
-		the7_register_script_in_footer(
-			'the7-elementor-migrator',
-			PRESSCORE_ADMIN_URI . '/assets/js/elementor/migrator.js'
-		);
-
-		the7_register_script_in_footer(
-			'the7-elementor-page-settings',
-			PRESSCORE_ADMIN_URI . '/assets/js/elementor/page-settings.js'
-		);
-
-		wp_enqueue_script( 'the7-elementor-page-settings' );
-		wp_enqueue_script( 'the7-elementor-migrator' );
+		wp_enqueue_script( 'the7-elementor-page-settings', PRESSCORE_ADMIN_URI . '/assets/js/elementor/page-settings.js', [], THE7_VERSION, true );
 
 		presscore_enqueue_web_fonts();
 
@@ -248,31 +232,26 @@ class The7_Elementor_Page_Settings {
 	protected function get_sections( $document ) {
 		$sections_definition = [
 			'the7_document_title_section' => [
-				'exclude_documents' => [ 'footer', 'section', 'widget', 'popup', Mega_Menu_Module::DOCUMENT_TYPE, Slider_Module::DOCUMENT_TYPE ],
+				'exclude_documents' => [ 'footer', 'section', 'widget' ],
 				'file'              => 'page-title.php',
 			],
 			'the7_document_sidebar'       => [
-				'exclude_documents' => [ 'footer', 'header', 'section', 'widget', 'popup', Mega_Menu_Module::DOCUMENT_TYPE, Slider_Module::DOCUMENT_TYPE ],
+				'exclude_documents' => [ 'footer', 'header', 'section', 'widget' ],
 				'file'              => 'sidebar.php',
 			],
 			'the7_document_footer'        => [
-				'exclude_documents' => [ 'footer', 'header', 'section', 'widget', 'popup', Mega_Menu_Module::DOCUMENT_TYPE, Slider_Module::DOCUMENT_TYPE ],
+				'exclude_documents' => [ 'footer', 'header', 'section', 'widget' ],
 				'file'              => 'footer.php',
 			],
 			'the7_document_paddings'      => [
-				'exclude_documents' => [ 'footer', 'header', 'section', 'widget', 'popup', Mega_Menu_Module::DOCUMENT_TYPE, Slider_Module::DOCUMENT_TYPE ],
+				'exclude_documents' => [ 'footer', 'header', 'section', 'widget' ],
 				'file'              => 'paddings.php',
 			],
 			'the7_document_menus'      => [
-				'exclude_documents' => [ 'footer', 'section', 'widget', 'popup', Mega_Menu_Module::DOCUMENT_TYPE, Slider_Module::DOCUMENT_TYPE ],
+				'exclude_documents' => [ 'footer', 'section', 'widget' ],
 				'file'              => 'menus.php',
 			],
 		];
-
-		// Do not load page settings that mimic one in meta-boxes.
-		if ( the7_is_elementor_theme_mode_active() ) {
-			$sections_definition = [];
-		}
 
 		$sections = [];
 
@@ -282,7 +261,7 @@ class The7_Elementor_Page_Settings {
 			$this->template_option_name = 'template';
 			if ( defined( 'ELEMENTOR_PRO_VERSION' ) && $document instanceof Theme_Page_Document ) {
 				$this->template_option_name = 'page_template';
-			} elseif ( empty( $document->get_controls( 'template' ) ) ) {
+			} else if ( empty( $document->get_controls( 'template' ) ) ) {
 				$this->template_option_name = 'post_status'; //workaround if there no template and  page_template on the page
 			}
 
@@ -385,14 +364,14 @@ class The7_Elementor_Page_Settings {
 		if ( ! $document ) {
 			return;
 		}
-		if ( ! in_array( $document->get_name(), [ 'footer', 'section', 'widget', 'popup' ], true ) ) {
+		if ( ! in_array( $document->get_name(), [ 'footer', 'section', 'widget' ], true ) ) {
 			$header_layout = of_get_option( 'header-layout' );
 
 			if ( $header_layout == 'side' || $header_layout == 'side_line' ) {
 				$header_name = '';
 				if ( $header_layout == 'side' ) {
 					$header_name = __( 'side', 'the7mk2' );
-				} elseif ( $header_layout == 'side_line' ) {
+				} else if ( $header_layout == 'side_line' ) {
 					$header_name = __( 'side line', 'the7mk2' );
 				}
 				$elements = [
@@ -417,7 +396,8 @@ class The7_Elementor_Page_Settings {
 					] );
 					$document->end_injection();
 				}
-			} elseif ( $header_layout === 'disabled' ) {
+			}
+			else if( $header_layout === 'disabled' ){
 				$elements = [
 					"the7_document_show_header",
 					"the7_document_disabled_header_heading",
@@ -430,12 +410,12 @@ class The7_Elementor_Page_Settings {
 					"the7_document_fancy_header_style"
 				];
 				foreach ( $elements as $key ) {
-					$document->remove_control( $key );
+					$document->remove_control($key);
 				}
 			}
 		}
 
-		if ( ! in_array( $document->get_name(), [ 'footer', 'section', 'widget', 'popup' ], true ) ) {
+		if ( ! in_array( $document->get_name(), [ 'footer', 'section', 'widget' ], true ) ) {
 			$applied_archive_template_id = '';
 			if ( defined( 'ELEMENTOR_PRO_VERSION' ) ) {
 				//check if archive applied
@@ -507,7 +487,7 @@ class The7_Elementor_Page_Settings {
 			$document->end_injection();
 		}
 
-		if ( ! in_array( $document->get_name(), [ 'footer', 'header', 'section', 'archive', 'widget', 'popup'], true ) ) {
+		if ( ! in_array( $document->get_name(), [ 'footer', 'header', 'section', 'archive', 'widget' ], true ) ) {
 			$applied_header_template_id = '';
 			$applied_footer_template_id = '';
 			if ( defined( 'ELEMENTOR_PRO_VERSION' ) ) {
@@ -517,7 +497,7 @@ class The7_Elementor_Page_Settings {
 				$applied_footer_template_id = The7_Elementor_Compatibility::get_document_id_for_location( 'footer', $applied_footer_template_id );
 			}
 			$document_template_message = __( 'A <a href="%1$s" target="_blank">%2$s template</a>  is being applied to this page. To edit individual %2$s settings, please exclude this page from template display conditions.', 'the7mk2' );
-			if ( ! empty( $applied_header_template_id ) && $document->get_control_index('the7_document_show_header') ) {
+			if ( ! empty( $applied_header_template_id ) ) {
 				$document->start_injection( [
 					'of' => 'the7_document_show_header',
 					'at' => 'before',
@@ -536,7 +516,7 @@ class The7_Elementor_Page_Settings {
 				$document->end_injection();
 			}
 
-			if ( ! empty( $applied_footer_template_id ) && $document->get_control_index('the7_document_show_footer_wa') ) {
+			if ( ! empty( $applied_footer_template_id ) ) {
 				$document->start_injection( [
 					'of' => 'the7_document_show_footer_wa',
 					'at' => 'before',

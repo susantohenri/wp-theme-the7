@@ -124,7 +124,7 @@ $options['header-menu-submenu-typography'] = array(
 	'id'   => 'header-menu-submenu-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),

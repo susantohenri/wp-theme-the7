@@ -1,33 +1,26 @@
 <?php
 /**
  * Bundled plugin content
- *
- * @package The7
+ * @package the7
  * @since   5.1.5
  */
 
-defined( 'ABSPATH' ) || exit;
-
-if ( ! is_admin() ) {
-	return;
+// File Security Check
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-$bundled_plugins = [
-	new \The7\Mods\Bundled_Content\WPB(),
-	new \The7\Mods\Bundled_Content\Brainstorm(),
-];
+require_once dirname( __FILE__ ) . '/includes/main-module.class.php';
 
-foreach ( $bundled_plugins as $bundled_plugin ) {
-	/**
-	 * @var The7\Mods\Bundled_Content\Abstract_Bundled_Plugin $bundled_plugin
-	 */
-	if ( ! $bundled_plugin->is_active() ) {
-		continue;
+function bundled_content() {
+	static $instance = null;
+	if ( null === $instance ) {
+		$instance = new BundledContentMainModule();
 	}
 
-	if ( presscore_theme_is_activated() ) {
-		$bundled_plugin->activate_plugin();
-	} else {
-		$bundled_plugin->deactivate_plugin();
-	}
+	return $instance;
 }
+
+$bundledContent = bundled_content();
+$bundledContent->execute();
+

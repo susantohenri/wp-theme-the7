@@ -8,9 +8,9 @@
 defined( 'ABSPATH' ) || exit;
 
 $options[] = array(
-	'name' => _x( 'Font colors', 'theme-options', 'the7mk2' ),
+	'name' => _x( 'Content Fonts', 'theme-options', 'the7mk2' ),
 	'type' => 'heading',
-	'id'   => 'heading-font-color',
+	'id'   => 'content-fonts',
 );
 
 $options[] = array(
@@ -48,12 +48,6 @@ $options['content-links_color'] = array(
 
 $options[] = array(
 	'name' => _x( 'Basic font', 'theme-options', 'the7mk2' ),
-	'type' => 'heading',
-	'id'   => 'heading-font-basic',
-);
-
-$options[] = array(
-	'name' => _x( 'Basic font', 'theme-options', 'the7mk2' ),
 	'type' => 'block',
 	'class' => 'basic-font-block'
 );
@@ -61,7 +55,7 @@ $options[] = array(
 $options['fonts-font_family'] = array(
 	'name'  => _x( 'Choose basic font-family', 'theme-options', 'the7mk2' ),
 	'id'    => 'fonts-font_family',
-	'std'   => 'Arial',
+	'std'   => 'Open Sans',
 	'type'  => 'web_fonts',
 	'fonts' => 'all',
 );
@@ -104,7 +98,7 @@ foreach ( $font_sizes as $id => $data ) {
 		'id'    => 'fonts-'  . $id,
 		'type'  => 'font_sizes',
 		'std'  => array(
-			'font_preview'   => 'Arial',
+			'font_preview'   => 'Open Sans',
 			'font_size'      => $data['font_std'],
 			'line_height'    => $data['lh_std'],
 		),
@@ -114,12 +108,6 @@ foreach ( $font_sizes as $id => $data ) {
 		),
 	);
 }
-
-$options[] = array(
-	'name' => _x( 'Headings', 'theme-options', 'the7mk2' ),
-	'type' => 'heading',
-	'id'   => 'heading-headings',
-);
 
 $options[] = array(
 	'name' => _x( 'Headings fonts', 'theme-options', 'the7mk2' ),
@@ -168,7 +156,7 @@ $options['fonts-h1-typography'] = array(
 	'id'   => 'fonts-h1-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'            => 'Arial',
+		'font_family'            => 'Open Sans',
 		'responsive_font_size'   => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '44px',
 		),
@@ -190,7 +178,7 @@ $options['fonts-h2-typography'] = array(
 	'id'   => 'fonts-h2-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'responsive_font_size'      => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '26px',
 		),
@@ -212,7 +200,7 @@ $options['fonts-h3-typography'] = array(
 	'id'   => 'fonts-h3-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'responsive_font_size'      => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '22px',
 		),
@@ -239,7 +227,7 @@ $options['fonts-h4-typography'] = array(
 	'id'   => 'fonts-h4-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'responsive_font_size'      => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '18px',
 		),
@@ -257,11 +245,16 @@ $options[] = array(
 	'type' => 'title',
 );
 
+$options[] = array(
+	'desc' => _x( 'Default font for widget titles in sidebar & footer.', 'theme-options', 'the7mk2' ),
+	'type' => 'info',
+);
+
 $options['fonts-h5-typography'] = array(
 	'id'   => 'fonts-h5-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'responsive_font_size'      => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
 		),
@@ -283,7 +276,7 @@ $options['fonts-h6-typography'] = array(
 	'id'   => 'fonts-h6-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'responsive_font_size'      => array(
 			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '12px',
 		),
@@ -293,65 +286,3 @@ $options['fonts-h6-typography'] = array(
 		'text_transform' => 'none',
 	),
 );
-
-$options[] = array(
-	'name' => _x( 'Widgets', 'theme-options', 'the7mk2' ),
-	'type' => 'heading',
-	'id'   => 'heading-widgets',
-);
-
-$options[] = array(
-	'name' => _x( 'Widget fonts', 'theme-options', 'the7mk2' ),
-	'type' => 'block',
-);
-
-$options[] = array(
-	'name' => _x( 'Widget title', 'theme-options', 'the7mk2' ),
-	'type' => 'title',
-);
-
-$options['fonts-widget-title'] = array(
-	'id'   => 'fonts-widget-title',
-	'type' => 'typography',
-	'std'  => array(
-		'font_family'    => 'Arial',
-		'responsive_font_size'      => array(
-			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '15px',
-		),
-		'responsive_line_height'    => array(
-			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
-		),
-		'text_transform' => 'none',
-	),
-);
-
-$options['widget_gap']        = array(
-	'id'         => 'widget_gap',
-	'name'       => _x( 'Gap below widget title', 'theme-options', 'the7mk2' ),
-	'std'        => '15px',
-	'type'       => 'number',
-	'units'      => 'px',
-);
-
-$options[] = array( 'type' => 'divider' );
-
-$options[] = array(
-	'name' => _x( 'Widget content', 'theme-options', 'the7mk2' ),
-	'type' => 'title',
-);
-
-$options['fonts-widget-content'] = array(
-	'id'   => 'fonts-widget-content',
-	'type' => 'typography',
-	'std'        => array(
-		'font_family'    => 'Arial',
-		'responsive_font_size'      => array(
-			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '13px',
-		),
-		'responsive_line_height'    => array(
-			The7_Option_Field_Responsive_Option::RESPONSIVE_DESKTOP => '20px',
-		),
-		'text_transform' => 'none',
-	),
-);
-

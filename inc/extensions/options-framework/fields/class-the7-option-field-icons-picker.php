@@ -58,7 +58,7 @@ class The7_Option_Field_Icons_Picker extends The7_Option_Field_Abstract {
 		$output .= '<div class="of-icons_picker-controls of-icons_picker-list-sub-is-closed">';
 		$output .= '<input type="hidden" name="' . esc_attr( $name ) . '" class="of-icons_picker-value ' . esc_attr( $config['value_input_class'] ) . '" value="' . esc_attr( $value ) . '" />';
 		$output .= '<ul class="of-icons_picker-list">';
-		$output .= '<li class="of-icons_picker-selector" data-icon="' . esc_attr( $value ) . '"><i class="' . esc_attr( $config['icon_class'] ) . ' ' . esc_attr( $value ) . '"></i><span class="selector-button"><i class="of-icon-closed dashicons dashicons-arrow-down"></i><i class="of-icon-opened dashicons dashicons-arrow-up"></i></span>';
+		$output .= '<li class="of-icons_picker-selector" data-icon="' . esc_attr( $value ) . '"><i class="' . esc_attr( $config['icon_class'] ) . ' ' . esc_attr( $value ) . '"></i><span class="selector-button"><i class="of-icon-closed icomoon-the7-font-the7-arrow-29-1"></i><i class="of-icon-opened icomoon-the7-font-the7-arrow-29-0"></i></span>';
 		$output .= '<ul class="of-icons_picker-list-sub">';
 		$output .= '<input type="search" class="of-icons_picker-search widefat" placeholder="' . esc_attr( _x( 'Filter icons', 'admin', 'the7mk2' ) ) . '">';
 		foreach ( $icons as $font => $icon_set ) {

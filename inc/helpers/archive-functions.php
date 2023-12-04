@@ -20,14 +20,16 @@ if ( ! function_exists( 'presscore_archive_post_content' ) ) {
 
 			echo $html;
 
-		} elseif ( 'post' == $post_type ) {
+		} else if ( 'post' == $post_type ) {
 
 			presscore_config()->set( 'show_details', false );
 			presscore_populate_post_config();
 			presscore_get_template_part( 'theme', 'blog/masonry/blog-masonry-post' );
+
 		} else {
 
 			presscore_get_template_part( 'theme', 'content-archive' );
+
 		}
 	}
 }

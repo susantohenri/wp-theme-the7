@@ -3,9 +3,9 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor\Meta_Adapters;
+namespace The7\Adapters\Elementor\Meta_Adapters;
 
-use The7\Vendor\Color\Color;
+use \Color;
 
 defined( 'ABSPATH' ) || exit;
 

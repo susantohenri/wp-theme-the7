@@ -11,22 +11,23 @@ defined( 'ABSPATH' ) || exit;
 class The7_Woocommerce_Compatibility {
 
 	public function bootstrap() {
-		require_once __DIR__ . '/admin/mod-wc-shortcodes.php';
-		require_once __DIR__ . '/admin/mod-wc-admin-functions.php';
+		$mod_dir = dirname( __FILE__ );
 
-		require_once __DIR__ . '/front/mod-wc-class-template-config.php';
-		require_once __DIR__ . '/front/mod-wc-template-functions.php';
-		require_once __DIR__ . '/front/mod-wc-template-config.php';
-		require_once __DIR__ . '/front/class-the7-wc-mini-cart.php';
-		require_once __DIR__ . '/front/recently-viewed-products.php';
 
-		// Add wooCommerce support.
-		add_theme_support(
-			'woocommerce',
-			[
-				'gallery_thumbnail_image_width' => 200,
-			]
-		);
+		// admin scripts
+		require_once "{$mod_dir}/admin/mod-wc-shortcodes.php";
+		require_once "{$mod_dir}/admin/mod-wc-admin-functions.php";
+
+		//frontend scripts
+		require_once "{$mod_dir}/front/mod-wc-class-template-config.php";
+		require_once "{$mod_dir}/front/mod-wc-template-functions.php";
+		require_once "{$mod_dir}/front/mod-wc-template-config.php";
+		require_once "{$mod_dir}/front/class-the7-wc-mini-cart.php";
+
+		// add wooCommerce support
+		add_theme_support( 'woocommerce', array(
+			'gallery_thumbnail_image_width' => 200,
+		) );
 
 		if ( of_get_option( 'woocommerce-product_zoom' ) ) {
 			add_theme_support( 'wc-product-gallery-zoom' );
@@ -40,17 +41,20 @@ class The7_Woocommerce_Compatibility {
 
 		presscore_template_manager()->add_path( 'woocommerce', 'inc/mods/compatibility/woocommerce/front/templates' );
 
-		// Fix for elementor modules/woocommerce/module.php:335.
-		add_action( 'init', [ $this, 'register_wc_hooks' ], 10 );
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ], 20 );
+		add_action( 'init', array( $this, 'register_wc_hooks' ), 10); // fix for elementor modules/woocommerce/module.php:335
+
+		add_action( 'wp_enqueue_scripts',  array( $this,  'enqueue_scripts' ), 20 );
 	}
 
 	public function register_wc_hooks(){
-		require_once __DIR__ . '/front/mod-wc-template-hooks.php';
+		$mod_dir = dirname( __FILE__ );
+		require_once "{$mod_dir}/front/mod-wc-template-hooks.php";
 	}
 
 	public static function enqueue_scripts( ) {
-		wp_enqueue_script( 'dt-woocommerce' );
+		if ( The7_Admin_Dashboard_Settings::get( 'lite-mode' ) ) {
+			wp_enqueue_script( 'dt-woocommerce' );
+		}
 	}
 
 	/**

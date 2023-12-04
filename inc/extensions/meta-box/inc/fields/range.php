@@ -73,7 +73,8 @@ if ( !class_exists( 'THE7_RWMB_Range_Field' ) )
 
 			if ($new < $min) {
 				return $min;
-			} elseif ( $new > $max ) {
+			}
+			else if ($new > $max) {
 				return $max;
 			}
 

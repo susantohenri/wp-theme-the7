@@ -21,7 +21,7 @@ class The7_Walker_Page extends Walker_Page {
 	 *
 	 * Calls parent function in wp-includes/class-wp-walker.php
 	 */
-	function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
+	function display_element( $element, &$children_elements, $max_depth, $depth = 0, $args, &$output ) {
 
 		if ( ! $element ) {
 			return;
@@ -87,6 +87,7 @@ class The7_Walker_Page extends Walker_Page {
 		if ( $dt_is_parent && ! $args['parent_is_clickable'] ) {
 			$atts['class'] = 'not-clickable-item';
 		}
+		$atts['role'] = 'menuitem';
 
 		$attributes = the7_get_html_attributes_string( $atts );
 
@@ -101,7 +102,7 @@ class The7_Walker_Page extends Walker_Page {
 		$args['link_after'] = empty( $args['link_after'] ) ? '' : $args['link_after'];
 
 		$output .= $indent . sprintf(
-				'<li class="%s"><a %s>%s%s%s</a>',
+				'<li class="%s" role="presentation"><a %s>%s%s%s</a>',
 				$css_classes,
 				$attributes,
 				$args['link_before'],

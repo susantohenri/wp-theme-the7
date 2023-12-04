@@ -14,9 +14,6 @@ defined( 'ABSPATH' ) || exit;
  */
 class The7_Icon_Manager {
 
-	/**
-	 * @var array Icons list.
-	 */
 	protected static $iconlist = array();
 
 	const ICONS_DIR_NAME   = 'smile_fonts';
@@ -27,16 +24,12 @@ class The7_Icon_Manager {
 	 * Add base hooks.
 	 */
 	public static function add_hooks() {
-		add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue_icon_fonts' ] );
-		add_filter( 'body_class', [ __CLASS__, 'add_body_class' ] );
-
-		if ( is_admin() ) {
-			add_action( 'admin_menu', [ __CLASS__, 'add_admin_menu' ] );
-			add_action( 'wp_ajax_the7_icons_manager_add_zipped_font', [ __CLASS__, 'ajax_add_zipped_font' ] );
-			add_action( 'wp_ajax_the7_icons_manager_remove_zipped_font', [ __CLASS__, 'ajax_remove_zipped_font' ] );
-			add_action( 'wp_ajax_the7_icons_manager_add_font_awesome', [ __CLASS__, 'ajax_add_font_awesome' ] );
-			add_action( 'wp_ajax_the7_icons_manager_add_ua_default_icons', [ __CLASS__, 'ajax_add_ua_default_icons' ] );
-		}
+		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ) );
+		add_action( 'wp_ajax_the7_icons_manager_add_zipped_font', array( __CLASS__, 'ajax_add_zipped_font' ) );
+		add_action( 'wp_ajax_the7_icons_manager_remove_zipped_font', array( __CLASS__, 'ajax_remove_zipped_font' ) );
+		add_action( 'wp_ajax_the7_icons_manager_add_font_awesome', array( __CLASS__, 'ajax_add_font_awesome' ) );
+		add_action( 'wp_ajax_the7_icons_manager_add_ua_default_icons', array( __CLASS__, 'ajax_add_ua_default_icons' ) );
+		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_icon_fonts' ) );
 	}
 
 	/**
@@ -78,6 +71,11 @@ class The7_Icon_Manager {
 		wp_enqueue_media();
 		wp_enqueue_style( 'the7-icon-manager' );
 
+		if ( self::is_fontawesome_enabled() ) {
+			the7_register_fontawesome_style( 'the7-awesome-fonts' );
+			wp_enqueue_style( 'the7-awesome-fonts' );
+		}
+
 		self::enqueue_icon_fonts();
 
 		wp_localize_script(
@@ -110,19 +108,6 @@ class The7_Icon_Manager {
 	 * Enqueue icon fonts.
 	 */
 	public static function enqueue_icon_fonts() {
-		the7_register_style( 'the7-font', PRESSCORE_THEME_URI . '/fonts/icomoon-the7-font/icomoon-the7-font.css' );
-		wp_enqueue_style( 'the7-font' );
-
-		$fa_status = self::is_fontawesome_enabled();
-		if ( $fa_status !== false ) {
-			the7_register_fontawesome_style( 'the7-awesome-fonts' );
-			wp_enqueue_style( 'the7-awesome-fonts' );
-			if ( $fa_status === 'fa4' ) {
-				the7_register_style( 'the7-awesome-fonts-back', PRESSCORE_THEME_URI . '/fonts/FontAwesome/back-compat.css' );
-				wp_enqueue_style( 'the7-awesome-fonts-back' );
-			}
-		}
-
 		$fonts = self::get_custom_icons();
 
 		if ( ! $fonts ) {
@@ -140,22 +125,10 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param array $classes Classes.
-	 *
-	 * @return array
-	 */
-	public static function add_body_class( $classes ) {
-		if ( self::is_fontawesome_enabled() ) {
-			$classes[] = 'dt-fa-compatibility';
-		}
-
-		return $classes;
-	}
-
-	/**
 	 * Display icons manager page.
 	 */
 	public static function icon_manager_dashboard() {
+		self::maybe_delete_all_fonts();
 		?>
 			<div id="the7-dashboard" class="wrap">
 				<h1>
@@ -195,7 +168,7 @@ class The7_Icon_Manager {
 			self::get_font_set();
 			$fa_status = self::is_fontawesome_enabled();
 			if ( $fa_status ) {
-				$fa_title   = $fa_status === 'fa5' ? 'Font Awesome 5' : 'Font Awesome 4';
+				$fa_title = $fa_status === 'fa5' ? 'Font Awesome 5' : 'Font Awesome 4';
 				$fa_version = self::get_fontawesome_version();
 				self::print_icon_set( self::get_fontawesome_icons(), $fa_title, $fa_title . " ($fa_version)" );
 			}
@@ -209,13 +182,13 @@ class The7_Icon_Manager {
 	 */
 	public static function get_font_set() {
 		$upload_dir = wp_get_upload_dir();
-		$fonts      = self::get_custom_icons();
+		$fonts = self::get_custom_icons();
 		foreach ( $fonts as $font => $info ) {
 			$icon_set = array();
 			$icons    = array();
 			$file     = $info['include'] . '/' . $info['config'];
 			if ( ! file_exists( $file ) ) {
-				$file = trailingslashit( $upload_dir['basedir'] ) . $file;
+				$file       = trailingslashit( $upload_dir['basedir'] ) . $file;
 				if ( ! file_exists( $file ) ) {
 					self::remove_font( $font );
 					continue;
@@ -230,15 +203,6 @@ class The7_Icon_Manager {
 		}
 	}
 
-	/**
-	 * @param array  $icon_set Icons set.
-	 * @param string $font_id Font id.
-	 * @param string $font_title Font title.
-	 * @param string $icons_prefix Icons prefix.
-	 * @param bool   $can_be_deleted Can be ddeleted.
-	 *
-	 * @return string|void
-	 */
 	public static function print_icon_set( $icon_set, $font_id, $font_title = '', $icons_prefix = '', $can_be_deleted = true ) {
 		if ( empty( $icon_set ) ) {
 			return '';
@@ -247,7 +211,7 @@ class The7_Icon_Manager {
 		$font_title = $font_title ? $font_title : $font_id;
 		$font_id    = str_replace( ' ', '-', $font_id );
 		$output     = '<div class="icon_set-' . esc_attr( $font_id ) . ' metabox-holder">';
-		$output    .= '<div class="postbox">';
+		$output     .= '<div class="postbox">';
 		reset( $icon_set );
 		$count = count( current( $icon_set ) );
 		if ( $font_id === 'smt' || $font_id === 'Defaults' ) {
@@ -280,8 +244,6 @@ class The7_Icon_Manager {
 
 	/**
 	 * Ajax action to add icons.
-	 *
-	 * @throws Exception
 	 */
 	public static function ajax_add_zipped_font() {
 		global $wp_filesystem;
@@ -324,17 +286,15 @@ class The7_Icon_Manager {
 			$installed_fonts = (array) $wp_filesystem->dirlist( $font_dir );
 			$font_name       = self::create_config( $tmp_dir, $font_dir, array_keys( $installed_fonts ) );
 
-			die( 'the7_icon_font_added: ' . esc_html( $font_name ) );
+			die( 'the7_icon_font_added: ' . $font_name );
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			echo $e->getMessage();
 			die();
 		}
 	}
 
 	/**
 	 * Ajax action to remove icons.
-	 *
-	 * @throws Exception
 	 */
 	public static function ajax_remove_zipped_font() {
 		global $wp_filesystem;
@@ -354,7 +314,7 @@ class The7_Icon_Manager {
 
 			$font = sanitize_text_field( wp_unslash( $_POST['del_font'] ) );
 
-			$is_font_awesome     = in_array( $font, array( 'Font-Awesome-4', 'Font-Awesome-5' ), true );
+			$is_font_awesome = in_array( $font, array( 'Font-Awesome-4', 'Font-Awesome-5' ), true );
 			$is_ua_default_icons = $font === 'Defaults';
 
 			$return_value = 'the7_icon_font_removed';
@@ -377,9 +337,9 @@ class The7_Icon_Manager {
 				self::remove_font( $font );
 			}
 
-			die( esc_html( $return_value ) );
+			die( $return_value );
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			echo $e->getMessage();
 			die();
 		}
 	}
@@ -407,7 +367,7 @@ class The7_Icon_Manager {
 			$type === 'fa5' ? self::enable_fontawesome5() : self::enable_fontawesome4();
 			die( 'the7_icon_font_added: FontAwesome' );
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			echo $e->getMessage();
 			die();
 		}
 	}
@@ -416,18 +376,11 @@ class The7_Icon_Manager {
 	 * @return bool
 	 */
 	public static function add_ua_default_icons() {
-		if ( class_exists( 'AIO_Icon_Manager' ) ) {
-			$ua_icons_manager = new AIO_Icon_Manager();
-		} elseif ( class_exists( 'Ultimate_VC_Addons_Icon_Manager' ) ) {
-			$ua_icons_manager = new Ultimate_VC_Addons_Icon_Manager();
-		} else {
+		if ( ! class_exists( 'AIO_Icon_Manager' ) ) {
 			return false;
 		}
 
-		if ( ! method_exists( $ua_icons_manager, 'AIO_move_fonts' ) ) {
-			return false;
-		}
-
+		$ua_icons_manager = new AIO_Icon_Manager();
 		$ua_icons_manager->AIO_move_fonts();
 
 		return true;
@@ -435,8 +388,6 @@ class The7_Icon_Manager {
 
 	/**
 	 * Add UA default icons via AJAX.
-	 *
-	 * @throws Exception
 	 */
 	public static function ajax_add_ua_default_icons() {
 		try {
@@ -453,12 +404,12 @@ class The7_Icon_Manager {
 			}
 
 			if ( ! static::add_ua_default_icons() ) {
-				die( esc_html_x( 'Seems that Ultimate VC Addons plugin is inactive. Please, activate it and try again.', 'admin', 'the7mk2' ) );
+				die( _x( 'Seems that Ultimate VC Addons plugin is inactive. Please, activate it and try again.', 'admin', 'the7mk2' ) );
 			}
 
 			die( 'the7_icon_font_added: Defaults' );
 		} catch ( Exception $e ) {
-			echo esc_html( $e->getMessage() );
+			echo $e->getMessage();
 			die();
 		}
 	}
@@ -491,9 +442,9 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $file File.
-	 * @param string $to Dir name.
-	 * @param array  $filter Filter.
+	 * @param       $file
+	 * @param       $to
+	 * @param array $filter
 	 *
 	 * @return bool
 	 * @throws Exception
@@ -565,13 +516,8 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @throws Exception
-	 *
-	 * @param string $font_dir Font dir.
-	 * @param array  $installed_fonts Fonts list.
-	 * @param string $work_dir Work dir.
-	 *
 	 * @return string
+	 * @throws Exception
 	 */
 	protected static function create_config( $work_dir, $font_dir, $installed_fonts = array() ) {
 		global $wp_filesystem;
@@ -645,9 +591,9 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $font_name Font name.
-	 * @param array  $json_config Config.
-	 * @param string $work_dir Work dir.
+	 * @param $font_name
+	 * @param $json_config
+	 * @param $work_dir
 	 *
 	 * @throws Exception
 	 */
@@ -672,8 +618,8 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $font_name Font name.
-	 * @param string $work_dir Work dir.
+	 * @param $font_name
+	 * @param $work_dir
 	 *
 	 * @throws Exception
 	 */
@@ -704,8 +650,8 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $font_name Font name.
-	 * @param string $work_dir Work dir.
+	 * @param $font_name
+	 * @param $work_dir
 	 */
 	protected static function rename_files( $font_name, $work_dir ) {
 		$extensions = array( 'eot', 'svg', 'ttf', 'woff', 'css' );
@@ -723,8 +669,8 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $source_dir Source dir.
-	 * @param string $destination_dir Destination dir.
+	 * @param $source_dir
+	 * @param $destination_dir
 	 *
 	 * @return bool
 	 * @throws Exception
@@ -741,12 +687,29 @@ class The7_Icon_Manager {
 		return true;
 	}
 
-	/**
-	 * @param string $font_name Font name.
-	 * @param string $font_dir Font dir.
-	 *
-	 * @return void
-	 */
+	protected static function maybe_delete_all_fonts() {
+		global $wp_filesystem, $plugin_page;
+
+		if ( ! isset( $_GET['delete-the7-fonts'] ) ) {
+			return;
+		}
+
+		if ( ! current_user_can( apply_filters( 'the7_file_upload_capability', 'switch_themes' ) ) ) {
+			wp_die( __( "Using this feature is reserved for Super Admins. You unfortunately don't have the necessary permissions.", 'the7mk2' ) );
+		}
+
+		try {
+			self::load_wp_filesystem();
+		} catch ( Exception $e ) {
+			wp_die( $e->getMessage() );
+		}
+
+		$wp_filesystem->rmdir( self::get_font_dir(), true );
+		delete_option( 'smile_fonts' );
+		wp_redirect( admin_url( "admin.php?page={$plugin_page}" ) );
+		exit;
+	}
+
 	protected static function add_font( $font_name, $font_dir ) {
 		$fonts               = self::get_custom_icons();
 		$fonts[ $font_name ] = array(
@@ -758,11 +721,6 @@ class The7_Icon_Manager {
 		update_option( 'smile_fonts', $fonts );
 	}
 
-	/**
-	 * @param string $font Font.
-	 *
-	 * @return void
-	 */
 	protected static function remove_font( $font ) {
 		$fonts = self::get_custom_icons();
 		if ( isset( $fonts[ $font ] ) ) {
@@ -772,7 +730,7 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $tmp_dir Tmp dir.
+	 * @param string $tmp_dir
 	 *
 	 * @return string
 	 */
@@ -788,7 +746,7 @@ class The7_Icon_Manager {
 	}
 
 	/**
-	 * @param string $tmp_dir Tmp dir.
+	 * @param string $tmp_dir
 	 *
 	 * @return string
 	 */
@@ -814,7 +772,7 @@ class The7_Icon_Manager {
 		}
 
 		$font_configs = self::get_custom_icons();
-		// If we got any include the charmaps and add the chars to an array.
+		// if we got any include the charmaps and add the chars to an array
 		$upload_dir = wp_get_upload_dir();
 		$path       = trailingslashit( $upload_dir['basedir'] );
 		$url        = trailingslashit( $upload_dir['baseurl'] );
@@ -824,7 +782,7 @@ class The7_Icon_Manager {
 				$font_configs[ $key ]['folder']  = $url . $font_configs[ $key ]['folder'];
 			}
 		}
-		// Cache the result.
+		// cache the result
 		self::$iconlist = $font_configs;
 
 		return $font_configs;
@@ -840,12 +798,8 @@ class The7_Icon_Manager {
 		foreach ( self::get_icon_fonts_list() as $font => $icons ) {
 			$icons_classes[ $font ] = array();
 
-			foreach ( $icons as $icon_name => $icon_definition ) {
-                $icon = $icon_definition['class'];
-                if ( is_string( $icon_name ) ) {
-                    $icon = "$font-$icon";
-				}
-				$icons_classes[ $font ][] = current( explode( ',', $icon ) );
+			foreach ( array_keys( $icons ) as $icon ) {
+				$icons_classes[ $font ][] = current( explode( ',', "$font-$icon" ) );
 			}
 		}
 
@@ -921,32 +875,20 @@ class The7_Icon_Manager {
 		return array_key_exists( 'Defaults', $installed_icons );
 	}
 
-	/**
-	 * @return false|mixed|void
-	 */
 	public static function is_fontawesome_enabled() {
 		return get_option( 'the7_fontawesome_enabled' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function enable_fontawesome5() {
 		update_option( 'the7_fontawesome_enabled', 'fa5' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function enable_fontawesome4() {
 		update_option( 'the7_fontawesome_enabled', 'fa4' );
 	}
 
-	/**
-	 * @return void
-	 */
 	public static function disable_fontawesome() {
-		delete_option( 'the7_fontawesome_enabled' );
+		update_option( 'the7_fontawesome_enabled', false );
 	}
 
 	/**
@@ -956,9 +898,6 @@ class The7_Icon_Manager {
 		return include PRESSCORE_EXTENSIONS_DIR . '/font-awesome-version.php';
 	}
 
-	/**
-	 * @return array
-	 */
 	protected static function get_fontawesome_icons() {
 		$font_awesome_icons                 = array();
 		$font_awesome_icons['Font Awesome'] = include PRESSCORE_EXTENSIONS_DIR . '/font-awesome-icons.php';
@@ -973,9 +912,6 @@ class The7_Icon_Manager {
 		return $font_awesome_icons;
 	}
 
-	/**
-	 * @return array
-	 */
 	protected static function get_the7_icons() {
 		$the7_icons               = array();
 		$the7_icons['The7 Icons'] = include PRESSCORE_EXTENSIONS_DIR . '/the7-icons-list.php';

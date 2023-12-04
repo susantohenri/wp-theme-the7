@@ -29,14 +29,13 @@ class DT_Shortcode_Highlight extends DT_Shortcode {
     }
 
     public function shortcode( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'color'      => '',
-			'text_color' => '',
-			'bg_color'   => ''
-		], $atts, 'dt_highlight' );
-		extract( $shortcode_atts );
+        extract( shortcode_atts( array(
+            'color'         => '',
+            'text_color'    => '',
+            'bg_color'      => ''
+        ), $atts, 'dt_highlight' ) );
 
-		$button_colors = array(
+        $button_colors = array(
             'white',
             'red',
             'berry',
@@ -85,7 +84,7 @@ class DT_Shortcode_Highlight extends DT_Shortcode {
             $content
         );
 
-        return $output;
+        return $output; 
     }
 
 }

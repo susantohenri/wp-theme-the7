@@ -10,16 +10,16 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if ( ! class_exists( 'Dt_Inc_Classes_WidgetsCustomMenu_Walker', false ) ) {
-	require_once __DIR__ . '/widgets-custom-menu.class.php';
+	require_once 'widgets-custom-menu.class.php';
 }
 
 /* Load the widget */
 add_action( 'widgets_init', array( 'Presscore_Inc_Widgets_CustomMenu1', 'presscore_register_widget' ) );
 
 class Presscore_Inc_Widgets_CustomMenu1 extends WP_Widget {
-
+    
     /* Widget defaults */
-    public static $widget_defaults = array(
+    public static $widget_defaults = array( 
 		'title'     	=> '',
 		'menu'			=> '',
         'divider'       => true,
@@ -28,7 +28,7 @@ class Presscore_Inc_Widgets_CustomMenu1 extends WP_Widget {
     );
 
 	/* Widget setup  */
-	function __construct() {
+	function __construct() {  
         /* Widget settings. */
 		$widget_ops = array( 'description' => _x( 'Custom menu style 1', 'widget', 'the7mk2' ) );
 
@@ -59,11 +59,10 @@ class Presscore_Inc_Widgets_CustomMenu1 extends WP_Widget {
 	        'fallback_cb' 		    => '',
 	        'menu_class' 		    => false,
 	        'container_class'	    => false,
-	        'dt_item_wrap_start'    => '<li class="%ITEM_CLASS%"><a href="%ITEM_HREF%">%SUBMENU_INDICATOR% %ITEM_TITLE%</a>',
+	        'dt_item_wrap_start'    => '<li class="%ITEM_CLASS%"><a href="%ITEM_HREF%">%ITEM_TITLE%</a>',
 	        'dt_item_wrap_end'      => '</li>',
 	        'dt_submenu_wrap_start' => '<ul>',
 	        'dt_submenu_wrap_end'   => '</ul>',
-	        'dt_submenu_indicator'  => '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path d="M4.3,1.3c-0.4,0.4-0.4,1,0,1.4L9.6,8l-5.3,5.3c-0.4,0.4-0.4,1,0,1.4l0,0C4.5,14.9,4.7,15,5,15c0.3,0,0.5-0.1,0.7-0.3l6-6C11.9,8.5,12,8.3,12,8c0,0,0,0,0,0c0-0.3-0.1-0.5-0.3-0.7l-6-6C5.5,1.1,5.3,1,5,1S4.5,1.1,4.3,1.3z"/></svg>',
 	        'items_wrap'            => '<ul class="custom-menu' . ( $instance['divider'] ? ' dividers-on' : '' ) . ( $instance['bold_text'] ? ' enable-bold' : '' ) .( $instance['show_arrow'] ? ' show-arrow' : '' ) .'">%3$s</ul>',
 	        'walker'				=> new Dt_Inc_Classes_WidgetsCustomMenu_Walker()
 	    );
@@ -86,9 +85,9 @@ class Presscore_Inc_Widgets_CustomMenu1 extends WP_Widget {
 		$instance = $old_instance;
 		$instance['title'] = $new_instance['title'];
         $instance['menu'] = $new_instance['menu'];
-		$instance['divider'] = ! empty( $new_instance['divider'] );
-		$instance['bold_text'] = ! empty( $new_instance['bold_text'] );
-		$instance['show_arrow'] = ! empty( $new_instance['show_arrow'] );
+		$instance['divider'] = isset( $new_instance['divider'] );
+		$instance['bold_text'] = isset( $new_instance['bold_text'] );
+		$instance['show_arrow'] = isset( $new_instance['show_arrow'] );
 
 		return $instance;
 	}

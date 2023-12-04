@@ -11,13 +11,13 @@ input[type="number"]:not(.elementor-field),
 input[type="date"]:not(.elementor-field),
 input[type="range"]:not(.elementor-field),
 input[type="password"]:not(.elementor-field),
-select:not(.elementor-field):not(.elementor-field-textual),
+select:not(.elementor-field),
 textarea:not(.elementor-field),
 .wpcf7-number,
 .woocommerce div.elementor .the7-elementor-widget form.cart table.variations td.value select{
 	margin-bottom: 10px;
 	
-	border-style: var(--the7-form-border);
+	border-style: solid;
 	
 	.box-sizing (border-box);
 }
@@ -96,7 +96,8 @@ textarea {
 	margin-bottom: 20px;
 }
 
-.clear-form {
+.clear-form,
+#cancel-comment-reply-link {
 	position: relative;
 	float: right;
 	padding: 0 15px 0 0;
@@ -137,14 +138,6 @@ textarea {
 
 .wpcf7-not-valid-tip {
 	display: none;
-}
-.wpcf7-response-output {
-	.popup-message-style #page & {
-		position: fixed;
-	    top:  50%;
-	    left: 100%;
-	    opacity: 0;
-	}
 }
 .wpcf7-mail-sent-ok,
 .wpcf7-validation-errors,
@@ -192,7 +185,7 @@ textarea {
 		    text-transform: none;
 		  	font-size: 18px;
 		  	line-height: 1;
-	    	content: "\ea10";
+	    	content: "\eb00";
 	    }
 	    & .wpcf7-not-valid-tip-text,
 	    & .wpcf7-valid-tip-text {

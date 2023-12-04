@@ -18,8 +18,7 @@ class The7_FontAwesome_Enqueue_Optimizer {
 	public function run() {
 		add_action( 'wp_footer', array( $this, 'optimize_in_footer' ), 9 );
 		if ( The7_Icon_Manager::is_fontawesome_enabled() ) {
-			// Envato Theme Checker. This is important stuff, do not optimize hook name.
-			add_filter( 'style' . '_loader_src', array( $this, 'disable_vc_font_awesome' ), 10, 2 ); // phpcs:ignore
+			add_filter( 'style_loader_src', array( $this, 'disable_vc_font_awesome' ), 10, 2 );
 			add_filter( 'revslider_layer_content', array( $this, 'fix_icons_in_revslider_content' ) );
 		}
 	}

@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 function dt_stylesheet_get_image( $img_1, $img_2 = '', $use_second_img = false ) {
     if( (!$img_1 || 'none' == $img_1) && (!$img_2 || 'none' == $img_2) )
         return 'none';
-
+    
     if( (!$img_1 || 'none' == $img_1) && !$use_second_img ) {
         return "none";
     }
@@ -125,16 +125,16 @@ function dt_stylesheet_get_rgba_from_hex_color_for_ie( $params, $color, $opacity
     $params = wp_parse_args( $params, $defaults );
 
     if( is_array($color) ) {
-        $hex_color = implode( '', $color );
+        $hex_color = implode( '', $color );   
     }else{
         $hex_color = str_replace( '#', '', $color );
     }
-
+	
     $hex_opacity = ( $opacity > 0 ) ? dechex( round( $opacity * 2.55 ) ) : '00';
-
+	
 	if ( strlen( (string) $hex_opacity ) < 2 )
 		$hex_opacity = '0'. $hex_opacity;
-
+	
     return sprintf(
         'progid:DXImageTransform.Microsoft.gradient(startColorstr=#%2$s%1$s,endColorstr=#%2$s%1$s)',
         $hex_color, $hex_opacity
@@ -164,21 +164,21 @@ function dt_stylesheet_get_canonized_web_font( $font ) {
 	$blod = $italic = '';
 	$clear = explode('&', $font);
 	$clear = explode(':', $clear[0]);
-
+	
 	if ( isset($clear[1]) ) {
 		$vars = explode('italic', $clear[1]);
-
+		
 		if( isset($vars[1]) ) $italic = "\nfont-style: italic;";
-
+		
 		if( '700' == $vars[0] || 'bold' == $vars[0] ) {
 			$bold = "\nfont-weight: bold;";
-		} elseif ( '400' == $vars[0] || 'normal' == $vars[0] ) {
+		}else if( '400' == $vars[0] || 'normal' == $vars[0] ) {
 			$bold = "\nfont-weight: normal;";
-		} elseif ( $vars[0] ) {
+		}else if( $vars[0] ) {
 			$bold = "\nfont-weight: {$vars[0]};";
-		} else {
+		}else
 			$bold = "\nfont-weight: normal;";
-		}
+			
 	}else {
 		$bold = "\nfont-weight: normal;";
 	}
@@ -194,26 +194,26 @@ function dt_stylesheet_get_canonized_web_font( $font ) {
 function dt_stylesheet_make_web_font_object( $font, $defaults = array() ) {
     // defaults
     $weight = $style = 'normal';
-    $family = 'Arial';
+    $family = 'Open Sans';
 
     if ( !empty($defaults) ) { extract((array)$defaults); }
 
     $clear = explode('&', $font);
     $clear = explode(':', $clear[0]);
-
+    
     if ( isset($clear[1]) ) {
         $vars = explode('italic', $clear[1]);
-
+        
         if ( isset($vars[1]) ) $style = 'italic';
-
+        
         if ( '700' == $vars[0] || 'bold' == $vars[0] ) {
             $weight = 'bold';
-        } elseif ( '400' == $vars[0] || 'normal' == $vars[0] ) {
-			$weight = 'normal';
-		} elseif ( $vars[0] ) {
-			$weight = $vars[0];
-		}
-	}
+        } else if( '400' == $vars[0] || 'normal' == $vars[0] ) {
+            $weight = 'normal';
+        } else if( $vars[0] ) {
+            $weight = $vars[0];
+        }   
+    }
 
     if ( '' != $clear[0] ) {
         $family = $clear[0];

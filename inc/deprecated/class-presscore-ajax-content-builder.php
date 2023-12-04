@@ -98,10 +98,10 @@ abstract class Presscore_Ajax_Content_Builder {
 
 			$this->response['paginationType'] = 'more';
 
-		} elseif ( 'ajax_pagination' == $load_style ) {
+		} else if ( 'ajax_pagination' == $load_style ) {
 
 			ob_start();
-			dt_paginator( $query, [ 'class' => 'paginator with-ajax', 'ajaxing' => true ] );
+			dt_paginator( $query, array('class' => 'paginator with-ajax', 'ajaxing' => true ) );
 			$pagination = ob_get_clean();
 
 			if ( $pagination ) {
@@ -109,6 +109,7 @@ abstract class Presscore_Ajax_Content_Builder {
 			}
 
 			$this->response['paginationType'] = 'paginator';
+
 		}
 	}
 }

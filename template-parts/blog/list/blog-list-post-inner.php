@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$config = presscore_config();
+$config = presscore_get_config();
 ?>
 
 <?php if ( ! post_password_required() && has_post_thumbnail() ): ?>
@@ -56,6 +56,8 @@ $config = presscore_config();
 	if ( $config->get( 'show_details' ) ) {
 		echo presscore_post_details_link();
 	}
-    ?>
+
+	echo presscore_post_edit_link();
+	?>
 
 </div>

@@ -38,8 +38,7 @@ class DT_Shortcode_Fancy_Title extends DT_Shortcode {
 			'title_bg' => 'disabled',
 		);
 
-		$shortcode_atts = shortcode_atts( $default_atts, $atts, 'dt_fancy_title' );
-		extract( $shortcode_atts );
+		extract(shortcode_atts($default_atts, $atts, 'dt_fancy_title'));
 
 		/////////////////////
 		// sanitize atts //
@@ -104,9 +103,9 @@ class DT_Shortcode_Fancy_Title extends DT_Shortcode {
 
 		if ( 'small' == $title_size ) {
 			$separator_class[] = 'text-small';
-		} elseif ( 'big' == $title_size ) {
+		} else if ( 'big' == $title_size ) {
 			$separator_class[] = 'text-big';
-		} elseif ( in_array( $title_size, [ "h1", "h2", "h3", "h4", "h5", "h6" ] ) ) {
+		} else if ( in_array( $title_size, array( "h1", "h2", "h3", "h4", "h5", "h6" ) ) ) {
 			$separator_class[] = $title_size . '-size';
 		}
 

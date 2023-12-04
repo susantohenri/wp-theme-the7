@@ -20,7 +20,7 @@ class The7_Query_Builder {
 	/**
 	 * @var string
 	 */
-	protected $query_taxonomy = '';
+	protected $requested_taxonomy = '';
 
 	/**
 	 * The7_Query_Builder constructor.
@@ -35,7 +35,6 @@ class The7_Query_Builder {
 				'post_type'        => 'post',
 				'order'            => 'desc',
 				'orderby'          => 'date',
-				'post_status'      => 'publish',
 				'paged'            => 1,
 				'posts_per_page'   => 10,
 				'suppress_filters' => false,
@@ -45,7 +44,7 @@ class The7_Query_Builder {
 	}
 
 	public function from_terms( $taxonomy, $terms = array(), $field = 'term_id' ) {
-		$this->query_taxonomy = $taxonomy;
+		$this->requested_taxonomy = $taxonomy;
 
 		if ( $terms && $taxonomy ) {
 			$this->tax_query = compact( 'taxonomy', 'terms', 'field' );
@@ -58,35 +57,11 @@ class The7_Query_Builder {
 		if ( $request->not_empty() ) {
 			$this->query_args['order']   = $request->order;
 			$this->query_args['orderby'] = $request->orderby === 'name' ? 'title' : $request->orderby;
-			$request_term                = $request->get_first_term();
 
-			if ( $request_term && $request->taxonomy ) {
-
-				// If there is a request filter with the taxonomy specified
-				if ( is_object_in_taxonomy( $this->query_args['post_type'], $request->taxonomy ) ) {
-					// - in case new taxonomy: add it to the tax_query
-
-					$request_tax_query = [
-						'taxonomy' => $request->taxonomy,
-						'field'    => is_numeric( $request_term ) ? 'term_id' : 'slug',
-						'terms'    => [ $request_term ],
-					];
-
-					if ( $this->tax_query ) {
-						$this->tax_query = [
-							'relation' => 'AND',
-							$this->tax_query,
-							$request_tax_query,
-						];
-					} else {
-						$this->tax_query = $request_tax_query;
-					}
-				}
-			} elseif ( $request_term && $this->query_taxonomy ) {
-				// If there is a request without taxonimy:
-				// - filter with taxonomy from the settings
+			$request_term = $request->get_first_term();
+			if ( $request_term && $this->requested_taxonomy ) {
 				$this->tax_query = [
-					'taxonomy' => $this->query_taxonomy,
+					'taxonomy' => $this->requested_taxonomy,
 					'field'    => is_numeric( $request_term ) ? 'term_id' : 'slug',
 					'terms'    => [ $request_term ],
 				];

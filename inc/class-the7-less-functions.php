@@ -50,9 +50,9 @@ class The7_Less_Functions {
 	/**
 	 * Register the7_lessc functions.
 	 *
-	 * @param The7\Vendor\Lessphp\Compiler|null $less Less compiler.
+	 * @param the7_lessc|null $less
 	 */
-	public static function register_functions( The7\Vendor\Lessphp\Compiler $less = null ) {
+	public static function register_functions( the7_lessc $less = null ) {
 		if ( $less === null ) {
 			return;
 		}

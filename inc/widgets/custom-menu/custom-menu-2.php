@@ -10,22 +10,22 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if ( ! class_exists( 'Dt_Inc_Classes_WidgetsCustomMenu_Walker', false ) ) {
-	require_once __DIR__ . '/widgets-custom-menu.class.php';
+	require_once 'widgets-custom-menu.class.php';
 }
 
 /* Load the widget */
 add_action( 'widgets_init', array( 'Presscore_Inc_Widgets_CustomMenu2', 'presscore_register_widget' ) );
 
 class Presscore_Inc_Widgets_CustomMenu2 extends WP_Widget {
-
+	
 	/* Widget defaults */
-	public static $widget_defaults = array(
+	public static $widget_defaults = array( 
 		'title'     	=> '',
 		'menu'			=> '',
 	);
 
 	/* Widget setup  */
-	function __construct() {
+	function __construct() {  
 		/* Widget settings. */
 		$widget_ops = array( 'description' => _x( 'Custom menu style 2', 'widget', 'the7mk2' ) );
 
@@ -60,11 +60,10 @@ class Presscore_Inc_Widgets_CustomMenu2 extends WP_Widget {
 			'fallback_cb' 		    => '',
 			'menu_class' 		    => false,
 			'container_class'	    => false,
-			'dt_item_wrap_start'    => '<li class="%ITEM_CLASS%"><a href="%ITEM_HREF%"><span>%ITEM_TITLE%</span>%SUBMENU_INDICATOR%</a>',
+			'dt_item_wrap_start'    => '<li class="%ITEM_CLASS%"><a href="%ITEM_HREF%"><span>%ITEM_TITLE%</span></a>',
 			'dt_item_wrap_end'      => '</li>',
 			'dt_submenu_wrap_start' => '<ul class="custom-menu">',
 			'dt_submenu_wrap_end'   => '</ul>',
-            'dt_submenu_indicator'  => '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path d="M14.7,4.3c-0.4-0.4-1-0.4-1.4,0L8,9.6L2.7,4.3c-0.4-0.4-1-0.4-1.4,0l0,0C1.1,4.5,1,4.7,1,5c0,0.3,0.1,0.5,0.3,0.7l6,6C7.5,11.9,7.7,12,8,12c0,0,0,0,0,0c0.3,0,0.5-0.1,0.7-0.3l6-6C14.9,5.5,15,5.3,15,5S14.9,4.5,14.7,4.3z"/></svg>',
 			'items_wrap'            => '<ul class="custom-nav">%3$s</ul>',
 			'walker'				=> new Dt_Inc_Classes_WidgetsCustomMenu_Walker()
 		);
@@ -76,7 +75,7 @@ class Presscore_Inc_Widgets_CustomMenu2 extends WP_Widget {
 		// title
 		if ( $title ) echo $before_title . $title . $after_title;
 
-		wp_nav_menu( $args );
+		wp_nav_menu( $args );	
 
 		echo $after_widget;
 	}

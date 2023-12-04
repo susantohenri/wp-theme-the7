@@ -90,7 +90,7 @@ $options[] = array(
 $options['fonts-h1_font_family'] = array(
 	'name'    => _x( 'Headings font family', 'theme-options', 'the7mk2' ),
 	'id'      => 'fonts-h1_font_family',
-	'std'     => 'Arial:600',
+	'std'     => 'Open Sans:600',
 	'type'    => 'web_fonts',
 	'options' => apply_filters( 'presscore_options_get_web_fonts', array(
 		'Arial:600'               => 'Arial Bold',
@@ -142,7 +142,7 @@ $options[] = array(
 $options['fonts-font_family'] = array(
 	'name'    => _x( 'Text font family', 'theme-options', 'the7mk2' ),
 	'id'      => 'fonts-font_family',
-	'std'     => 'Arial',
+	'std'     => 'Open Sans',
 	'type'    => 'web_fonts',
 	'options' => apply_filters( 'presscore_options_get_web_fonts', array(
 		'Arial'               => 'Arial',
@@ -232,6 +232,30 @@ $options['general-accent_bg_color_gradient'] = array(
 		'field'    => 'general-accent_color_mode',
 		'operator' => '==',
 		'value'    => 'gradient',
+	),
+);
+
+$options[] = array( 'name' => _x( 'Buttons style', 'theme-options', 'the7mk2' ), 'type' => 'block' );
+
+$options['buttons-style'] = array(
+	'name'    => 'Choose buttons style',
+	'id'      => 'buttons-style',
+	'std'     => 'flat',
+	'type'    => 'images',
+	'class'   => 'small',
+	'options' => array(
+		'flat'   => array(
+			'title' => _x( 'Flat', 'theme-options', 'the7mk2' ),
+			'src'   => '/inc/admin/assets/images/buttons-style-flat.gif',
+		),
+		'3d'     => array(
+			'title' => _x( '3D', 'theme-options', 'the7mk2' ),
+			'src'   => '/inc/admin/assets/images/buttons-style-3d.gif',
+		),
+		'shadow' => array(
+			'title' => _x( 'Shadow', 'theme-options', 'the7mk2' ),
+			'src'   => '/inc/admin/assets/images/buttons-style-shadow.gif',
+		),
 	),
 );
 

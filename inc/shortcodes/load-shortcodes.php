@@ -6,25 +6,18 @@
 // File Security Check
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-shortcode.php';
-require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-shortcode-masonry-posts.php';
-require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/abstract-dt-shortcode-with-inline-css.php';
-require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/shortcodes-functions.php';
-
-if ( the7_is_elementor_theme_mode_active() ) {
-	include_once locate_template( 'inc/shortcodes/includes/year/year.php' );
-
-	return;
-}
-
 require_once PRESSCORE_SHORTCODES_DIR . '/class-dt-vc-responsive-columns-param.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-register-button-wp-3.9.php';
+require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-shortcode.php';
+require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-shortcode-masonry-posts.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/puny-shortcodes-functions.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/shortcodes-animation-functions.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/shortcodes-hooks.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-the7-vc-taxonomy-autocomplete.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-the7-vc-posts-autocomplete.php';
 require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-the7-orphaned-shortcodes-handler.php';
+require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/shortcodes-functions.php';
+require_once PRESSCORE_SHORTCODES_INCLUDES_DIR . '/abstract-dt-shortcode-with-inline-css.php';
 
 /**
  * Handle shortcodes outside of page content.
@@ -95,7 +88,7 @@ $presscore_shortcodes = array(
 	'year',
 );
 
-if ( the7_is_woocommerce_enabled() ) {
+if ( dt_is_woocommerce_enabled() ) {
 	$presscore_shortcodes[] = 'products-carousel';
 	$presscore_shortcodes[] = 'products-masonry';
 }

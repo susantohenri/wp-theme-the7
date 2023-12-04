@@ -26,13 +26,6 @@ $options['header-mega-menu-submenu-column-padding'] = array(
 	'std'  => '20px 10px 20px 10px',
 );
 
-$options['header-mega-menu-items-padding'] = array(
-	'id'   => 'header-mega-menu-items-padding',
-	'name' => _x( 'Mega menu items padding', 'theme-options', 'the7mk2' ),
-	'type' => 'spacing',
-	'std'  => '0px 0px 10px 0px',
-);
-
 $options['header-mega-menu-submenu-column-width'] = array(
 	'id'    => 'header-mega-menu-submenu-column-width',
 	'name'  => _x( 'Mega menu column width', 'theme-options', 'the7mk2' ),
@@ -41,14 +34,6 @@ $options['header-mega-menu-submenu-column-width'] = array(
 	'units' => 'px',
 	'min'   => 100,
 	'desc'  => _x( 'For non fullwidth mega menu layouts', 'theme-options', 'the7mk2' ),
-);
-
-$options['header-mega-menu-submenu-2-level-spacing'] = array(
-	'id'   => 'header-mega-menu-submenu-2-level-spacing',
-	'name' => _x( 'Distance between 2 and 3 levels in mega menu', 'theme-options', 'the7mk2' ),
-	'type'  => 'number',
-	'std'   => '0px',
-	'units' => 'px',
 );
 
 $options[] = array(
@@ -66,7 +51,7 @@ $options['header-mega-menu-title-typography'] = array(
 	'id'   => 'header-mega-menu-title-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial:700',
+		'font_family'    => 'Roboto:700',
 		'font_size'      => 18,
 		'text_transform' => 'none',
 	),
@@ -184,7 +169,7 @@ $options['header-mega-menu-desc-typography'] = array(
 	'id'   => 'header-mega-menu-desc-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family' => 'Arial:700',
+		'font_family' => 'Roboto:700',
 		'font_size'   => 13,
 	),
 );
@@ -223,4 +208,18 @@ $options['header-mega-menu-widget-accent-color'] = array(
 	'type' => 'color',
 	'std'  => '',
 	'desc' => _x( 'Leave empty to use default accent color.', 'theme-options', 'the7mk2' ),
+);
+
+$options[] = array( 'type' => 'divider' );
+
+$options[] = array(
+	'name' => _x( 'Mega menu items padding', 'theme-options', 'the7mk2' ),
+	'type' => 'title',
+);
+
+$options['header-mega-menu-items-padding'] = array(
+	'id'   => 'header-mega-menu-items-padding',
+	'name' => _x( 'Mega menu items padding', 'theme-options', 'the7mk2' ),
+	'type' => 'spacing',
+	'std'  => '0px 0px 10px 0px',
 );

@@ -10,16 +10,16 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if ( ! class_exists( 'Dt_Inc_Classes_WidgetsCategory_Walker', false ) ) {
-	require_once __DIR__ . '/widgets-posts-categories.class.php';
+	require_once 'widgets-posts-categories.class.php';
 }
 
 /* Load the widget */
 add_action( 'widgets_init', array( 'Presscore_Inc_Widgets_BlogCategories', 'presscore_register_widget' ) );
 
 class Presscore_Inc_Widgets_BlogCategories extends WP_Widget {
-
+    
     /* Widget defaults */
-    public static $widget_defaults = array(
+    public static $widget_defaults = array( 
 		'title'     	=> '',
 		'order'     	=> 'DESC',
 		'orderby'   	=> 'date',
@@ -30,7 +30,7 @@ class Presscore_Inc_Widgets_BlogCategories extends WP_Widget {
     );
 
 	/* Widget setup  */
-	function __construct() {
+	function __construct() {  
         /* Widget settings. */
 		$widget_ops = array( 'description' => _x( 'Blog categories', 'widget', 'the7mk2' ) );
 
@@ -51,7 +51,7 @@ class Presscore_Inc_Widgets_BlogCategories extends WP_Widget {
 
 		/* Our variables from the widget settings. */
 		$title = apply_filters( 'widget_title', $instance['title'] );
-
+		
 		$cats_args = array(
 			'show_count'    => true,
 			'hierarchical'  => false,
@@ -83,7 +83,7 @@ class Presscore_Inc_Widgets_BlogCategories extends WP_Widget {
 	/* Update the widget settings  */
 	function update( $new_instance, $old_instance ) {
 		$instance = $old_instance;
-
+        
 		$instance['title'] = strip_tags($new_instance['title']);
 
 		$instance['select'] = in_array( $new_instance['select'], array('all', 'only', 'except') ) ? $new_instance['select'] : 'all';
@@ -106,7 +106,7 @@ class Presscore_Inc_Widgets_BlogCategories extends WP_Widget {
         $title = strip_tags( $instance['title'] );
 		$terms = get_terms( 'category', array(
             'hide_empty'    => 1,
-            'hierarchical'  => false
+            'hierarchical'  => false 
         ) );
         ?>
 		<p>

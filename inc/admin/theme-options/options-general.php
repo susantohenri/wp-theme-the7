@@ -464,7 +464,7 @@ $options[] = array(
 $options['general-custom_loader'] = array(
 	'id'       => 'general-custom_loader',
 	'type'     => 'textarea',
-	'std'      => '',
+	'std'      => false,
 	'sanitize' => 'without_sanitize',
 	'settings' => array( 'rows' => 8 ),
 );

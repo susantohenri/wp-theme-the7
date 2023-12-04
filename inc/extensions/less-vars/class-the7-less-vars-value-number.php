@@ -23,7 +23,7 @@ class The7_Less_Vars_Value_Number extends The7_Less_Vars_Builder {
 			$this->suffix = isset($val['units']);
 		}
 		else{
-			preg_match( '/(-?\d+\.?\d*)(.*)/', (string) $val, $matches );
+			preg_match( '/(-?\d+\.?\d*)(.*)/', $val, $matches );
 			if ( ! empty( $matches[1] ) ) {
 				$this->val = floatval( $matches[1] );
 			}

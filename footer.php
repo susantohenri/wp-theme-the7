@@ -35,14 +35,9 @@ if ( presscore_is_content_visible() ) : ?>
 
 <?php endif; ?>
 
-<?php do_action( 'presscore_after_main_container' ); ?>
-<?php ob_start(); ?>
-<a href="#" class="scroll-top"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve">
-<path d="M11.7,6.3l-3-3C8.5,3.1,8.3,3,8,3c0,0,0,0,0,0C7.7,3,7.5,3.1,7.3,3.3l-3,3c-0.4,0.4-0.4,1,0,1.4c0.4,0.4,1,0.4,1.4,0L7,6.4
-	V12c0,0.6,0.4,1,1,1s1-0.4,1-1V6.4l1.3,1.3c0.4,0.4,1,0.4,1.4,0C11.9,7.5,12,7.3,12,7S11.9,6.5,11.7,6.3z"/>
-</svg><span class="screen-reader-text"><?php esc_html_e( 'Go to Top', 'the7mk2' ); ?></span></a>
-<?php  echo apply_filters( 'presscore_scroll_top_html', ob_get_clean()); ?>
+	<?php do_action( 'presscore_after_main_container' ); ?>
+
+	<a href="#" class="scroll-top"><span class="screen-reader-text"><?php esc_html_e( 'Go to Top', 'the7mk2' ); ?></span></a>
 
 </div><!-- #page -->
 

@@ -8,9 +8,9 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Class The7_Autoloader
+ * Class The7_Aoutoloader
  */
-class The7_Autoloader {
+class The7_Aoutoloader {
 
 	/**
 	 * Path to the includes directory.
@@ -70,10 +70,6 @@ class The7_Autoloader {
 			$this->load_deprecated_class( $class );
 		}
 
-		if ( 0 === strpos( $class, 'the7\\' ) ) {
-			$this->load_namespaced_classes( $class );
-		}
-
 		if ( 0 !== strpos( $class, 'the7_' ) ) {
 			return;
 		}
@@ -106,15 +102,5 @@ class The7_Autoloader {
 		$file = $this->get_file_name_from_class( $class );
 		$path = $this->include_path . 'deprecated/';
 		$this->load_file( $path . $file );
-	}
-
-	/**
-	 * Load namespaced class.
-	 *
-	 * @param string $class Class name in lowercase.
-	 */
-	protected function load_namespaced_classes( $class ) {
-		$class = str_replace( [ 'the7\\', '\\', '_' ], [ '', DIRECTORY_SEPARATOR, '-' ], $class );
-		$this->load_file( $this->include_path . $class . '.php' );
 	}
 }

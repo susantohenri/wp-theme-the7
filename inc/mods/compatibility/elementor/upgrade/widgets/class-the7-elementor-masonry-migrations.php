@@ -3,21 +3,21 @@
  * @package The7
  */
 
-namespace The7\Mods\Compatibility\Elementor\Upgrade\Widgets;
+namespace The7\Adapters\Elementor\Upgrade\Widgets;
 
-use The7\Mods\Compatibility\Elementor\Upgrade\Widget_Migration;
+use The7\Adapters\Elementor\Upgrade\The7_Elementor_Widget_Migrations;
 use The7_Less_Vars_Value_Color;
 
 defined( 'ABSPATH' ) || exit;
 
-class The7_Elementor_Masonry_Migrations extends Widget_Migration {
+class The7_Elementor_Masonry_Migrations extends The7_Elementor_Widget_Migrations {
 
 	public static function get_widget_name() {
 		return 'the7_elements';
 	}
 
 	public static function _9_4_0_migration( $element, $args ) {
-		if ( ! static::is_the_right_widget( $element, $args ) ) {
+		if ( ! static::is_the_right_widget( $element ) ) {
 			return $element;
 		}
 
@@ -92,7 +92,7 @@ class The7_Elementor_Masonry_Migrations extends Widget_Migration {
 	}
 
 	public static function _8_9_0_migration( $element, $args ) {
-		if ( ! static::is_the_right_widget( $element, $args ) ) {
+		if ( ! static::is_the_right_widget( $element ) ) {
 			return $element;
 		}
 

@@ -5,14 +5,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
-/**
- * The7_Demo_Post_Import_Actions_Builder class.
- */
 class The7_Demo_Post_Import_Actions_Builder extends The7_Demo_Actions_Builder_Base {
 
-	/**
-	 * @return void
-	 */
 	protected function init() {
 		if ( empty( $this->external_data['the7_import_post_id'] ) || empty( $this->external_data['demo_id'] ) ) {
 			$this->add_nothing_to_import_error();
@@ -33,20 +27,14 @@ class The7_Demo_Post_Import_Actions_Builder extends The7_Demo_Actions_Builder_Ba
 		);
 	}
 
-	/**
-	 * @return void
-	 */
 	protected function setup_data() {
 		$demo    = $this->demo();
 		$actions = [];
 		if ( ! $demo->plugins()->is_plugins_active() ) {
 			$actions[] = 'install_plugins';
 		}
-		$actions[] = 'download_package';
-		$actions[] = 'add_the7_dashboard_settings';
-		if ( in_array( 'dt-the7-core', $demo->required_plugins, true ) ) {
-			$actions[] = 'import_post_types_builder_data';
-		}
+		$actions[]           = 'download_package';
+		$actions[]           = 'add_the7_dashboard_settings';
 		$actions[]           = 'clear_importer_session';
 		$actions[]           = 'import_one_post';
 		$users               = [];

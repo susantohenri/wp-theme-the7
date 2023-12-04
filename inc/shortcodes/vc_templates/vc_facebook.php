@@ -16,16 +16,15 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 // The7: Old attributes initialisation left for back compatibility reasons.
-$shortcode_atts = shortcode_atts( [
-	'type'          => 'standard',
-	'el_id'         => '',
-	'url'           => '',
-	'like'          => 'post',
-	'css'           => '',
-	'el_class'      => '',
+extract( shortcode_atts( array(
+	'type' => 'standard',
+	'el_id' => '',
+	'url'  => '',
+	'like' => 'post',
+	'css' => '',
+	'el_class' => '',
 	'css_animation' => '',
-], $atts, 'vc_facebook' );
-extract( $shortcode_atts );
+), $atts, 'vc_facebook' ) );
 
 // The7: Custom permalink logic.
 if ( empty( $url ) ) {

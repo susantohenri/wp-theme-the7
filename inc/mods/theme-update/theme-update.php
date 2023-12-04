@@ -75,7 +75,7 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 
 			if ( isset( $_POST['register_theme'] ) ) {
 				$code = self::register_action( $code );
-			} elseif ( $_POST['deregister_theme'] ) {
+			} else if ( $_POST['deregister_theme'] ) {
 				$code = self::de_register_action();
 			}
 			do_action( 'the7_theme_activation_action' );
@@ -117,8 +117,6 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 
 			do_action( 'the7_after_theme_registration', $the7_remote_api_response );
 
-			the7_admin_notices()->reset( 'the7_show_registration_splash_screen' );
-
 			return $code;
 		}
 
@@ -139,7 +137,6 @@ if ( ! class_exists( 'Presscore_Modules_ThemeUpdateModule', false ) ) :
 			if ( class_exists( 'Presscore_Modules_TGMPAModule' ) ) {
 				Presscore_Modules_TGMPAModule::delete_plugins_list_cache();
 			}
-			the7_admin_notices()->dismiss_notice( 'the7_show_registration_splash_screen' );
 
 			return '';
 		}
@@ -396,7 +393,7 @@ endif;
 if ( ! function_exists( 'presscore_theme_update_get_changelog_url' ) ) :
 
 	function presscore_theme_update_get_changelog_url() {
-		return 'https://the7.io/changelog/';
+		return 'http://the7.io/changelog/';
 	}
 
 endif;

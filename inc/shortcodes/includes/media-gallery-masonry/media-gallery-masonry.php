@@ -102,7 +102,7 @@ if ( ! class_exists( 'DT_Shortcode_MediaGalleryMasonry', false ) ):
 
 			if ( 'disabled' === $loading_mode ) {
 				$data_pagination_mode = 'none';
-			} elseif ( in_array( $loading_mode, [ 'js_more', 'js_lazy_loading' ] ) ) {
+			} else if ( in_array( $loading_mode, array( 'js_more', 'js_lazy_loading' ) ) ) {
 				$data_pagination_mode = 'load-more';
 			} else {
 				$data_pagination_mode = 'pages';
@@ -220,15 +220,15 @@ if ( ! class_exists( 'DT_Shortcode_MediaGalleryMasonry', false ) ):
 
 			if ( 'disabled' === $loading_mode ) {
 				// Do not output pagination.
-			} elseif ( in_array( $loading_mode, [ 'js_more', 'js_lazy_loading' ] ) ) {
+			} else if ( in_array( $loading_mode, array( 'js_more', 'js_lazy_loading' ) ) ) {
 				// JS load more.
 				echo dt_get_next_page_button( 2, 'paginator paginator-more-button', $cur_page = 1 );
-			} elseif ( 'js_pagination' === $loading_mode ) {
+			} else if ( 'js_pagination' === $loading_mode ) {
 				// JS pagination.
 				echo '<div class="paginator" role="navigation"></div>';
 			} else {
 				// Pagination.
-				dt_paginator( $image_ids, [ 'class' => 'paginator' ] );
+				dt_paginator( $image_ids, array( 'class' => 'paginator' ) );
 			}
 
 			echo '</div>';

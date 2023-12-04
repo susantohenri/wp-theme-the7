@@ -85,7 +85,7 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 		 */
 		protected function do_shortcode( $atts, $content = '' ) {
 			// Loop query.
-			$query = $this->get_query();
+			$query = new WP_Query( $this->get_query_args() );
 
 			if ( !$this->display_shortcode_content( $query ) ){
 				return;
@@ -226,14 +226,14 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 
 			if ( 'disabled' == $loading_mode ) {
 				// Do not output pagination.
-			} elseif ( in_array( $loading_mode, [ 'js_more', 'js_lazy_loading' ] ) ) {
+			} else if ( in_array( $loading_mode, array( 'js_more', 'js_lazy_loading' ) ) ) {
 				echo dt_get_next_page_button( 2, 'paginator paginator-more-button', $cur_page = 1 );
-			} elseif ( 'js_pagination' == $loading_mode ) {
+			} else if ( 'js_pagination' == $loading_mode ) {
 				// JS pagination.
 				echo '<div class="paginator" role="navigation"></div>';
 			} else {
 				// Pagination.
-				dt_paginator( $query, [ 'class' => 'woocommerce-pagination paginator' ] );
+				dt_paginator( $query, array( 'class' => 'woocommerce-pagination paginator' ) );
 			}
 
 			echo '</div>';
@@ -421,7 +421,7 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
                 case 'grid':
                        $wc_layout = 'grid';
                     break;
-
+              
             }
 
 			$config->set( 'layout', $wc_layout );
@@ -476,7 +476,7 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 			$less_vars->add_keyword( 'post-content-color', $this->get_att( 'custom_content_color', '~""' ) );
 
 			$less_vars->add_keyword( 'price-color', $this->get_att( 'custom_price_color', '~""' ) );
-
+			
 
 			$gap_before_pagination = '';
 			switch ( $this->get_att( 'loading_mode' ) ) {
@@ -502,9 +502,9 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 				foreach ( $columns as $column => $data_att ) {
 					$val = ( isset( $bwb_columns[ $column ] ) ? absint( $bwb_columns[ $column ] ) : '' );
 					$data_atts[] = 'data-' . $data_att . '-columns-num="' . esc_attr( $val ) . '"';
-
+					
 					$less_vars->add_keyword( $data_att. '-columns-num', esc_attr( $val ) );
-
+			
 				}
 			};
 			$less_vars->add_pixel_number( 'grid-posts-gap', $this->get_att( 'gap_between_posts' ) );
@@ -669,8 +669,6 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 
 			$query_args['tax_query'] = the7_product_visibility_tax_query( $query_args['tax_query'] );
 
-
-
 			return $query_args;
 		}
 
@@ -777,15 +775,6 @@ if ( ! class_exists( 'DT_Shortcode_ProductsMasonry', false ) ):
 			}
 
 			return array();
-		}
-
-		/**
-		 * Return products query.
-		 *
-		 * @return WP_Query Products query.
-		 */
-		protected function get_query() {
-			return new WP_Query( $this->get_query_args() );
 		}
 	}
 

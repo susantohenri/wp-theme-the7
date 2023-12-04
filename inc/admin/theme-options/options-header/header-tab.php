@@ -459,7 +459,7 @@ $options['header-menu_icon-caption-typography'] = array(
 	'id'         => 'header-menu_icon-caption-typography',
 	'type'       => 'typography',
 	'std'        => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Roboto',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),
@@ -597,6 +597,7 @@ $options['header-menu_icon-color-hover'] = array(
 	'std'      => '#ffffff',
 	'sanitize' => 'empty_color',
 	'desc'     => _x( 'Leave empty to use accent color.', 'theme-options', 'the7mk2' ),
+	'sanitize' => 'empty_color',
 );
 
 $options['header-menu_icon-caption_color-hover'] = array(
@@ -606,6 +607,7 @@ $options['header-menu_icon-caption_color-hover'] = array(
 	'type'     => 'color',
 	'sanitize' => 'empty_color',
 	'desc'     => _x( 'Leave empty to use accent color.', 'theme-options', 'the7mk2' ),
+	'sanitize' => 'empty_color',
 );
 
 $options['header-menu_icon-bg-hover'] = array(
@@ -758,7 +760,7 @@ $options['header-menu-close_icon-caption-typography'] = array(
 	'id'         => 'header-menu-close_icon-caption-typography',
 	'type'       => 'typography',
 	'std'        => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Roboto',
 		'font_size'      => 16,
 		'text_transform' => 'uppercase',
 	),

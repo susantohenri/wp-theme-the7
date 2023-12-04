@@ -153,6 +153,10 @@ if ( ! function_exists( 'the7_mass_regenerate_short_codes_inline_css' ) ) {
 			include( PRESSCORE_SHORTCODES_INCLUDES_DIR . '/class-the7-shortcode-id-crutch.php' );
 		}
 
+		if ( ! class_exists( 'the7_lessc', false ) ) {
+			include( PRESSCORE_DIR . '/vendor/lessphp/the7_lessc.inc.php' );
+		}
+
 		/**
 		 * Little crutch to overcome short codes inner id issue.
 		 *

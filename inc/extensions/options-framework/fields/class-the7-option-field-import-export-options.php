@@ -19,7 +19,7 @@ class The7_Option_Field_Import_Export_Options extends The7_Option_Field_Abstract
 			}
 		}
 
-		$val = wp_json_encode( $this->settings );
+		$val = base64_encode( serialize( $this->settings ) );
 
 		return '<textarea id="' . esc_attr( $this->option['id'] ) . '" class="of-input of-import-export" name="' . esc_attr( $this->option_name ) . '" rows="' . $rows . '" onclick="this.focus();this.select()">' . esc_textarea( $val ) . '</textarea>';
 	}

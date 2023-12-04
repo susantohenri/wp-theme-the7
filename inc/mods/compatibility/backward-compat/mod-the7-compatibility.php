@@ -29,7 +29,7 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 
 		public function setup() {
 			$this->import_status_slug = 'presscore_mod_' . sanitize_key( wp_get_theme()->get( 'Name' ) ) . '_the7_options_import_status';
-			$this->module_dir = trailingslashit( __DIR__ );
+			$this->module_dir = trailingslashit( dirname( __FILE__ ) );
 			$this->assets_uri = $this->get_assets_uri();
 
 			// check for the7 options
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 			// dt-the7-core compatibility.
 			if ( dt_the7_core_is_enabled() ) {
 				if ( ! class_exists( 'The7_Core_Compatibility' ) ) {
-					require_once __DIR__ . '/class-the7-core-compatibility.php';
+					require_once "{$this->module_dir}/class-the7-core-compatibility.php";
 				}
 
 				The7_Core_Compatibility::setup();
@@ -66,8 +66,9 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 				return;
 			}
 
-			if ( function_exists( 'dt_dummy_loader' ) ) {
-				deactivate_plugins( 'dt-dummy/dt-dummy.php' );
+			$plugin = 'dt-dummy/dt-dummy.php';
+			if ( is_plugin_active( $plugin ) || is_plugin_active_for_network( $plugin ) ) {
+				deactivate_plugins( $plugin );
 			}
 		}
 
@@ -78,14 +79,14 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 
 				$import_link = esc_url( add_query_arg( 'the7_opts_import', 'options_imported' ) );
 
-				$msg = '<p>'
-						. _x( 'Would you like to import The7.2 settings?', 'options import', 'the7mk2' )
-					. '</p>'
-					. '<div class="dt-buttons-holder">'
-						. '<div class="dt-button-primary">'
-							. '<a href="' . $import_link . '" class="button button-primary dt-import-options">' . _x( "Yes, do it!" , 'options import', 'the7mk2' ) . '</a>'
-							. '<span class="spinner"></span>'
-						. '</div>'
+				$msg = '<p>' 
+						. _x( 'Would you like to import The7.2 settings?', 'options import', 'the7mk2' ) 
+					. '</p>' 
+					. '<div class="dt-buttons-holder">' 
+						. '<div class="dt-button-primary">' 
+							. '<a href="' . $import_link . '" class="button button-primary dt-import-options">' . _x( "Yes, do it!" , 'options import', 'the7mk2' ) . '</a>' 
+							. '<span class="spinner"></span>' 
+						. '</div>' 
 					. '</div>';
 
 				add_settings_error( 'presscore-import-the7-options', 'presscore-import-the7-options', $msg, 'error' );
@@ -330,6 +331,9 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 			$the72_options['header-elements-login-url'] = $the72_options['header-login_url'];
 			// Text.
 			$the72_options['header-elements-text'] = $the72_options['header-text'];
+			$the72_options['header-elements-text-second-header-switch'] = 'in_menu';
+			// Custom menu.
+			$the72_options['header-elements-text-second-header-switch'] = 'hidden';
 			// Social icons.
 			$the72_options['header-elements-text-second-header-switch'] = 'hidden';
 			$the72_options['header-elements-soc_icons-color'] = $the72_options['header-soc_icon_color'];
@@ -460,25 +464,25 @@ if ( ! class_exists( 'Presscore_Modules_Compatibility_oldThe7', false ) ) :
 					$the72_options['header-menu-decoration-other-hover-line-opacity'] = '100';
 
 					// Hover font and hover/active decoration colors.
-					$the72_options['header-menu-decoration-other-hover-line-color-style'] =
-					$the72_options['header-menu-decoration-other-active-line-color-style'] =
-					$the72_options['header-menu-decoration-other-click_decor-color-style'] =
-					$the72_options['header-menu-decoration-other-hover-color-style'] =
-					$the72_options['header-menu-decoration-other-active-color-style'] =
+					$the72_options['header-menu-decoration-other-hover-line-color-style'] = 
+					$the72_options['header-menu-decoration-other-active-line-color-style'] = 
+					$the72_options['header-menu-decoration-other-click_decor-color-style'] = 
+					$the72_options['header-menu-decoration-other-hover-color-style'] = 
+					$the72_options['header-menu-decoration-other-active-color-style'] = 
 					$the72_options['menu-hover_decoration_color_mode'];
 
-					$the72_options['header-menu-decoration-other-hover-line-color'] =
-					$the72_options['header-menu-decoration-other-active-line-color'] =
-					$the72_options['header-menu-decoration-other-click_decor-color'] =
-					$the72_options['header-menu-decoration-other-hover-color'] =
-					$the72_options['header-menu-decoration-other-active-color'] =
+					$the72_options['header-menu-decoration-other-hover-line-color'] = 
+					$the72_options['header-menu-decoration-other-active-line-color'] = 
+					$the72_options['header-menu-decoration-other-click_decor-color'] = 
+					$the72_options['header-menu-decoration-other-hover-color'] = 
+					$the72_options['header-menu-decoration-other-active-color'] = 
 					$the72_options['menu-hover_decoration_color'];
 
-					$the72_options['header-menu-decoration-other-hover-line-gradient'] =
-					$the72_options['header-menu-decoration-other-active-line-gradient'] =
-					$the72_options['header-menu-decoration-other-click_decor-gradient'] =
-					$the72_options['header-menu-decoration-other-hover-gradient'] =
-					$the72_options['header-menu-decoration-other-active-gradient'] =
+					$the72_options['header-menu-decoration-other-hover-line-gradient'] = 
+					$the72_options['header-menu-decoration-other-active-line-gradient'] = 
+					$the72_options['header-menu-decoration-other-click_decor-gradient'] = 
+					$the72_options['header-menu-decoration-other-hover-gradient'] = 
+					$the72_options['header-menu-decoration-other-active-gradient'] = 
 					$the72_options['menu-hover_decoration_color_gradient'];
 					break;
 				// Disabled.

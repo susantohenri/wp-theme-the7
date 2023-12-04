@@ -25,7 +25,7 @@ if ( $related_products ) : ?>
     <section class="related products">
 
 		<?php
-		$heading = apply_filters( 'woocommerce_product_related_products_heading', __( 'Related products', 'woocommerce' ) );
+		$heading = apply_filters( 'woocommerce_product_related_products_heading', __( 'Related products', 'the7mk2' ) );
 
 		if ( $heading ) :
 			?>
@@ -44,7 +44,7 @@ if ( $related_products ) : ?>
 					$product = wc_get_product( $related_product->get_id() );
 					if ( $product->is_on_sale() ) :
 						?>
-                        <span class="onsale"></span>
+                        <span class="onsale"><i class="dt-icon-the7-magn-004-12" aria-hidden="true"></i></span>
 					<?php
 					endif;
 					?>

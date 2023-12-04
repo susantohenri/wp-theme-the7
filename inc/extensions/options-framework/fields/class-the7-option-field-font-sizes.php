@@ -36,7 +36,7 @@ class The7_Option_Field_Font_Sizes extends The7_Option_Field_Composition_Abstrac
 			'font_preview' => array(
 				'name' => _x( 'Preview', 'theme-options', 'the7mk2' ),
 				'type' => 'web_fonts_preview',
-				'std'  => 'Arial',
+				'std'  => 'Open Sans',
 				'class' => 'font-family'
 			),
 			'font_size'    => array(

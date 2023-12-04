@@ -1,6 +1,7 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Modules\Lazy_Loading;
+namespace The7\Elementor\Modules;
+
 
 use Elementor\Controls_Manager;
 use Elementor\Plugin;

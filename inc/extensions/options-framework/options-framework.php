@@ -1,4 +1,33 @@
 <?php
+/*
+Plugin Name: Options Framework
+Plugin URI: http://www.wptheming.com
+Description: A framework for building theme options.
+Version: 1.5
+Author: Devin Price
+Author URI: http://www.wptheming.com
+License: GPLv2
+Modified By: Daniel Gerasimov
+*/
+
+/*
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
+/* Basic plugin definitions */
+
 define( 'OPTIONS_FRAMEWORK_VERSION', '1.5' );
 define( 'OPTIONS_FRAMEWORK_URL', trailingslashit( get_template_directory_uri() . '/inc/extensions/' . basename(dirname( __FILE__ )) ) );
 define( 'OPTIONS_FRAMEWORK_DIR', trailingslashit( dirname( __FILE__ ) ) );
@@ -10,71 +39,6 @@ if ( !function_exists( 'add_action' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'optionsframework_get_presets_list' ) ) :
-
-	/**
-	 * Add theme options presets.
-	 *
-	 * @return array
-	 */
-	function optionsframework_get_presets_list() {
-		$presets_names = array(
-			'skin11r',
-			'skin12r',
-			'skin15r',
-			'skin14r',
-			'skin09r',
-			'skin03r',
-			'skin05r',
-			'skin02r',
-			'skin11b',
-			'skin16r',
-			'skin19b',
-			'skin19r',
-			'skin10r',
-			'skin07c',
-			'skin06r',
-
-			'wizard01',
-			'wizard02',
-			'wizard03',
-			'wizard05',
-			'wizard07',
-			'wizard08',
-			'wizard09',
-		);
-
-		$presets = array();
-		foreach ( $presets_names as $preset_name ) {
-			$presets[ $preset_name ] = array(
-				'src'   => '/inc/presets/icons/' . $preset_name . '.gif',
-				'title' => $preset_name,
-			);
-		}
-
-		return $presets;
-	}
-
-endif;
-
-if ( ! function_exists( 'presscore_set_first_run_skin' ) ) :
-
-	/**
-	 * Set first run skin.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $skin_name
-	 * @return string
-	 */
-	function presscore_set_first_run_skin( $skin_name = '' ) {
-		return 'skin11r';
-	}
-
-	add_filter( 'options_framework_first_run_skin', 'presscore_set_first_run_skin' );
-
-endif;
-
 require_once OPTIONS_FRAMEWORK_DIR . 'options-custom.php';
 
 /* If the user can't edit theme options, no use running this plugin */
@@ -85,7 +49,7 @@ function optionsframework_rolescheck() {
 		return;
 	}
 
-	add_action( 'admin' . '_bar_menu', 'optionsframework_admin_bar_theme_options', 40 );
+	add_action( 'admin_bar_menu', 'optionsframework_admin_bar_theme_options', 40 );
 
 	// If the user can edit theme options, let the fun begin!
 	add_action( 'admin_menu', 'optionsframework_add_page' );
@@ -111,7 +75,7 @@ function optionsframework_rolescheck() {
 
 	    if ( optionsframework_is_in_visual_mode() ) {
 		    add_filter( 'wp_admin_bar_class', 'optionsframework_visual_admin_bar_class', 9999 );
-		    add_action( 'admin' . '_bar_menu', 'optionsframework_admin_bar_visual_mode', 9999 );
+		    add_action( 'admin_bar_menu', 'optionsframework_admin_bar_visual_mode', 9999 );
 			add_filter( 'admin_body_class', 'of_body_class_filter' );
 			add_action( 'submenu_file', 'optionsframework_empty_main_menu' );
 			add_action( 'admin_print_styles', 'optionsfamework_inline_css_for_visual_mode' );
@@ -175,16 +139,10 @@ function optionsframework_empty_main_menu( $submenu_file ) {
 /**
  * Get options id.
  *
- * @return string
  */
 function optionsframework_get_options_id() {
-	static $options_id = null;
-
-	if ( $options_id === null ) {
-		$options_id = preg_replace( '/\W/', '', strtolower( wp_get_theme()->Name ) );
-	}
-
-	return apply_filters( 'optionsframework_get_options_id', $options_id );
+	$name = preg_replace("/\W/", "", strtolower(wp_get_theme()->Name));
+	return apply_filters( 'optionsframework_get_options_id', $name );
 }
 
 /**
@@ -206,9 +164,9 @@ function optionsframework_option_name() {
 	if ( ! isset( $of_settings['knownoptions'] ) ) {
 		$of_settings['knownoptions'] = array( $options_id );
 		$update = true;
-	} elseif ( ! in_array( $options_id, $of_settings['knownoptions'] ) ) {
+	} else if ( ! in_array( $options_id, $of_settings['knownoptions'] ) ) {
 		$of_settings['knownoptions'][] = $options_id;
-		$update                        = true;
+		$update = true;
 	}
 
 	if ( $update ) {
@@ -228,7 +186,7 @@ function optionsframework_load_sanitization() {
  * The optionsframework_init loads all the required files and registers the settings.
  *
  * Read more about the Settings API in the WordPress codex:
- * https://codex.wordpress.org/Settings_API
+ * http://codex.wordpress.org/Settings_API
  *
  * The theme options are saved using a unique option id in the database.  Developers
  * traditionally set the option id via in theme using the function
@@ -282,13 +240,16 @@ function optionsframework_init() {
 	// Registers the settings fields and callback
 	register_setting( 'optionsframework', $optionsframework_settings['id'], 'optionsframework_validate' );
 
+	// Update cache.
+    add_action( 'update_option_' . $optionsframework_settings['id'], 'optionsframework_update_options_cache', 10, 2 );
+
 	// Change the capability required to save the 'optionsframework' options group.
 	add_filter( 'option_page_capability_optionsframework', 'optionsframework_page_capability' );
 }
 
 /**
  * Ensures that a user with the 'edit_theme_options' capability can actually set the options
- * See: https://core.trac.wordpress.org/ticket/14365
+ * See: http://core.trac.wordpress.org/ticket/14365
  *
  * @param string $capability The capability used for the page, which is manage_options by default.
  * @return string The capability to actually use.
@@ -308,7 +269,7 @@ function optionsframework_read_capability() {
  * activation since most people won't be editing the options.php
  * on a regular basis.
  *
- * https://codex.wordpress.org/Function_Reference/add_option
+ * http://codex.wordpress.org/Function_Reference/add_option
  *
  */
 
@@ -418,6 +379,11 @@ if ( !function_exists( 'optionsframework_add_page' ) ) {
 function optionsframework_load_styles() {
 	presscore_register_scripts();
 
+	foreach ( the7_get_custom_icons_stylesheets() as $icon_css_url ) {
+	    $base_name = str_replace( '.css', '', basename( $icon_css_url ) );
+	    wp_enqueue_style( "the7-{$base_name}", $icon_css_url, array(), THE7_VERSION );
+    }
+
 	if ( ! wp_style_is( 'wp-color-picker','registered' ) ) {
 		wp_register_style('wp-color-picker', PRESSCORE_ADMIN_URI . '/assets/vendor/wp-color-picker/color-picker.min.css');
 	}
@@ -426,8 +392,7 @@ function optionsframework_load_styles() {
 
 	the7_register_style( 'the7-options', PRESSCORE_ADMIN_URI . '/assets/css/options', array( 'thickbox', 'wp-color-picker', 'the7-select-2' ) );
 	wp_enqueue_style( 'the7-options' );
-
-	do_action( 'optionsframework_load_styles' );
+	wp_enqueue_style( 'the7-awesome-fonts' );
 }
 
 /* Loads the javascript */
@@ -478,679 +443,6 @@ function optionsframework_load_scripts() {
 	add_action( 'optionsframework_after', 'of_localize_scripts' );
 }
 
-if ( ! function_exists( 'presscore_options_black_list' ) ) :
-
-	/**
-	 * List of options ids that do not included while export.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $fields
-	 * @return array
-	 */
-	function presscore_options_black_list( $fields = array() ) {
-		$fields_black_list = array(
-			'general-tracking_code',
-			'general-post_type_portfolio_slug',
-			'general-post_type_gallery_slug',
-			'general-post_type_team_slug',
-			'general-contact_form_send_mail_to',
-
-			'general-favicon',
-			'general-favicon_hd',
-			'general-handheld_icon-old_iphone',
-			'general-handheld_icon-old_ipad',
-			'general-handheld_icon-retina_iphone',
-			'general-handheld_icon-retina_ipad',
-
-			'header-menu-submenu-parent_is_clickable',
-
-			'footer-layout',
-			'bottom_bar-copyrights',
-			'bottom_bar-text',
-
-			'general-beautiful_loading',
-
-			'general-show_author_in_blog',
-			'general-next_prev_in_blog',
-			'general-show_back_button_in_post',
-			'general-post_back_button_target_page_id',
-			'general-blog_meta_on',
-			'general-blog_meta_date',
-			'general-blog_meta_author',
-			'general-blog_meta_categories',
-			'general-blog_meta_comments',
-			'general-blog_meta_tags',
-
-			'general-next_prev_in_portfolio',
-			'general-show_back_button_in_project',
-			'general-project_back_button_target_page_id',
-
-			'general-portfolio_meta_on',
-			'general-portfolio_meta_date',
-			'general-portfolio_meta_author',
-			'general-portfolio_meta_categories',
-			'general-portfolio_meta_comments',
-
-			'general-show_rel_projects',
-			'general-rel_projects_head_title',
-			'general-rel_projects_title',
-			'general-rel_projects_excerpt',
-			'general-rel_projects_info_date',
-			'general-rel_projects_info_author',
-			'general-rel_projects_info_comments',
-			'general-rel_projects_info_categories',
-			'general-rel_projects_link',
-			'general-rel_projects_zoom',
-			'general-rel_projects_details',
-			'general-rel_projects_max',
-			'general-rel_projects_fullwidth_height',
-			'general-rel_projects_fullwidth_width_style',
-			'general-rel_projects_fullwidth_width',
-			'general-rel_projects_height',
-			'general-rel_projects_width_style',
-			'general-rel_projects_width',
-
-			'social_buttons-post-button_title',
-			'social_buttons-post',
-			'social_buttons-portfolio_post-button_title',
-			'social_buttons-portfolio_post',
-			'social_buttons-photo-button_title',
-			'social_buttons-photo',
-			'social_buttons-page-button_title',
-			'social_buttons-page',
-
-			'widgetareas',
-
-			// archives
-			'template_page_id_author',
-			'template_page_id_date',
-			'template_page_id_blog_category',
-			'template_page_id_blog_tags',
-			'template_page_id_search',
-			'template_page_id_portfolio_category',
-			'template_page_id_gallery_category',
-
-			//wpml
-			'wpml_dt-custom_style',
-			'contact_form_security_token',
-			'contact_form_recaptcha_site_key',
-			'contact_form_recaptcha_secret_key',
-		);
-
-		return array_unique( array_merge( $fields, $fields_black_list ) );
-	}
-
-	add_filter( 'optionsframework_fields_black_list', 'presscore_options_black_list' );
-	add_filter( 'optionsframework_validate_preserve_fields', 'presscore_options_black_list', 14 );
-
-endif;
-
-if ( ! function_exists( 'presscore_themeoption_preserved_fields' ) ) :
-
-	/**
-	 * List of theme options ids that do not change after skin switch.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param  array  $fields
-	 * @return array
-	 */
-	function presscore_themeoption_preserved_fields( $fields = array() ) {
-		$preserved_fields = array(
-			// header logo
-			'header-logo_regular',
-			'header-logo_hd',
-
-			// bottom logo
-			'bottom_bar-logo_regular',
-			'bottom_bar-logo_hd',
-
-			// mobile logo
-			'header-style-mobile-logo_regular',
-			'header-style-mobile-logo_hd',
-			'header-style-mobile-logo-padding-top',
-			'header-style-mobile-logo-padding-bottom',
-
-			// floating logo
-			'header-style-floating-choose_logo',
-			'header-style-floating-logo_regular',
-			'header-style-floating-logo_hd',
-
-			// menu icons dimentions
-			'header-icons_size',
-			'header-submenu_icons_size',
-			'header-submenu_next_level_indicator',
-			'header-next_level_indicator',
-
-			// header layout
-			'header-login_caption',
-			'header-logout_caption',
-			'header-search_caption',
-			'header-woocommerce_cart_caption',
-
-			// Header layout.
-			'header-classic-elements',
-			'header-classic-show_elements',
-			'header-inline-elements',
-			'header-inline-show_elements',
-			'header-split-elements',
-			'header-split-show_elements',
-			'header-side-elements',
-			'header-side-show_elements',
-			'header-slide_out-elements',
-			'header-slide_out-show_elements',
-			'header-overlay-elements',
-			'header-overlay-show_elements',
-
-			// Microwidgets.
-			'header-elements-search-caption',
-			'header-elements-search-icon',
-			'header-elements-search-second-header-switch',
-			'header-elements-contact-address-caption',
-			'header-elements-contact-address-icon',
-			'header-elements-contact-address-second-header-switch',
-			'header-elements-contact-phone-caption',
-			'header-elements-contact-phone-icon',
-			'header-elements-contact-phone-second-header-switch',
-			'header-elements-contact-email-caption',
-			'header-elements-contact-email-icon',
-			'header-elements-contact-email-second-header-switch',
-			'header-elements-contact-skype-caption',
-			'header-elements-contact-skype-icon',
-			'header-elements-contact-skype-second-header-switch',
-			'header-elements-contact-clock-caption',
-			'header-elements-contact-clock-icon',
-			'header-elements-contact-clock-second-header-switch',
-			'header-elements-contact-multipurpose_1-caption',
-			'header-elements-contact-multipurpose_1-icon',
-			'header-elements-contact-multipurpose_1-second-header-switch',
-			'header-elements-contact-multipurpose_2-caption',
-			'header-elements-contact-multipurpose_2-icon',
-			'header-elements-contact-multipurpose_2-second-header-switch',
-			'header-elements-contact-multipurpose_3-caption',
-			'header-elements-contact-multipurpose_3-icon',
-			'header-elements-contact-multipurpose_3-second-header-switch',
-			'header-elements-contact-multipurpose_4-caption',
-			'header-elements-contact-multipurpose_4-icon',
-			'header-elements-contact-multipurpose_4-second-header-switch',
-			'header-elements-login-caption',
-			'header-elements-logout-caption',
-			'header-elements-login-icon',
-			'header-elements-login-second-header-switch',
-			'header-elements-login-url',
-			'header-elements-text-second-header-switch',
-			'header-elements-text',
-			'header-elements-text-2-second-header-switch',
-			'header-elements-text-2',
-			'header-elements-text-3-second-header-switch',
-			'header-elements-text-3',
-			'header-elements-menu-second-header-switch',
-			'header-elements-menu-style',
-			'header-elements-menu-style-first-switch',
-			'header-elements-menu-style-second-switch',
-			'header-elements-soc_icons-second-header-switch',
-			'header-elements-soc_icons',
-			'header-elements-woocommerce_cart-caption',
-			'header-elements-woocommerce_cart-icon',
-			'header-elements-woocommerce_cart-second-header-switch',
-			'header-elements-woocommerce_cart-show_sub_cart',
-			'header-elements-woocommerce_cart-show_subtotal',
-			'header-elements-woocommerce_cart-show_counter',
-		);
-
-		return array_unique( array_merge( $fields, $preserved_fields ) );
-	}
-
-	add_filter( 'optionsframework_validate_preserve_fields', 'presscore_themeoption_preserved_fields', 15 );
-
-endif;
-
-if ( ! function_exists( 'presscore_of_localized_vars_filter' ) ) :
-
-	/**
-	 * Setup blocks dependencies for "Top Bar & Header" options page. Filter optionsframework localized vars.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param  array $vars
-	 * @return array
-	 */
-	function presscore_of_localized_vars_filter( $vars ) {
-		if ( 'of-header-menu' != optionsframework_get_cur_page_id() ) {
-			return $vars;
-		}
-
-		$vars['blockDependencies'] = array(
-			//Microwidgets
-
-			'classic-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'classic',
-					),
-					array(
-						'field' => 'header-classic-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'inline-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					),
-				),
-			),
-			'inline-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					),
-					array(
-						'field' => 'header-inline-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'split-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					),
-				),
-			),
-			'split-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					),
-					array(
-						'field' => 'header-split-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'side-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side',
-					),
-				),
-			),
-			'side-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side',
-					),
-					array(
-						'field' => 'header-side-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'top-line-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'top_line',
-					),
-				),
-			),
-			'top-line-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'top_line',
-					),
-					array(
-						'field' => 'header-top_line-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'side-line-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side_line',
-					),
-				),
-			),
-			'side-line-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side_line',
-					),
-					array(
-						'field' => 'header-side_line-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'menu-icon-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'menu_icon',
-					),
-				),
-			),
-			'menu-icon-microwidgets-settings' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'menu_icon',
-					),
-					array(
-						'field' => 'header-menu_icon-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-			'top-bar-microwidgets' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'classic',
-					),
-					array(
-						'field' => 'header-classic-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					),
-					array(
-						'field' => 'header-inline-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					),
-
-					array(
-						'field' => 'header-split-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side',
-					),
-					array(
-						'field' => 'header-side-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'top_line',
-					),
-					array(
-						'field' => 'header-top_line-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'side_line',
-					),
-					array(
-						'field' => 'header-side_line-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'menu_icon',
-					),
-					array(
-						'field' => 'header-menu_icon-show_elements',
-						'operator' => '==',
-						'value' => '1',
-					),
-				),
-			),
-
-			// Menu
-			'menu-horizontal-decoration-block' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'classic',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					)
-				)
-			),
-			'menu-top-headers-indention' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'classic',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					)
-				)
-			),
-
-			'microwidgets-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'topbar-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'header-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'menu-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'submenu-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'mobile-header-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-			'mobile-menu-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				)
-			),
-
-			// Floating header
-			'floating-header-tab' => array(
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'classic',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'inline',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '==',
-						'value' => 'split',
-					)
-				),
-				array(
-					array(
-						'field' => 'header-layout',
-						'operator' => '!=',
-						'value' => 'disabled',
-					)
-				),
-			),
-			// Woocommerce
-			'isotope-block-settings' => array(
-				array(
-					array(
-						'field' => 'wc_view_mode',
-						'operator' => '==',
-						'value' => 'masonry_grid',
-					),
-				),
-				array(
-					array(
-						'field' => 'wc_view_mode',
-						'operator' => '==',
-						'value' => 'view_mode',
-					)
-				),
-			),
-			'list-block-settings' => array(
-				array(
-					array(
-						'field' => 'wc_view_mode',
-						'operator' => '==',
-						'value' => 'list',
-					),
-				),
-				array(
-					array(
-						'field' => 'wc_view_mode',
-						'operator' => '==',
-						'value' => 'view_mode',
-					)
-				),
-			),
-
-
-		);
-
-		return $vars;
-	}
-
-	add_filter( 'of_localized_vars', 'presscore_of_localized_vars_filter' );
-
-endif;
-
 function of_localize_scripts() {
     $edit_page_url_tpl = presscore_get_post_type_edit_link_template( 'page' );
     $edit_link = sprintf( '<a href="%s" target="_blank">%s</a>', $edit_page_url_tpl, esc_html_x( 'Edit page', 'back-end', 'the7mk2' ) );
@@ -1168,31 +460,6 @@ function of_localize_scripts() {
 	$localized_vars = apply_filters( 'of_localized_vars', $localized_vars );
 
 	wp_localize_script( 'the7-options', 'optionsframework', $localized_vars );
-}
-
-if ( ! function_exists( 'presscore_get_post_type_edit_link_template' ) ) {
-
-	/**
-	 * Return post type edit link template or empty string if it's not possible.
-	 *
-	 * Replace %#% placeholder with actual post id.
-	 *
-	 * @sine 7.2.0
-	 *
-	 * @param string $post_type
-	 *
-	 * @return string
-	 */
-	function presscore_get_post_type_edit_link_template( $post_type ) {
-		$post_type_object = get_post_type_object( $post_type );
-		if ( ! $post_type_object || ! $post_type_object->_edit_link ) {
-			return '';
-		}
-		$action = '&amp;action=edit';
-
-		return admin_url( str_replace( '99999', '%#%', sprintf( $post_type_object->_edit_link . $action, 99999 ) ) );
-	}
-
 }
 
 /**
@@ -1220,7 +487,7 @@ function of_load_global_admin_assets() {
 }
 
 if ( !function_exists( 'optionsframework_page' ) ) :
-
+	
 	function optionsframework_page() {
 		if ( presscore_options_debug() ) {
 			$wrap_class = ' of-debug';
@@ -1247,13 +514,7 @@ if ( !function_exists( 'optionsframework_page' ) ) :
 			if ( isset( $_GET['tab'] ) ) {
 				$active_tab = sanitize_key( $_GET['tab'] );
 			}
-
-			$options_to_display = apply_filters( 'the7_replace_theme_options_to_display', [], $cur_page_id );
-			if ( ! $options_to_display ) {
-				$options_to_display = optionsframework_get_page_options( $cur_page_id );
-			}
-
-			$of_interface = new The7_Options( $options_to_display );
+			$of_interface = new The7_Options( optionsframework_get_page_options( $cur_page_id ) );
 			?>
 
 			<?php do_action( 'optionsframework_before_tabs' ); ?>
@@ -1683,20 +944,21 @@ function optionsframework_validate( $input ) {
 		$is_preset = true;
 
 	// if import / export
-	} elseif ( ! empty( $input['import_export'] ) ) {
+	} else if ( !empty( $input['import_export'] ) ) {
 
 		// Use all options for sanitazing
 		$options =& _optionsframework_options();
 
-		$import_options = json_decode( trim( $input['import_export'] ), true );
+		$import_options = @unserialize( @base64_decode( $input['import_export'] ) );
 
 		if ( is_array( $import_options ) ) {
 			$used_options = array_merge( (array) $saved_options, $import_options );
 		}
 
-		$is_preset      = true;
-		$preset_options = [];
-		// If regular page
+		$is_preset = true;
+		$preset_options = array();
+
+	// If regular page
 	} else {
 
 		// Get current preset options
@@ -1710,6 +972,7 @@ function optionsframework_validate( $input ) {
 		$used_options = $input;
 
 		$is_preset = false;
+
 	}
 
 	if ( $is_preset ) {
@@ -1741,8 +1004,6 @@ function optionsframework_validate( $input ) {
 
 function optionsframework_save_options_via_ajax() {
     try {
-	    check_ajax_referer('optionsframework-options');
-
 	    $optionsframework_settings = get_option( 'optionsframework' );
 	    $options_id = $optionsframework_settings['id'];
 		$options_to_save = array();
@@ -1774,7 +1035,7 @@ function optionsframework_catch_last_php_error() {
 	    delete_transient( 'the7_options_errors' );
 
 		if ( strpos( $last_php_error['message'], 'Allowed memory size' ) !== false ) {
-			$error = _x( 'Theme options cannot be saved. Not enough memory available. Please try to increase <a href="https://support.dream-theme.com/knowledgebase/allowed-memory-size-error/" title="memory limit">memory limit</a>', 'theme-options', 'the7mk2' );
+			$error = _x( 'Theme options cannot be saved. Not enough memory available. Please try to increase <a href="http://support.dream-theme.com/knowledgebase/allowed-memory-size-error/" title="memory limit">memory limit</a>', 'theme-options', 'the7mk2' );
 			set_transient( 'the7_options_errors', $error, 30 );
 		}
 	}
@@ -1936,7 +1197,7 @@ function optionsframework_admin_bar_theme_options( $wp_admin_bar ) {
 	$wp_admin_bar->add_menu( array(
 		'id'    => $parent_menu_id,
 		'title' => optionsframework_get_main_title(),
-		'href'  => admin_url( 'admin.php?page=options-framework' ),
+		'href'  => admin_url( 'admin.php?page=' . urlencode( $parent_menu_item->get( 'slug' ) ) ),
 	));
 
 	foreach( $menu_items as $menu_item ) {
@@ -2128,14 +1389,28 @@ function optionsframework_get_view_device() {
 }
 
 /**
- * Retrieve theme options array.
+ * Description here.
  *
- * @return array
  */
 function optionsframework_get_options() {
-	$options = get_option( optionsframework_get_options_id() );
+	$config_id = optionsframework_get_options_id();
+	$config = get_option( 'optionsframework' );
+	if ( !isset($config['knownoptions']) || !in_array($config_id, $config['knownoptions']) ) {
+		return null;
+	}
 
-	return is_array( $options ) ? $options : [];
+	return get_option( $config_id );
+}
+
+/**
+ * Update 'saved_options' cache after theme options save.
+ *
+ * @param $old_value
+ * @param $value
+ */
+function optionsframework_update_options_cache( $old_value, $value ) {
+	$value = apply_filters( 'dt_of_get_option_static', $value );
+	wp_cache_set( 'saved_options', $value, 'optionsframework' );
 }
 
 if ( ! function_exists( 'of_get_option' ) ) :
@@ -2153,19 +1428,22 @@ if ( ! function_exists( 'of_get_option' ) ) :
 	 * @return mixed Theme option value.
 	 */
 	function of_get_option( $name, $default = false ) {
-		$options = apply_filters( 'dt_of_get_option_static', optionsframework_get_options() );
-		$options = apply_filters( 'dt_of_get_option', $options, $name );
+		if ( false === ( $saved_options = wp_cache_get( 'saved_options', 'optionsframework' ) ) ) {
 
-		if ( isset( $options[ $name ] ) ) {
-			return apply_filters( "dt_of_get_option-{$name}", $options[ $name ] ); // phpcs:ignore WordPress.NamingConventions.ValidHookName.UseUnderscores
+			$saved_options = optionsframework_get_options();
+			$saved_options = apply_filters( 'dt_of_get_option_static', $saved_options );
+
+			wp_cache_set( 'saved_options', $saved_options, 'optionsframework' );
 		}
 
-		if ( false === $default ) {
-			$def_val = _optionsframework_get_option_default_value( $name );
+		$options = apply_filters( 'dt_of_get_option', $saved_options, $name );
 
-			if ( $def_val !== null ) {
-				return $def_val;
-			}
+		if ( isset( $options[ $name ] ) ) {
+			return apply_filters( "dt_of_get_option-{$name}", $options[ $name ] );
+		}
+
+		if ( false === $default && null !== ( $def_val = _optionsframework_get_option_default_value( $name ) ) ) {
+			return $def_val;
 		}
 
 		return $default;
@@ -2303,8 +1581,6 @@ if ( ! function_exists( 'presscore_options_apply_template' ) ) :
 	 * @param  array  $fields
 	 */
 	function presscore_options_apply_template( &$options, $tpl, $prefix, $fields = array(), $dependency = array() ) {
-		require_once PRESSCORE_ADMIN_DIR . '/theme-options-parts.php';
-
 		$class_name = 'Presscore_Lib_Options_' . implode( '', array_map( 'ucfirst', explode( '-',  strtolower( $tpl ) ) ) ) . 'Template';
 
 		if ( class_exists( $class_name ) ) {
@@ -2328,7 +1604,7 @@ function optionsframework_get_fonts_options( $group = 'all' ) {
 }
 
 function optionsframework_fonts_ajax_response() {
-	if ( ! check_ajax_referer( 'options-framework-ajax-fonts-nonce', false, false ) || ! current_user_can( optionsframework_read_capability() ) ) {
+	if ( ! check_ajax_referer( 'options-framework-ajax-fonts-nonce', false, false ) || ! current_user_can( 'edit_theme_options' ) ) {
 		wp_send_json_error();
 	}
 
@@ -2341,21 +1617,6 @@ function optionsframework_fonts_ajax_response() {
 }
 
 add_action( 'wp_ajax_of_get_fonts', 'optionsframework_fonts_ajax_response' );
-
-/**
- * @return void
- */
-function optionsframework_icons_picker_ajax_response() {
-    if ( ! current_user_can( optionsframework_read_capability() ) ) {
-		wp_send_json_error();
-    }
-
-	$icon_manager_icons = apply_filters( 'the7_icons_in_settings', [] );
-
-	wp_send_json( $icon_manager_icons );
-}
-
-add_action( 'wp_ajax_the7_get_icons_for_icons_picker', 'optionsframework_icons_picker_ajax_response' );
 
 function of_save_unsanitized_options( $options ) {
 	add_filter( 'optionsframework_get_validated_options', 'the7_skip_options_sanitizing', 10, 2 );

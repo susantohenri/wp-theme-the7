@@ -63,7 +63,7 @@ class The7_Option_Field_Images extends The7_Option_Field_Abstract {
 
 					$img_info = '<div class="of-radio-img-label"' . $img_title_style . '>' . esc_html( $title ) . '</div>';
 				}
-			} elseif ( $image_data !== $key ) {
+			} else if ( $image_data !== $key ) {
 				$img   = $dir . $image_data;
 				$title = $image_data;
 			} else {

@@ -13,4 +13,4 @@ defined( 'ABSPATH' ) || exit;
  */
 ?>
 
-<a href="<?php echo esc_url( $href ) ?>" class="<?php echo esc_attr( $class ) ?>" aria-label="<?php echo esc_attr( $aria_label ) ?>"><?php echo $caption ?></a>
+<a href="<?php echo esc_url( $href ) ?>" class="<?php echo esc_attr( $class ) ?>" aria-label="<?php echo esc_attr( $aria_label ) ?>" rel="nofollow"><?php echo $caption ?></a>

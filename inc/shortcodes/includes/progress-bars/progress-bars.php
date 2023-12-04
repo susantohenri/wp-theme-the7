@@ -39,23 +39,22 @@ class DT_Shortcode_ProgressBars extends DT_Shortcode {
 
         $atts_backup = self::$atts;
         self::$atts = $attributes;
-
+        
         $output = sprintf( '<div class="skills animate-element">%s</div>', do_shortcode($content) );
-
+        
         self::$atts = $atts_backup;
 
-        return $output;
+        return $output; 
     }
 
     public function shortcode_bar( $atts, $content = null ) {
-		$shortcode_atts = shortcode_atts( [
-			'title'      => '',
-			'color'      => '',
-			'percentage' => ''
-		], $atts, 'dt_progress_bar' );
-		extract( $shortcode_atts );
-
-		$title = wp_kses($title, array());
+        extract( shortcode_atts( array(
+            'title'         => '',
+            'color'         => '',
+            'percentage'    => ''
+        ), $atts, 'dt_progress_bar' ) );
+        
+        $title = wp_kses($title, array());
         $color = esc_attr($color);
         $percentage = absint($percentage);
         $percentage = $percentage > 100 ? 100 : $percentage;
@@ -72,7 +71,7 @@ class DT_Shortcode_ProgressBars extends DT_Shortcode {
             $show_percentage ? ' <span>' . $percentage . '%</span>' : ''
         );
 
-        return $output;
+        return $output; 
     }
 
 }

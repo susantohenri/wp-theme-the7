@@ -162,7 +162,7 @@ if ( vc_has_class( 'prettyphoto', $el_class ) ) {
 if ( ! empty( $atts['img_link'] ) ) {
 	$link = $atts['img_link'];
 	if ( ! preg_match( '/^(https?\:\/\/|\/\/)/', $link ) ) {
-		$link = 'https://' . $link;
+		$link = 'http://' . $link;
 	}
 }
 
@@ -206,7 +206,7 @@ switch ( $onclick ) {
 		if ( ! vc_has_class( 'prettyphoto', $el_class ) && 'external_link' === $source ) {
 			$link = $custom_src;
 		} elseif ( ! vc_has_class( 'prettyphoto', $el_class ) ) {
-			$link = wp_get_attachment_image_src( $img_id, 'full' );
+			$link = wp_get_attachment_image_src( $img_id, 'large' );
 			$link = $link[0];
 		}
 
@@ -243,27 +243,26 @@ if ( vc_has_class( 'prettyphoto', $el_class ) ) {
 	$el_class = vc_remove_class( 'prettyphoto', $el_class );
 }
 
-$wrapper_class = 'vc_single_image-wrapper ' . $style . ' ' . $border_color;
+$wrapperClass = 'vc_single_image-wrapper ' . $style . ' ' . $border_color;
 
 if ( $lazy_loading ) {
-	$wrapper_class .= ' layzr-bg';
+	$wrapperClass .= ' layzr-bg';
 }
 
-$link_datas = (array) wp_get_attachment_image_src( $img_id, 'full' );
-
-if ( $link && $link_datas && ! empty( $link_datas[1] ) && ! empty( $link_datas[2] ) ) {
-	$a_attrs['href']   = $link;
+if ( $link ) {
+	$a_attrs['href'] = $link;
 	$a_attrs['target'] = $img_link_target;
 	if ( $rel_no_follow ) {
 		$a_attrs['rel'] = 'nofollow';
 	}
 	if ( ! empty( $a_attrs['class'] ) ) {
-		$wrapper_class .= ' ' . $a_attrs['class'];
+		$wrapperClass .= ' ' . $a_attrs['class'];
 		unset( $a_attrs['class'] );
 	}
-	$html = '<a ' . vc_stringify_attributes( $a_attrs ) . '  class="' . $wrapper_class . '" data-large_image_width="' . (int) $link_datas[1] . '" data-large_image_height = "' . (int) $link_datas[2] . '"   ' . presscore_get_share_buttons_for_prettyphoto( 'photo' ) . '  >' . $img['thumbnail'] . '</a>';
+	$link_datas = wp_get_attachment_image_src( $img_id, 'large' );
+	$html = '<a ' . vc_stringify_attributes( $a_attrs ) . '  class="' . $wrapperClass . '" data-large_image_width="' . (int) $link_datas[1] . '" data-large_image_height = "' . (int) $link_datas[2]. '"   ' . presscore_get_share_buttons_for_prettyphoto( 'photo' ) . '  >' . $img['thumbnail'] . '</a>';
 } else {
-	$html = '<div class="' . $wrapper_class . '">' . $img['thumbnail'] . '</div>';
+	$html = '<div class="' . $wrapperClass . '">' . $img['thumbnail'] . '</div>';
 }
 
 // The7: Custom animation.
@@ -280,8 +279,10 @@ if ( in_array( $source, array( 'media_library', 'featured_image' ), true ) && 'y
 	$img_id = apply_filters( 'wpml_object_id', $img_id, 'attachment' );
 	$post = get_post( $img_id );
 	$caption = $post->post_excerpt;
-} elseif ( 'external_link' === $source ) {
-	$add_caption = 'yes';
+} else {
+	if ( 'external_link' === $source ) {
+		$add_caption = 'yes';
+	}
 }
 
 if ( 'yes' === $add_caption && '' !== $caption ) {
@@ -291,7 +292,6 @@ $wrapper_attributes = array();
 if ( ! empty( $el_id ) ) {
 	$wrapper_attributes[] = 'id="' . esc_attr( $el_id ) . '"';
 }
-
 $output = '
 	<div ' . implode( ' ', $wrapper_attributes ) . ' class="' . esc_attr( trim( $css_class ) ) . '">
 		' . wpb_widget_title( array(

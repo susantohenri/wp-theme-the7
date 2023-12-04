@@ -24,7 +24,6 @@ if ( ! class_exists( 'Presscore_Modules_Legacy' ) ) :
 				'rows',
 				'admin-icons-bar',
 			    'overlapping-headers',
-			    'deprecated_mega_menu_settings',
 			);
 
 			if ( dt_the7_core_is_enabled() ) {
@@ -42,12 +41,14 @@ if ( ! class_exists( 'Presscore_Modules_Legacy' ) ) :
 		 * Handle legacy code hideout.
 		 */
 		public static function handle_legacy_code() {
+			$base_dir = dirname( __FILE__ );
+
 			foreach ( self::$settings as $id ) {
 				if ( The7_Admin_Dashboard_Settings::get( $id ) ) {
 					continue;
 				}
 
-				$file_name = __DIR__ . "/legacy-{$id}.php";
+				$file_name = "{$base_dir}/legacy-{$id}.php";
 				if ( file_exists( $file_name ) ) {
 					include $file_name;
 				}

@@ -16,7 +16,6 @@ if ( ! is_a( $the7_tgmpa, 'The7_TGMPA' ) ) {
 ?>
 <div id="the7-dashboard" class="wrap">
     <h1><?php esc_html_e( 'Recommended Plugins', 'the7mk2' ); ?></h1>
-    <div class="wp-header-end"></div>
     <div class="the7-postbox">
         <p><?php
 	        /* translators: 1: file. */
@@ -47,7 +46,6 @@ wp_clean_plugins_cache( false );
 ?>
 <div id="the7-dashboard" class="wrap">
     <h1><?php esc_html_e( 'Recommended Plugins', 'the7mk2' ); ?></h1>
-    <div class="wp-header-end"></div>
         <?php $plugin_table->prepare_items(); ?>
         <?php $plugin_table->views(); ?>
 

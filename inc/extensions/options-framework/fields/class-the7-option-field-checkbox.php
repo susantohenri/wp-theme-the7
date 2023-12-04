@@ -10,7 +10,7 @@ class The7_Option_Field_Checkbox extends The7_Option_Field_Abstract {
 		$classes[] = 'of-input';
 		if ( isset( $this->option['options']['java_hide'] ) && $this->option['options']['java_hide'] ) {
 			$classes[] = 'of-js-hider';
-		} elseif ( isset( $this->option['options']['java_hide_global'] ) && $this->option['options']['java_hide_global'] ) {
+		} else if ( isset( $this->option['options']['java_hide_global'] ) && $this->option['options']['java_hide_global'] ) {
 			$classes[] = 'of-js-hider-global';
 		}
 		$classes = implode( ' ', $classes );

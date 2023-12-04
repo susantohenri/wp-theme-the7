@@ -53,12 +53,11 @@ if ( ! class_exists( 'DT_Shortcode_SocialIcons', false ) ) {
 		}
 
 		public function shortcode_icon( $atts, $content = null ) {
-			$shortcode_atts = shortcode_atts( [
-				'icon'         => '',
-				'target_blank' => '1',
-				'link'         => '#'
-			], $atts, 'dt_social_icon' );
-			extract( $shortcode_atts );
+			extract( shortcode_atts( array(
+				'icon'          => '',
+				'target_blank'  => '1',
+				'link'          => '#'
+			), $atts, 'dt_social_icon' ) );
 
 			static $social_icons = null;
 
@@ -97,7 +96,7 @@ if ( ! class_exists( 'DT_Shortcode_SocialIcons', false ) ) {
 
 			$output = presscore_get_social_icon( $icon, $link, $icon_title, $classes, $target_blank );
 
-			return $output;
+			return $output; 
 		}
 
 	}

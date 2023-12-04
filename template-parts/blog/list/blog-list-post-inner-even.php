@@ -9,7 +9,7 @@
 // File Security Check
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
-$config = presscore_config();
+$config = presscore_get_config();
 ?>
 
 <div class="blog-content wf-td" <?php echo presscore_get_post_content_style_for_blog_list( 'content' ); ?>>
@@ -26,7 +26,9 @@ $config = presscore_config();
 	if ( $config->get( 'show_details' ) ) {
 		echo presscore_post_details_link();
 	}
-    ?>
+
+	echo presscore_post_edit_link();
+	?>
 
 </div>
 

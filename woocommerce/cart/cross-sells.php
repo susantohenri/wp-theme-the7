@@ -21,7 +21,7 @@ if ( $cross_sells ) : ?>
 
 	<div class="cross-sells">
 		<?php
-		$heading = apply_filters( 'woocommerce_product_cross_sells_products_heading', __( 'You may be interested in&hellip;', 'woocommerce' ) );
+		$heading = apply_filters( 'woocommerce_product_cross_sells_products_heading', __( 'You may be interested in&hellip;', 'the7mk2' ) );
 
 		if ( $heading ) :
 			?>
@@ -41,7 +41,7 @@ if ( $cross_sells ) : ?>
 					$product = wc_get_product( $cross_sell->get_id() );
 					if ( $product->is_on_sale() ) :
 						?>
-                        <span class="onsale"></span>
+                        <span class="onsale"><i class="dt-icon-the7-magn-004-12" aria-hidden="true"></i></span>
 					<?php
 					endif;
 					?>

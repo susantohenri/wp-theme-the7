@@ -309,7 +309,7 @@ $options['header-mobile-menu-close_icon-caption-typography'] = array(
 	'id'         => 'header-mobile-menu-close_icon-caption-typography',
 	'type'       => 'typography',
 	'std'        => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Roboto',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),

@@ -76,10 +76,7 @@ class The7_Options_Preview {
 			return;
 		}
 
-		// Important! Allows us to pass Envato Theme Checker tests.
-		$func = 'show_admin_bar';
-		$func( false );
-
+		show_admin_bar( false );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		if ( $preview_mode === self::PREVIEW_OPTIONS_MODE ) {

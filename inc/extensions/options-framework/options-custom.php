@@ -14,7 +14,7 @@ function optionsframework_widgetareas_interface( $output, $value ) {
 
 	// Description
 	$output .= '<label for="widgetareas-description">' . _x('Sidebar description (optional)', 'theme-options', 'the7mk2') . '</label>';
-	$output .= '<textarea id="widgetareas-description"></textarea>';
+	$output .= '<textarea id="widgetareas-description"></textarea>';    
 
 	// Button
 	$output .= '<button id="widgetareas-add" class="of_fields_gen_add">' . _x('Update', 'theme-options', 'the7mk2') . '</button>';
@@ -34,14 +34,14 @@ function optionsframework_widgetareas_ajax() {
 
 	// check to see if the submitted nonce matches with the
 	// generated nonce we created earlier
-	if ( ! wp_verify_nonce( $nonce, 'options-framework-nonce' ) ) {
+	if ( ! wp_verify_nonce( $nonce, 'options-framework-nonce' ) ) {		
 		die ( 'Busted!');
 	}
 
 	// ignore the request if the current user doesn't have
 	// sufficient permissions
 	if ( current_user_can( 'edit_theme_options' ) ) {
-
+		
 		$response = array( 'success' => false );
 		$wa_array = of_get_option('widgetareas', array());
 
@@ -53,42 +53,40 @@ function optionsframework_widgetareas_ajax() {
 				$response['desc'] = $wa_array[ $wa_id ]['desc'];
 				$response['success'] = true;
 			}
-		} elseif ( 'update' == $action && $wa_title ) {
+		} else if ( 'update' == $action && $wa_title ) {
 
-			$known_options = get_option( 'optionsframework', [] );
-			$saved_options = get_option( $known_options['id'], [] );
-
-			if ( isset( $saved_options['widgetareas'] ) ) {
+			$known_options = get_option( 'optionsframework', array() );
+			$saved_options = get_option( $known_options['id'], array() );
+			
+			if ( isset($saved_options['widgetareas']) ) {
 				$wa_array = $saved_options['widgetareas'];
-
+				
 				// Get field id
-				if ( ! $wa_id ) {
-					$wa_id = $wa_array['next_id'] ++;
-				}
-
+				if ( !$wa_id ) { $wa_id = $wa_array['next_id']++; }
+				
 				// Update/Add new field
-				$wa_array[ $wa_id ] = [
+				$wa_array[ $wa_id ] = array(
 					'title' => $wa_title,
-					'desc'  => $wa_desc
-				];
+					'desc'	=> $wa_desc
+				);
 
 				// Sanitize
-				$saved_options['widgetareas'] = apply_filters( 'of_sanitize_widgetareas', $wa_array );
+				$saved_options['widgetareas'] = apply_filters('of_sanitize_widgetareas', $wa_array);
 
 				// Update options
-				$response['success'] = update_option( $known_options['id'], $saved_options );
-				$response['id']      = $wa_id;
+				$response['success'] = update_option($known_options['id'], $saved_options);
+				$response['id'] = $wa_id;
 			}
 		}
 
 		// generate the response
 		$response = json_encode($response);
-
+ 
 		// response output
 		header( "Content-Type: application/json" );
 		echo $response;
 	}
-
+ 
 	// IMPORTANT: don't forget to "exit"
 	exit;
 }

@@ -262,12 +262,11 @@ if ( ! function_exists( 'presscore_microsite_setup' ) ) :
 			return;
 		}
 
-		// Hide template parts.
-		$config             = presscore_config();
-		$hidden_parts       = get_post_meta( $post->ID, '_dt_microsite_hidden_parts', false );
-		$hide_header        = in_array( 'header', $hidden_parts, true );
-		$hide_floating_menu = in_array( 'floating_menu', $hidden_parts, true );
-		$hide_top_bar       = in_array( 'top_bar', $hidden_parts, true );
+		// hide template parts
+		$config = presscore_config();
+		$hidden_parts = get_post_meta( $post->ID, "_dt_microsite_hidden_parts", false );
+		$hide_header = in_array( 'header', $hidden_parts );
+		$hide_floating_menu = in_array( 'floating_menu', $hidden_parts );
 
 		if ( $hide_header ) {
 			add_filter( 'body_class', 'presscore_microsite_hide_header' );
@@ -279,7 +278,7 @@ if ( ! function_exists( 'presscore_microsite_setup' ) ) :
 		}
 
 		// Hide top bar.
-		if ( $hide_top_bar ) {
+		if ( in_array( 'top_bar', $hidden_parts ) ) {
 			add_filter( 'presscore_top_bar_class', 'presscore_microsite_top_bar_class_filter' );
 		}
 
@@ -333,8 +332,4 @@ function the7_microsite_get_nav_menu_options_for_select() {
 	}
 
 	return $options;
-}
-function presscore_microsite_disable_headers( $classes = array() ) {
-	$classes[] = 'disable-headers';
-	return array_diff( $classes, [ 'sticky-mobile-header' ] );
 }

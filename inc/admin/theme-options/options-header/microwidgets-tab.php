@@ -570,7 +570,7 @@ $options['top_bar-typography'] = array(
 	'id'   => 'top_bar-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),
@@ -612,7 +612,7 @@ $options['header-mobile-microwidgets-typography'] = array(
 	'id'   => 'header-mobile-microwidgets-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family' => 'Arial',
+		'font_family' => 'Open Sans',
 		'font_size'   => 16,
 	),
 );
@@ -654,7 +654,7 @@ $options['menu-mobile-microwidgets-typography'] = array(
 	'id'   => 'menu-mobile-microwidgets-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family' => 'Arial',
+		'font_family' => 'Open Sans',
 		'font_size'   => 16,
 	),
 );

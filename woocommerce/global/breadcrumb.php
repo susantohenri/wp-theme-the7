@@ -17,17 +17,13 @@
  * @see         woocommerce_breadcrumb()
  */
 
-/**
- * Important! Strings with the7mk2 textdomain.
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 if ( ! empty( $breadcrumb ) ) {
 
-	echo '<div class="assistive-text">' . esc_html__( 'You are here:', 'the7mk2' ) . '</div>';
+	echo '<div class="assistive-text">' . esc_html( __( 'You are here:', 'the7mk2' ) ) . '</div>';
 
 	echo $wrap_before;
 

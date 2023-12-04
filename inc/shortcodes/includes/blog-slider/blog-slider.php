@@ -28,7 +28,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Slider', false ) ) {
 
 		protected function __construct() {
 			add_shortcode( $this->shortcode_name, array( $this, 'shortcode' ) );
-			$this->config = presscore_config();
+			$this->config = presscore_get_config();
 		}
 
 		public function shortcode( $atts, $content = null ) {
@@ -242,7 +242,7 @@ if ( ! class_exists( 'DT_Shortcode_Blog_Slider', false ) ) {
 			if ( $this->atts['max_width'] ) {
 				$data_atts['max-width'] = $this->atts['max_width'];
 			}
-
+			
 			if (  $this->atts['arrows'] ) {
 				$data_atts['arrows'] = $this->atts['arrows'] ? 'true' : 'false';
 			}

@@ -56,7 +56,7 @@ class The7_Options_Menu_Items_Composition {
 	}
 
 	public static function create_from_array( $menu_items ) {
-		$items_comp = new self();
+		$items_comp = new self;
 		foreach ( $menu_items as $slug => $menu_item ) {
 			$menu_item['slug'] = $slug;
 			$items_comp->set( $slug, self::create_menu_item( $menu_item ) );

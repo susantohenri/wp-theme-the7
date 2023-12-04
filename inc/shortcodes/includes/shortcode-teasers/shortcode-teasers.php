@@ -102,10 +102,12 @@ if ( ! class_exists( 'DT_Shortcode_Teaser', false ) ) {
 				$attributes['image'] = $attributes['image_id'];
 				$attributes['media'] = '';
 
-			} elseif ( 'image' == $attributes['type'] ) {
+			} else if ( 'image' == $attributes['type'] ) {
 				$attributes['media'] = '';
-			} elseif ( 'video' == $attributes['type'] ) {
+
+			} else if ( 'video' == $attributes['type'] ) {
 				$attributes['image'] = '';
+
 			}
 
 			// if media url is set - do some stuff
@@ -179,7 +181,7 @@ if ( ! class_exists( 'DT_Shortcode_Teaser', false ) ) {
 						$media
 					);
 
-				} elseif ( $attributes['misc_link'] ) {
+				} else if ( $attributes['misc_link'] ) {
 					$link_class .= ( $attributes['image_hovers'] ? 'rollover ' : '' );
 
 					$media = sprintf(
@@ -189,6 +191,7 @@ if ( ! class_exists( 'DT_Shortcode_Teaser', false ) ) {
 						( 'blank' == $attributes['target'] ? ' target="_blank"' : '' ),
 						$media
 					);
+
 				}
 
 				$wrap_class .= 'shortcode-teaser-img';
@@ -207,7 +210,7 @@ if ( ! class_exists( 'DT_Shortcode_Teaser', false ) ) {
 				presscore_remove_wpautop( $content, true )
 			);
 
-			return $output;
+			return $output; 
 		}
 
 	}

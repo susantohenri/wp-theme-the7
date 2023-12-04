@@ -79,7 +79,7 @@ defined( 'ABSPATH' ) || exit;
 		<div class="dt-dummy-import-settings">
 			<div class="dt-dummy-field <?php echo $demo->post_types_imported ? 'disabled' : '' ?>">
 				<label>
-					<input type="checkbox" name="import_post_types" checked="checked" value="1" <?php the7_prop_disabled( $demo->post_types_imported ) ?>><?php echo esc_html_x(
+					<input type="checkbox" name="import_post_types" checked="checked" value="1" <?php the7_prop_disabled( $demo->post_types_imported ) ?>><?php echo esc_html_e(
 						'Import the entire content',
 						'admin',
 						'the7mk2'
@@ -122,37 +122,13 @@ defined( 'ABSPATH' ) || exit;
 						'class'    => 'dt-dummy-content-user',
 						'selected' => get_current_user_id(),
 						'id'       => "users-{$demo->id}",
-						'role__in' => [ 'administrator', 'editor', 'author' ],
 					]
 				);
 				?>
 			</div>
 		</div>
 
-	</div>
-
-	<?php if ( ! $demo->plugins()->is_installed( 'pro-elements' ) ) : ?>
-
-		<div class="dt-dummy-controls-block dt-dummy-info-content">
-			<div class="error inline">
-				<p>
-					<?php
-					// translators: %1$s: Elementor plugin link, %2$s: PRO Elements plugin link.
-					$pro_elements_message = _x( '<strong>Important!</strong> This demo requires %1$s or its free alternative, %2$s plugin. We cannot install them automatically. Please install one of these plugins to proceed with the demo installation.', 'admin', 'the7mk2' );
-					echo wp_kses_post(
-						sprintf(
-							$pro_elements_message,
-							'<a href="https://elementor.com/pro/" target="_blank" rel="nofollow">Elementor Pro</a>',
-							'<a href="https://proelements.github.io/proelements.org/" target="_blank" rel="nofollow">PRO Elements</a>'
-						)
-					);
-					?>
-				</p>
-			</div>
-		</div>
-
-	<?php endif; ?>
-
+    </div>
 	<div class="the7-demo-notifications"></div>
 	<div class="dt-dummy-controls-block dt-dummy-control-buttons">
 		<?php $disable_import = ! $demo->import_allowed() ?>

@@ -134,7 +134,7 @@ $options['microwidgets-search-typography'] = array(
 	'id'   => 'microwidgets-search-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family' => 'Arial',
+		'font_family' => 'Roboto',
 		'font_size'   => 14,
 	),
 );

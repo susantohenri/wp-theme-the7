@@ -177,12 +177,3 @@ select:not(.elementor-field) {
 	-o-transform: rotate(180deg);
 	transform: rotate(180deg);
 }
-.mobile-main-nav .sub-nav {
-	margin-right: 20px;
-}
-.mobile-menu-show-divider .mobile-main-nav > li > a {
-	padding: 15.2px 0px 15.2px 25px;
-}
-.dt-mobile-header .mobile-main-nav > li > .dt-mega-menu-wrap, .dt-mobile-header .mobile-main-nav > li > .dt-mega-menu-wrap > .sub-nav .sub-nav, .dt-mobile-header .mobile-main-nav > li > .sub-nav, .dt-mobile-header .mobile-main-nav > li > .sub-nav .sub-nav, .sub-downwards.side-header .main-nav > li > .dt-mega-menu-wrap {
-	right: 0;
-}

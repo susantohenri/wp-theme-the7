@@ -71,7 +71,7 @@ class The7_Option_Field_Typography extends The7_Option_Field_Composition_Abstrac
 			'font_family'            => array(
 				'name'  => _x( 'Font family', 'theme-options', 'the7mk2' ),
 				'type'  => 'web_fonts',
-				'std'   => 'Arial',
+				'std'   => 'Open Sans',
 				'fonts' => 'all',
 				'class' => 'font-family',
 			),
@@ -173,17 +173,6 @@ class The7_Option_Field_Typography extends The7_Option_Field_Composition_Abstrac
 				),
 				'sanitize' => 'font_size',
 				'class'    => 'line-height',
-			),
-			'letter_spacing'            => array(
-				'name'     => _x( 'Letter-spacing', 'theme-options', 'the7mk2' ),
-				'std'      => 0,
-				'type'     => 'slider',
-				'options'  => array(
-					'min' => -5,
-					'max' => 10,
-					'step'  => 0.1,
-				),
-				'class'    => 'letter-spacing',
 			),
 		);
 	}

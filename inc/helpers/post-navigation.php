@@ -1,7 +1,7 @@
 <?php
 /**
  * Post navigation helpers
- *
+ * 
  * @package vogue
  * @since 1.0.0
  */
@@ -66,7 +66,7 @@ if ( ! function_exists( 'presscore_new_post_navigation' ) ) :
 		$output = '';
 
 		if ( $config->get( 'post.navigation.arrows.enabled' ) ) {
-			$prev_text = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path class="st0" d="M11.4,1.6c0.2,0.2,0.2,0.5,0,0.7c0,0,0,0,0,0L5.7,8l5.6,5.6c0.2,0.2,0.2,0.5,0,0.7s-0.5,0.2-0.7,0l-6-6c-0.2-0.2-0.2-0.5,0-0.7c0,0,0,0,0,0l6-6C10.8,1.5,11.2,1.5,11.4,1.6C11.4,1.6,11.4,1.6,11.4,1.6z"/></svg>' .
+			$prev_text = '<i class="icomoon-the7-font-the7-arrow-29-3" aria-hidden="true"></i>' .
 			             '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'the7mk2' ) . '</span>' .
 			             '<span class="screen-reader-text">' . esc_html( $args['prev_src_text'] ) . '</span>' .
 			             '<span class="post-title h4-size">%title</span>';
@@ -89,11 +89,11 @@ if ( ! function_exists( 'presscore_new_post_navigation' ) ) :
 		}
 
 		if ( $config->get( 'post.navigation.back_button.enabled' ) ) {
-			$output .= presscore_get_post_back_link( '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path d="M1,2c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H2C1.4,5,1,4.6,1,4V2z M6,2c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H7C6.4,5,6,4.6,6,4V2z M11,2c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1V2z M1,7c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H2c-0.6,0-1-0.4-1-1V7z M6,7c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H7c-0.6,0-1-0.4-1-1V7z M11,7c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1V7z M1,12c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H2c-0.6,0-1-0.4-1-1V12z M6,12c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1H7c-0.6,0-1-0.4-1-1V12z M11,12c0-0.6,0.4-1,1-1h2c0.6,0,1,0.4,1,1v2c0,0.6-0.4,1-1,1h-2c-0.6,0-1-0.4-1-1V12z"/></svg>' );
+			$output .= presscore_get_post_back_link( '<i class="dt-icon-the7-misc-006-1" aria-hidden="true"></i>' );
 		}
 
 		if ( $config->get( 'post.navigation.arrows.enabled' ) ) {
-			$next_text = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 16 16" style="enable-background:new 0 0 16 16;" xml:space="preserve"><path class="st0" d="M4.6,1.6c0.2-0.2,0.5-0.2,0.7,0c0,0,0,0,0,0l6,6c0.2,0.2,0.2,0.5,0,0.7c0,0,0,0,0,0l-6,6c-0.2,0.2-0.5,0.2-0.7,0s-0.2-0.5,0-0.7L10.3,8L4.6,2.4C4.5,2.2,4.5,1.8,4.6,1.6C4.6,1.6,4.6,1.6,4.6,1.6z"/></svg>' .
+			$next_text = '<i class="icomoon-the7-font-the7-arrow-29-2" aria-hidden="true"></i>' .
 			             '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'the7mk2' ) . '</span>' .
 			             '<span class="screen-reader-text">' . esc_html( $args['next_src_text'] ) . '</span>' .
 			             '<span class="post-title h4-size">%title</span>';
@@ -188,11 +188,11 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 
 	/**
 	 * Returns breadcrumbs html
-	 *
+	 * 
 	 * @since 1.0.0
 	 *
 	 * @param array $args
-	 *
+	 * 
 	 * @return string Breadcrumbs html
 	 */
 	function presscore_get_breadcrumbs( $args = array() ) {
@@ -218,7 +218,6 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 			'beforeBreadcrumbs' => '',
 			'afterBreadcrumbs'  => '',
 			'listAttr'          => ' class="breadcrumbs text-small"',
-			'itemMaxChrCount'   => null,
 		);
 
 		$args = wp_parse_args( $args, $default_args );
@@ -228,8 +227,7 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 			return $breadcrumbs_html;
 		}
 
-		$array_intersect_key = array_intersect_key( $args, $default_args );
-		extract( $array_intersect_key, EXTR_OVERWRITE );
+		extract( array_intersect_key( $args, $default_args ), EXTR_OVERWRITE );
 
 		$current_words_num = apply_filters( 'presscore_get_breadcrumbs-current_words_num', 5 );
 
@@ -246,23 +244,7 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 
 		}
 
-		if ( function_exists( 'is_woocommerce' ) && is_woocommerce() && class_exists( '\WC_Breadcrumb' ) ) {
-			$wc_breadcrumbs      = new \WC_Breadcrumb();
-			$wc_breadcrumbs_list = $wc_breadcrumbs->generate();
-			$the_last_index      = count( $wc_breadcrumbs_list ) - 1;
-
-			// Remove the last link.
-			if ( isset( $wc_breadcrumbs_list[ $the_last_index ] ) ) {
-				$wc_breadcrumbs_list[ $the_last_index ][1] = null;
-			}
-
-			foreach ( $wc_breadcrumbs_list as $i => $crumb ) {
-				$breadcrumbs_parts[] = array(
-					'name' => $crumb[0],
-					'url'  => $crumb[1],
-				);
-			}
-		} elseif ( is_category() ) {
+		if ( is_category() ) {
 
 			$thisCat = get_category( get_query_var( 'cat' ), OBJECT );
 
@@ -361,7 +343,10 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 				$post_type_name = $post_type_obj->labels->singular_name;
 
 				if ( $post_type === 'dt_portfolio' ) {
-					$post_type_name = the7_get_portfolio_breadcrumbs_text( $post_type_name );
+					$post_type_name_text = of_get_option( 'portfolio-breadcrumbs-text', '' );
+					if ( $post_type_name_text ) {
+						$post_type_name = apply_filters( 'wpml_translate_single_string', $post_type_name_text, 'dt-the7', 'portfolio-breadcrumbs-text' );
+					}
 				}
 
 				$breadcrumbs_parts[] = array(
@@ -385,7 +370,10 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 				$post_type_name = $post_type_obj->labels->singular_name;
 
 				if ( $post_type === 'dt_portfolio' ) {
-					$post_type_name = the7_get_portfolio_breadcrumbs_text( $post_type_name );
+					$post_type_name_text = of_get_option( 'portfolio-breadcrumbs-text', '' );
+					if ( $post_type_name_text ) {
+						$post_type_name = apply_filters( 'wpml_translate_single_string', $post_type_name_text, 'dt-the7', 'portfolio-breadcrumbs-text' );
+					}
 				}
 
 				$breadcrumbs_parts[] = array(
@@ -447,24 +435,16 @@ if ( ! function_exists( 'presscore_get_breadcrumbs' ) ) :
 		$breadcrumbs_parts = (array) apply_filters( 'presscore_breadcrumbs_parts', $breadcrumbs_parts );
 
 		$breadcrumbs = array();
-		foreach ( $breadcrumbs_parts as $index => $breadcrumb_part ) {
+		foreach( $breadcrumbs_parts as $index => $breadcrumb_part ) {
 			if ( ! isset( $breadcrumb_part['name'] ) ) {
 				continue;
 			}
 
-			$item_name = $breadcrumb_part['name'];
-			if ( $itemMaxChrCount ) {
-				$item_name = substr( $item_name, 0, $itemMaxChrCount );
-				if ( $item_name !== $breadcrumb_part['name'] ) {
-					$item_name .= '&hellip;';
-				}
-			}
-
-			$breadcrumb = '<span itemprop="name">' . $item_name . '</span>';
-			$position   = $index + 1;
+			$breadcrumb = '<span itemprop="name">' . $breadcrumb_part['name'] . '</span>';
+			$position = $index + 1;
 			$position_meta = '<meta itemprop="position" content="' . (int) $position . '" />';
-			if ( ! empty( $breadcrumb_part['url'] ) ) {
-				$breadcrumb = $linkBefore . '<a' . $linkAttr . ' href="' . esc_url( $breadcrumb_part['url'] ) . '" title="' . esc_attr( $item_name ) . '">' . $breadcrumb . '</a>' . $position_meta . $linkAfter;
+			if ( isset( $breadcrumb_part['url'] ) ) {
+				$breadcrumb = $linkBefore . '<a' . $linkAttr . ' href="' . esc_url( $breadcrumb_part['url'] ) .'" title="">' . $breadcrumb . '</a>' . $position_meta . $linkAfter;
 			} else {
 				$breadcrumb = $before . $breadcrumb . $position_meta . $after;
 			}
@@ -493,7 +473,7 @@ if ( ! function_exists( 'presscore_display_posts_filter' ) ) :
 		);
 		$args = wp_parse_args( $args, $default_args );
 
-		$config = presscore_config();
+		$config = presscore_get_config();
 		$load_style = $config->get('load_style');
 
 		// categorizer
@@ -533,7 +513,7 @@ if ( ! function_exists( 'presscore_display_posts_filter' ) ) :
 
 		if ( $load_style && 'default' !== $load_style ) {
 			$filter_class .= ' with-ajax';
-		} elseif ( $load_style ) {
+		} else if ( $load_style ) {
 			$filter_class .= ' without-isotope';
 		}
 
@@ -560,18 +540,3 @@ if ( ! function_exists( 'presscore_display_posts_filter' ) ) :
 	}
 
 endif;
-
-/**
- * @param string $default Default text.
- *
- * @return string
- */
-function the7_get_portfolio_breadcrumbs_text( $default = '' ) {
-	$breadcrumbs_text = The7_Admin_Dashboard_Settings::get( 'portfolio-breadcrumbs-text' );
-
-	if ( ! $breadcrumbs_text ) {
-		return $default;
-	}
-
-	return apply_filters( 'wpml_translate_single_string', $breadcrumbs_text, 'dt-the7', 'portfolio-breadcrumbs-text' );
-}

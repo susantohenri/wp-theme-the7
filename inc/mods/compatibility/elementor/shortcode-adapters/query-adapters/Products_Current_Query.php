@@ -1,8 +1,8 @@
 <?php
 
-namespace The7\Mods\Compatibility\Elementor\Shortcode_Adapters\Query_Adapters;
+namespace The7\Adapters\Elementor\ShortcodeAdapters\Queries;
 
-use The7\Mods\Compatibility\Elementor\Shortcode_Adapters\Query_Interface;
+use The7\Adapters\Elementor\ShortcodeAdapters\Query_Interface;
 
 class Products_Current_Query extends Query_Interface {
 

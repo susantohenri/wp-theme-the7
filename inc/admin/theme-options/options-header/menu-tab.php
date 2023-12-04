@@ -26,7 +26,7 @@ $options['header-menu-typography'] = array(
 	'id'   => 'header-menu-typography',
 	'type' => 'typography',
 	'std'  => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Open Sans',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),

@@ -7,8 +7,6 @@
  * @package The7\Admin
  */
 
-use Elementor\Plugin;
-
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -24,8 +22,7 @@ class The7_Admin_Mega_Menu {
 	 * @return array
 	 */
 	protected function mega_menu_settings_definition() {
-		$menu_opt = require __DIR__ . '/mega-menu-options.php';
-		return apply_filters( 'the7_mega_menu_options', $menu_opt );
+		return require dirname( __FILE__ ) . '/mega-menu-options.php';
 	}
 
 	/**
@@ -89,24 +86,10 @@ class The7_Admin_Mega_Menu {
 			$item_settings = (array) get_post_meta( $item_id, self::MENU_ITEM_SETTINGS_NAME, $single = true );
 		}
 		$parent_mega_menu = isset( $_POST['parent_mega_menu'] ) ? $_POST['parent_mega_menu'] : 'off';
-		$parent_mega_menu_elementor = isset( $_POST['parent_mega_menu_elementor'] ) ? $_POST['parent_mega_menu_elementor'] : 'off';
 		$parent_id        = isset( $_POST['parent_id'] ) ? (int) $_POST['parent_id'] : 0;
-		$parent_settings = null;
-		if ( $parent_id ) {
-			$parent_settings = get_post_meta( $parent_id, self::MENU_ITEM_SETTINGS_NAME, $single = true );
-		}
 		if ( ! $parent_mega_menu && $parent_id ) {
+			$parent_settings  = get_post_meta( $parent_id, self::MENU_ITEM_SETTINGS_NAME, $single = true );
 			$parent_mega_menu = isset( $parent_settings['mega-menu'] ) ? $parent_settings['mega-menu'] : 'off';
-		}
-		if ( !The7_Admin_Dashboard_Settings::get( 'deprecated_mega_menu_settings' ) ) {
-			$parent_mega_menu = 'off';
-        }
-
-		if ( !$parent_mega_menu_elementor && $parent_id ) {
-			$parent_mega_menu_elementor = isset( $parent_settings['mega-menu-elementor'] ) ? $parent_settings['mega-menu-elementor'] : 'off';
-		}
-		if ($parent_mega_menu_elementor == 'on'){
-			$parent_mega_menu = 'off';
 		}
 
 		$of_interface  = new The7_Options( $this->mega_menu_settings_definition() );
@@ -151,30 +134,11 @@ class The7_Admin_Mega_Menu {
 			'the7-mega-menu',
 			'the7MegaMenuTemplates',
 			array(
-				'megaMenuButton'             => '<button type="button" class="button button-primary the7-options-tb-popup" data-popup-id="the7-mega-menu-settings">' . esc_html_x( 'The7 Menu Icon & Mega Menu', 'admin', 'the7mk2' ) . '</button>',
+				'megaMenuButton'             => '<button type="button" class="button button-primary the7-options-tb-popup" data-popup-id="the7-mega-menu-settings">' . esc_html_x( 'The7 Mega Menu', 'admin', 'the7mk2' ) . '</button>',
 				'itemSettingsStorageElement' => '<input type="hidden" class="the7-mega-menu-settings" name="' . self::MENU_ITEM_SETTINGS_NAME . '[%itemID%]" value="">',
 				'popupBottomBar'             => '<div class="optionsframework-submit"><a href="#closeTB" class="button-primary">' . esc_html_x( 'Change and close', 'admin', 'the7mk2' ) . '</a></div>',
 				'popupTitle'                 => esc_html_x( 'The7 Mega Menu', 'admin', 'the7mk2' ),
 			)
 		);
-	}
-
-	public function add_svg_support_in_megamenu(){
-		if ( ! function_exists( 'get_current_screen' ) ) {
-			return false;
-		}
-		$screen = get_current_screen();
-		if($screen->base != 'nav-menus'){
-			return;
-		}
-		if (the7_elementor_is_active()) {
-			Plugin::$instance->uploads_manager->set_elementor_upload_state( true );
-			add_filter( 'plupload_default_params', [ $this,'plupload_add_svg_upload_type_caller' ]);
-		}
-	}
-
-    public function plupload_add_svg_upload_type_caller( $plupload_settings ) {
-		$plupload_settings['uploadTypeCaller'] = 'elementor-wp-media-upload' ;
-		return $plupload_settings;
 	}
 }

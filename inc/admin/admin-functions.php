@@ -13,29 +13,25 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
  * Display fav icon in admin.
  */
 add_action( 'admin_head', 'the7_site_icon', 9 );
-add_action( 'admin_enqueue_scripts', 'presscore_admin_post_scripts' );
 
-if ( ! the7_is_elementor_theme_mode_active() ) {
-	/**
-	 * Bootstrap widget area manager on `widgets.php`.
-	 */
-	add_action( 'admin_post_the7_admin_wa_manager_save', array( 'The7_Admin_WA_Manager', 'save' ) );
-	add_action( 'widgets_admin_page', array( 'The7_Admin_WA_Manager', 'display' ) );
-	add_action( 'load-widgets.php', array( 'The7_Admin_WA_Manager', 'enqueue_assets' ) );
+/**
+ * Bootstrap widget area manager on `widgets.php`.
+ */
+add_action( 'admin_post_the7_admin_wa_manager_save', array( 'The7_Admin_WA_Manager', 'save' ) );
+add_action( 'widgets_admin_page', array( 'The7_Admin_WA_Manager', 'display' ) );
+add_action( 'load-widgets.php', array( 'The7_Admin_WA_Manager', 'enqueue_assets' ) );
 
-	add_filter( 'attachment_fields_to_edit', 'presscore_attachment_fields_to_edit', 10, 2 );
-	add_action( 'edit_attachment', 'presscore_save_attachment_fields' );
+add_action( 'save_post', 'the7_update_post_css_on_save', 20 );
 
-	add_action( 'save_post', 'the7_update_post_css_on_save', 20 );
-
-	add_filter( 'optionsframework_interface-social_buttons', 'presscore_themeoptions_add_share_buttons' );
-
-	add_filter( 'manage_edit-page_columns', 'presscore_admin_add_sidebars_columns' );
-	add_filter( 'manage_edit-post_columns', 'presscore_admin_add_sidebars_columns' );
-	add_filter( 'manage_media_columns', 'presscore_admin_add_media_title_column' );
-	add_action( 'manage_media_custom_column', 'presscore_display_title_status_for_media', 10, 2 );
-
-	add_filter( 'image_send_to_editor', 'presscore_editor_open_images_in_lightbox', 10, 8 );
+/**
+ * @param $post_id
+ */
+function the7_update_post_css_on_save( $post_id ) {
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+	
+	the7_update_post_css( $post_id );
 }
 
 if ( ! function_exists( 'presscore_themeoptions_add_share_buttons' ) ) :
@@ -44,8 +40,6 @@ if ( ! function_exists( 'presscore_themeoptions_add_share_buttons' ) ) :
 	 * Share buttons field filter.
 	 *
 	 * Populate share buttons field on theme options page.
-     *
-     * @depreactedForElementor
 	 *
 	 * @since 1.0.0
 	 *
@@ -61,12 +55,23 @@ if ( ! function_exists( 'presscore_themeoptions_add_share_buttons' ) ) :
 		return $buttons;
 	}
 
+	add_filter( 'optionsframework_interface-social_buttons', 'presscore_themeoptions_add_share_buttons' );
+
+endif;
+
+if ( ! function_exists( 'presscore_less_cache_writable_filter' ) ) :
+
+	function presscore_less_cache_writable_filter() {
+		return ( '0' != get_option( 'presscore_less_css_is_writable', 1 ) );
+	}
+
+	add_filter( 'presscore_less_cache_writable', 'presscore_less_cache_writable_filter' );
+
 endif;
 
 /**
  * Add video url field for attachments.
  *
- * @depreactedForElementor
  */
 function presscore_attachment_fields_to_edit( $fields, $post ) {
 
@@ -115,11 +120,11 @@ function presscore_attachment_fields_to_edit( $fields, $post ) {
 
 	return $fields;
 }
+add_filter( 'attachment_fields_to_edit', 'presscore_attachment_fields_to_edit', 10, 2 );
 
 /**
  * Save vide url attachment field.
  *
- * @depreactedForElementor
  */
 function presscore_save_attachment_fields( $attachment_id ) {
 
@@ -146,8 +151,9 @@ function presscore_save_attachment_fields( $attachment_id ) {
 		delete_post_meta( $attachment_id, '_the7_imported_item' );
 	}
 }
+add_action( 'edit_attachment', 'presscore_save_attachment_fields' );
 
-/**
+/**	
  * This function return array with thumbnail image meta for items list in admin are.
  * If fitured image not set it gets last image by menu order.
  * If there are no images and $noimage not empty it returns $noimage in other way it returns false
@@ -156,7 +162,8 @@ function presscore_save_attachment_fields( $attachment_id ) {
  * @param integer $max_w
  * @param integer $max_h
  * @param string $noimage
- */
+ */ 
+
 function dt_get_admin_thumbnail ( $post_id, $max_w = 100, $max_h = 100, $noimage = '' ) {
 	global $wp_query;
 	$thumb = array();
@@ -266,21 +273,18 @@ function presscore_admin_add_thumbnail_column( $defaults ){
 /**
  * Add sidebar and footer columns in posts list.
  *
- * @depreactedForElementor
  */
 function presscore_admin_add_sidebars_columns( $defaults ){
-	if ( ! the7_is_elementor_theme_mode_active() ) {
-		$defaults['presscore-sidebar'] = _x( 'Sidebar', 'backend', 'the7mk2' );
-		$defaults['presscore-footer']  = _x( 'Footer', 'backend', 'the7mk2' );
-	}
-
+	$defaults['presscore-sidebar'] = _x( 'Sidebar', 'backend', 'the7mk2' );
+	$defaults['presscore-footer'] = _x( 'Footer', 'backend', 'the7mk2' );
 	return $defaults;
 }
+add_filter( 'manage_edit-page_columns', 'presscore_admin_add_sidebars_columns' );
+add_filter( 'manage_edit-post_columns', 'presscore_admin_add_sidebars_columns' );
 
 /**
  * Add slug column for posts list.
  *
- * @depreactedForElementor
  */
 function presscore_admin_add_slug_column( $defaults ){
 	$defaults['presscore-slug'] = _x( 'Slug', 'backend', 'the7mk2' );
@@ -290,17 +294,16 @@ function presscore_admin_add_slug_column( $defaults ){
 /**
  * Add title column for media.
  *
- * @depreactedForElementor
  */
 function presscore_admin_add_media_title_column( $columns ) {
 	$columns['presscore-media-title'] = _x( 'Image title', 'backend', 'the7mk2' );
 	return $columns;
 }
+add_filter( 'manage_media_columns', 'presscore_admin_add_media_title_column' );
 
 /**
  * Handle custom columns.
  *
- * @depreactedForElementor
  */
 function presscore_admin_handle_columns( $column_name, $id ){
 	switch ( $column_name ) {
@@ -325,13 +328,6 @@ function presscore_admin_handle_columns( $column_name, $id ){
 add_action( 'manage_posts_custom_column', 'presscore_admin_handle_columns', 10, 2 );
 add_action( 'manage_pages_custom_column', 'presscore_admin_handle_columns', 10, 2 );
 
-/**
- * @param int $post_id Post ID.
- *
- * @depreactedForElementor
- *
- * @return string
- */
 function presscore_admin_get_sidebar_column_message( $post_id ) {
 	global $DT_META_BOXES;
 
@@ -358,9 +354,7 @@ function presscore_admin_get_sidebar_column_message( $post_id ) {
 
 	if ( ! $position_name ) {
 		return $sidebar_name;
-	}
-
-	if ( is_array( $position_name ) ) {
+	} else if ( is_array( $position_name ) ) {
 		$position_name = current( $position_name );
 	}
 
@@ -371,13 +365,6 @@ function presscore_admin_get_sidebar_column_message( $post_id ) {
 	return esc_html( _x( 'Position:', 'admin', 'the7mk2' ) . ' ' . $position_name ) . '<br/>' . esc_html( $sidebar_name );
 }
 
-/**
- * @param int $post_id Post ID.
- *
- * @depreactedForElementor
- *
- * @return string
- */
 function presscore_admin_get_footer_sidebar_column_message( $post_id ) {
 	$position = get_post_meta( $post_id, '_dt_footer_show', true );
 
@@ -395,8 +382,6 @@ function presscore_admin_get_footer_sidebar_column_message( $post_id ) {
 /**
  * Show title status in media list.
  *
- * @depreactedForElementor
- *
  * @since 3.1
  */
 function presscore_display_title_status_for_media( $column_name, $id ) {
@@ -410,6 +395,7 @@ function presscore_display_title_status_for_media( $column_name, $id ) {
 		}
 	}
 }
+add_action( 'manage_media_custom_column', 'presscore_display_title_status_for_media', 10, 2 );
 
 if ( ! function_exists( 'the7_register_admin_scripts' ) ) {
 
@@ -419,6 +405,9 @@ if ( ! function_exists( 'the7_register_admin_scripts' ) ) {
 		$register_styles = array(
 			'the7-admin'          => array(
 				'src' => "{$template_uri}/assets/css/admin-style",
+			),
+			'the7-font'           => array(
+				'src' => PRESSCORE_THEME_URI . '/fonts/icomoon-the7-font/icomoon-the7-font',
 			),
 			'the7-meta-box-magic' => array(
 				'src' => "{$template_uri}/assets/css/admin-meta-box-magic",
@@ -469,6 +458,7 @@ if ( ! function_exists( 'presscore_admin_scripts' ) ) :
 	 */
 	function presscore_admin_scripts() {
 		wp_enqueue_style( 'the7-admin' );
+		wp_enqueue_style( 'the7-font' );
 	}
 
 	add_action( 'admin_enqueue_scripts', 'presscore_admin_scripts' );
@@ -479,10 +469,6 @@ if ( ! function_exists( 'presscore_admin_post_scripts' ) ) :
 
 	/**
 	 * Add metaboxes scripts and styles.
-	 *
-	 * @param string $hook Hook name.
-	 *
-	 * @depreactedForElementor
 	 */
 	function presscore_admin_post_scripts( $hook ) {
 		if ( ! in_array( $hook, array( 'post-new.php', 'post.php' ) ) ) {
@@ -511,6 +497,8 @@ if ( ! function_exists( 'presscore_admin_post_scripts' ) ) :
 			'templateName' => $page_template,
 		) );
 	}
+
+	add_action( 'admin_enqueue_scripts', 'presscore_admin_post_scripts' );
 
 endif;
 
@@ -563,8 +551,6 @@ if ( ! function_exists( 'presscore_editor_open_images_in_lightbox' ) ) :
 	 * @param $url
 	 * @param $size
 	 * @param $alt
-     *
-     * @depreactedForElementor
 	 *
 	 * @return mixed
 	 */
@@ -593,14 +579,696 @@ if ( ! function_exists( 'presscore_editor_open_images_in_lightbox' ) ) :
         return $html;
     }
 
+	add_filter( 'image_send_to_editor', 'presscore_editor_open_images_in_lightbox', 10, 8 );
+
 endif;
 
-/**
- * @return bool
- */
 function presscore_is_dev_env() {
 	return defined( 'DT_DEV_ENV' ) && DT_DEV_ENV;
 }
+
+if ( presscore_is_dev_env() ) {
+
+	function presscore_do_dev_env_actions() {
+		delete_option( 'presscore_db_is_fixed' );
+	}
+	add_action( 'init', 'presscore_do_dev_env_actions' );
+
+}
+
+
+if ( ! function_exists( 'presscore_of_localized_vars_filter' ) ) :
+
+	/**
+	 * Setup blocks dependencies for "Top Bar & Header" options page. Filter optionsframework localized vars.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param  array $vars
+	 * @return array
+	 */
+	function presscore_of_localized_vars_filter( $vars ) {
+		if ( 'of-header-menu' != optionsframework_get_cur_page_id() ) {
+			return $vars;
+		}
+
+		$vars['blockDependencies'] = array(
+			//Microwidgets
+
+			'classic-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'classic',
+					),
+					array(
+						'field' => 'header-classic-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'inline-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					),
+				),
+			),
+			'inline-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					),
+					array(
+						'field' => 'header-inline-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'split-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					),
+				),
+			),
+			'split-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					),
+					array(
+						'field' => 'header-split-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'side-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side',
+					),
+				),
+			),
+			'side-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side',
+					),
+					array(
+						'field' => 'header-side-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'top-line-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'top_line',
+					),
+				),
+			),
+			'top-line-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'top_line',
+					),
+					array(
+						'field' => 'header-top_line-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'side-line-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side_line',
+					),
+				),
+			),
+			'side-line-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side_line',
+					),
+					array(
+						'field' => 'header-side_line-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'menu-icon-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'menu_icon',
+					),
+				),
+			),
+			'menu-icon-microwidgets-settings' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'menu_icon',
+					),
+					array(
+						'field' => 'header-menu_icon-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+			'top-bar-microwidgets' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'classic',
+					),
+					array(
+						'field' => 'header-classic-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					),
+					array(
+						'field' => 'header-inline-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					),
+
+					array(
+						'field' => 'header-split-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side',
+					),
+					array(
+						'field' => 'header-side-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'top_line',
+					),
+					array(
+						'field' => 'header-top_line-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'side_line',
+					),
+					array(
+						'field' => 'header-side_line-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'menu_icon',
+					),
+					array(
+						'field' => 'header-menu_icon-show_elements',
+						'operator' => '==',
+						'value' => '1',
+					),
+				),
+			),
+
+			// Menu
+			'menu-horizontal-decoration-block' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'classic',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					)
+				)
+			),
+			'menu-top-headers-indention' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'classic',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					)
+				)
+			),
+
+			'microwidgets-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'topbar-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'header-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				)
+			),
+            'menu-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'submenu-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'mobile-header-tab' => array(
+	            array(
+		            array(
+			            'field' => 'header-layout',
+			            'operator' => '!=',
+			            'value' => 'disabled',
+		            )
+	            )
+            ),
+            'mobile-menu-tab' => array(
+	            array(
+                    array(
+                        'field' => 'header-layout',
+                        'operator' => '!=',
+                        'value' => 'disabled',
+                    )
+                )
+			),
+
+			// Floating header
+			'floating-header-tab' => array(
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'classic',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'inline',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '==',
+						'value' => 'split',
+					)
+				),
+				array(
+					array(
+						'field' => 'header-layout',
+						'operator' => '!=',
+						'value' => 'disabled',
+					)
+				),
+			),
+			// Woocommerce
+			'isotope-block-settings' => array(
+                array(
+                    array(
+                        'field' => 'wc_view_mode',
+                        'operator' => '==',
+                        'value' => 'masonry_grid',
+                    ),
+                ),
+                array(
+                    array(
+                        'field' => 'wc_view_mode',
+                        'operator' => '==',
+                        'value' => 'view_mode',
+                    )
+                ),
+            ),
+            'list-block-settings' => array(
+                array(
+                    array(
+                        'field' => 'wc_view_mode',
+                        'operator' => '==',
+                        'value' => 'list',
+                    ),
+                ),
+                array(
+                    array(
+                        'field' => 'wc_view_mode',
+                        'operator' => '==',
+                        'value' => 'view_mode',
+                    )
+                ),
+            ),
+            
+			
+		);
+
+		return $vars;
+	}
+
+	add_filter( 'of_localized_vars', 'presscore_of_localized_vars_filter' );
+
+endif;
+
+if ( ! function_exists( 'presscore_options_black_list' ) ) :
+
+	/**
+	 * List of options ids that do not included while export.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $fields
+	 * @return array
+	 */
+	function presscore_options_black_list( $fields = array() ) {
+		$fields_black_list = array(
+			'general-tracking_code',
+			'general-post_type_portfolio_slug',
+			'general-post_type_gallery_slug',
+			'general-post_type_team_slug',
+			'general-contact_form_send_mail_to',
+
+			'general-favicon',
+			'general-favicon_hd',
+			'general-handheld_icon-old_iphone',
+			'general-handheld_icon-old_ipad',
+			'general-handheld_icon-retina_iphone',
+			'general-handheld_icon-retina_ipad',
+
+			'header-menu-submenu-parent_is_clickable',
+
+			'footer-layout',
+			'bottom_bar-copyrights',
+			'bottom_bar-text',
+
+			'general-beautiful_loading',
+
+			'general-show_author_in_blog',
+			'general-next_prev_in_blog',
+			'general-show_back_button_in_post',
+			'general-post_back_button_target_page_id',
+			'general-blog_meta_on',
+			'general-blog_meta_date',
+			'general-blog_meta_author',
+			'general-blog_meta_categories',
+			'general-blog_meta_comments',
+			'general-blog_meta_tags',
+
+			'general-next_prev_in_portfolio',
+			'general-show_back_button_in_project',
+			'general-project_back_button_target_page_id',
+
+			'general-portfolio_meta_on',
+			'general-portfolio_meta_date',
+			'general-portfolio_meta_author',
+			'general-portfolio_meta_categories',
+			'general-portfolio_meta_comments',
+
+			'general-show_rel_projects',
+			'general-rel_projects_head_title',
+			'general-rel_projects_title',
+			'general-rel_projects_excerpt',
+			'general-rel_projects_info_date',
+			'general-rel_projects_info_author',
+			'general-rel_projects_info_comments',
+			'general-rel_projects_info_categories',
+			'general-rel_projects_link',
+			'general-rel_projects_zoom',
+			'general-rel_projects_details',
+			'general-rel_projects_max',
+			'general-rel_projects_fullwidth_height',
+			'general-rel_projects_fullwidth_width_style',
+			'general-rel_projects_fullwidth_width',
+			'general-rel_projects_height',
+			'general-rel_projects_width_style',
+			'general-rel_projects_width',
+
+			'social_buttons-post-button_title',
+			'social_buttons-post',
+			'social_buttons-portfolio_post-button_title',
+			'social_buttons-portfolio_post',
+			'social_buttons-photo-button_title',
+			'social_buttons-photo',
+			'social_buttons-page-button_title',
+			'social_buttons-page',
+
+			'widgetareas',
+
+			// archives
+			'template_page_id_author',
+			'template_page_id_date',
+			'template_page_id_blog_category',
+			'template_page_id_blog_tags',
+			'template_page_id_search',
+			'template_page_id_portfolio_category',
+			'template_page_id_gallery_category',
+
+			//wpml
+			'wpml_dt-custom_style',
+			'contact_form_security_token',
+			'contact_form_recaptcha_site_key',
+			'contact_form_recaptcha_secret_key',
+		);
+
+		return array_unique( array_merge( $fields, $fields_black_list ) );
+	}
+
+	add_filter( 'optionsframework_fields_black_list', 'presscore_options_black_list' );
+	add_filter( 'optionsframework_validate_preserve_fields', 'presscore_options_black_list', 14 );
+
+endif;
+
+if ( ! function_exists( 'presscore_themeoption_preserved_fields' ) ) :
+
+	/**
+	 * List of theme options ids that do not change after skin switch.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  array  $fields
+	 * @return array
+	 */
+	function presscore_themeoption_preserved_fields( $fields = array() ) {
+		$preserved_fields = array(
+			// header logo
+			'header-logo_regular',
+			'header-logo_hd',
+
+			// bottom logo
+			'bottom_bar-logo_regular',
+			'bottom_bar-logo_hd',
+
+			// mobile logo
+			'header-style-mobile-logo_regular',
+			'header-style-mobile-logo_hd',
+			'header-style-mobile-logo-padding-top',
+			'header-style-mobile-logo-padding-bottom',
+
+			// floating logo
+			'header-style-floating-choose_logo',
+			'header-style-floating-logo_regular',
+			'header-style-floating-logo_hd',
+
+			// menu icons dimentions
+			'header-icons_size',
+			'header-submenu_icons_size',
+			'header-submenu_next_level_indicator',
+			'header-next_level_indicator',
+
+			// header layout
+			'header-login_caption',
+			'header-logout_caption',
+			'header-search_caption',
+			'header-woocommerce_cart_caption',
+
+			// Header layout.
+			'header-classic-elements',
+			'header-classic-show_elements',
+			'header-inline-elements',
+			'header-inline-show_elements',
+			'header-split-elements',
+			'header-split-show_elements',
+			'header-side-elements',
+			'header-side-show_elements',
+			'header-slide_out-elements',
+			'header-slide_out-show_elements',
+			'header-overlay-elements',
+			'header-overlay-show_elements',
+
+			// Microwidgets.
+			'header-elements-search-caption',
+			'header-elements-search-icon',
+			'header-elements-search-second-header-switch',
+			'header-elements-contact-address-caption',
+			'header-elements-contact-address-icon',
+			'header-elements-contact-address-second-header-switch',
+			'header-elements-contact-phone-caption',
+			'header-elements-contact-phone-icon',
+			'header-elements-contact-phone-second-header-switch',
+			'header-elements-contact-email-caption',
+			'header-elements-contact-email-icon',
+			'header-elements-contact-email-second-header-switch',
+			'header-elements-contact-skype-caption',
+			'header-elements-contact-skype-icon',
+			'header-elements-contact-skype-second-header-switch',
+			'header-elements-contact-clock-caption',
+			'header-elements-contact-clock-icon',
+			'header-elements-contact-clock-second-header-switch',
+			'header-elements-contact-multipurpose_1-caption',
+			'header-elements-contact-multipurpose_1-icon',
+			'header-elements-contact-multipurpose_1-second-header-switch',
+			'header-elements-contact-multipurpose_2-caption',
+			'header-elements-contact-multipurpose_2-icon',
+			'header-elements-contact-multipurpose_2-second-header-switch',
+			'header-elements-contact-multipurpose_3-caption',
+			'header-elements-contact-multipurpose_3-icon',
+			'header-elements-contact-multipurpose_3-second-header-switch',
+			'header-elements-contact-multipurpose_4-caption',
+			'header-elements-contact-multipurpose_4-icon',
+			'header-elements-contact-multipurpose_4-second-header-switch',
+			'header-elements-login-caption',
+			'header-elements-logout-caption',
+			'header-elements-login-icon',
+			'header-elements-login-second-header-switch',
+			'header-elements-login-url',
+			'header-elements-text-second-header-switch',
+			'header-elements-text',
+			'header-elements-text-2-second-header-switch',
+			'header-elements-text-2',
+			'header-elements-text-3-second-header-switch',
+			'header-elements-text-3',
+			'header-elements-menu-second-header-switch',
+			'header-elements-menu-style',
+			'header-elements-menu-style-first-switch',
+			'header-elements-menu-style-second-switch',
+			'header-elements-soc_icons-second-header-switch',
+			'header-elements-soc_icons',
+			'header-elements-woocommerce_cart-caption',
+			'header-elements-woocommerce_cart-icon',
+			'header-elements-woocommerce_cart-second-header-switch',
+			'header-elements-woocommerce_cart-show_sub_cart',
+			'header-elements-woocommerce_cart-show_subtotal',
+			'header-elements-woocommerce_cart-show_counter',
+		);
+
+		return array_unique( array_merge( $fields, $preserved_fields ) );
+	}
+
+	add_filter( 'optionsframework_validate_preserve_fields', 'presscore_themeoption_preserved_fields', 15 );
+
+endif;
 
 if ( ! function_exists( 'presscore_get_wp_memory_limit' ) ):
 
@@ -636,20 +1304,43 @@ if ( ! function_exists( 'presscore_get_icons_for_icons_picker' ) ) {
 	add_action( 'wp_ajax_the7_get_icons_for_icons_picker', 'presscore_get_icons_for_icons_picker' );
 }
 
+if ( ! function_exists( 'presscore_get_post_type_edit_link_template' ) ) {
+
+	/**
+	 * Return post type edit link template or empty string if it's not possible.
+	 *
+	 * Replace %#% placeholder with actual post id.
+	 *
+	 * @sine 7.2.0
+	 *
+	 * @param string $post_type
+	 *
+	 * @return string
+	 */
+	function presscore_get_post_type_edit_link_template( $post_type ) {
+		$post_type_object = get_post_type_object( $post_type );
+		if ( ! $post_type_object || ! $post_type_object->_edit_link ) {
+			return '';
+		}
+		$action = '&amp;action=edit';
+
+		return admin_url( str_replace( '99999', '%#%', sprintf( $post_type_object->_edit_link . $action, 99999 ) ) );
+	}
+
+}
+
 add_action( 'after_setup_theme', 'the7_admin_log_theme_activations' );
 
-/**
- * @return void
- */
 function the7_admin_log_theme_activations() {
 	if ( ! defined( 'WP_CLI' ) && ! is_admin() ) {
 		return;
 	}
 
-	$activation_log   = (array) get_option( 'the7_theme_activation_log', [] );
-	$previous_version = end( $activation_log );
+	$activation_log            = (array) get_option( 'the7_theme_activation_log', [] );
+	$previous_version          = end( $activation_log );
+	$another_version_is_active = version_compare( $previous_version['version'], THE7_VERSION, '!=' );
 
-	if ( empty( $previous_version['version'] ) || version_compare( $previous_version['version'], THE7_VERSION, '!=' ) ) {
+	if ( ! isset( $previous_version['version'] ) || $another_version_is_active ) {
 		$activation_log[] = [
 			'version'      => THE7_VERSION,
 			'activated_at' => time(),

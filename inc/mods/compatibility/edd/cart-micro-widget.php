@@ -123,7 +123,7 @@ if ( of_get_option( 'header-elements-edd_cart-icon' ) === 'custom' ) {
 				if ( $post_thimbnail_id ) {
 					$product_link = wp_get_attachment_image( $post_thimbnail_id );
 				} else {
-					$product_link = sprintf( '<img src="%s" width="80" height="80" alt="%s" />', PRESSCORE_THEME_URI . '/images/noimage-150x150.jpg', esc_attr( $product_name ) );
+					$product_link = sprintf( '<img src="%s" width="80" height="80" alt="%s" />', PRESSCORE_THEME_URI . '/images/noimage-80x80.jpg', esc_attr( $product_name ) );
 				}
 
 				$product_link = sprintf( '<a href="%1$s">%2$s</a>', get_permalink( $id ), $product_link . $product_name );

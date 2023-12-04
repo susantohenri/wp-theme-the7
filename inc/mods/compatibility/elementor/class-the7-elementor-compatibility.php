@@ -1,22 +1,20 @@
 <?php
 /**
  * The7 Elementor plugin compatibility class.
- *
  * @since   7.7.0
  * @package The7
  */
+
 
 use Elementor\Core\Settings\Manager as Settings_Manager;
 use Elementor\Plugin as Elementor;
 use ElementorPro\Modules\ThemeBuilder\Documents\Theme_Document;
 use ElementorPro\Modules\ThemeBuilder\Module as ThemeBuilderModule;
-use The7\Mods\Compatibility\Elementor\Pro\Modules\Dynamic_Tags\The7\Module as DynamicTagsModule;
-use The7\Mods\Compatibility\Elementor\The7_Elementor_Modules;
-use The7\Mods\Compatibility\Elementor\The7_Elementor_Page_Settings;
-use The7\Mods\Compatibility\Elementor\The7_Elementor_Template_Manager;
-use The7\Mods\Compatibility\Elementor\The7_Elementor_Widgets;
-use The7\Mods\Compatibility\Elementor\The7_Kit_Manager_Control;
-use The7\Mods\Compatibility\Elementor\The7_Schemes_Manager_Control;
+use The7\Adapters\Elementor\The7_Elementor_Page_Settings;
+use The7\Adapters\Elementor\The7_Elementor_Template_Manager;
+use The7\Adapters\Elementor\The7_Elementor_Widgets;
+use The7\Adapters\Elementor\The7_Kit_Manager_Control;
+use The7\Adapters\Elementor\The7_Schemes_Manager_Control;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -28,28 +26,16 @@ class The7_Elementor_Compatibility {
 	/**
 	 * Instance.
 	 * Holds the plugin instance.
-	 *
 	 * @since  1.0.0
 	 * @access public
 	 * @static
-	 * @var The7_Elementor_Compatibility
+	 * @var Plugin
 	 */
 	public static $instance = null;
 
 	public $page_settings;
+	public $icons_extension;
 	public $widgets;
-	public $edit_mode_backup;
-
-	/**
-	 * Modules manager.
-	 *
-	 * Holds the plugin modules manager.
-	 *
-	 * @access public
-	 *
-	 * @var The7_Elementor_Modules
-	 */
-	public $modules;
 	public $template_manager;
 	public $theme_builder_adapter;
 	public $kit_manager_control;
@@ -58,11 +44,10 @@ class The7_Elementor_Compatibility {
 	/**
 	 * Instance.
 	 * Ensures only one instance of the plugin class is loaded or can be loaded.
-	 *
 	 * @since  1.0.0
 	 * @access public
 	 * @static
-	 * @return The7_Elementor_Compatibility An instance of the class.
+	 * @return Plugin An instance of the class.
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
@@ -80,47 +65,22 @@ class The7_Elementor_Compatibility {
 		require_once __DIR__ . '/elementor-functions.php';
 		require_once __DIR__ . '/class-the7-elementor-widgets.php';
 		require_once __DIR__ . '/class-the7-elementor-page-settings.php';
+		require_once __DIR__ . '/class-the7-elementor-icons-extension.php';
 		require_once __DIR__ . '/meta-adapters/class-the7-elementor-color-meta-adapter.php';
 		require_once __DIR__ . '/meta-adapters/class-the7-elementor-padding-meta-adapter.php';
 		require_once __DIR__ . '/class-the7-elementor-kit-manager-control.php';
 		require_once __DIR__ . '/class-the7-elementor-schemes-manager-control.php';
 		require_once __DIR__ . '/class-the7-elementor-template-manager.php';
-
-		// Should be on top because of The7_Elementor_Widgets::load_dependencies().
-		add_action( 'elementor/init', [ $this, 'on_elementor_init' ] );
+		require_once __DIR__ . '/upgrade/class-the7-elementor-updater.php';
+		require_once __DIR__ . '/upgrade/class-the7-elementor-widget-migrations.php';
+		require_once __DIR__ . '/upgrade/widgets/class-the7-elementor-masonry-migrations.php';
+		require_once __DIR__ . '/upgrade/widgets/class-the7-elementor-photo-scroller-migrations.php';
 
 		$this->page_settings = new The7_Elementor_Page_Settings();
 		$this->page_settings->bootstrap();
 
-		$icons_integration_module = new \The7\Mods\Compatibility\Elementor\The7_Icons_For_Elementor();
-		if ( the7_is_icons_manager_enabled() ) {
-			$icons_integration_module->use_the7_icons_in_elementor();
-		} else {
-			// Theme Options Should be disabled by now.
-			$icons_integration_module->use_elementor_icons_in_mega_menu();
-		}
-
-		if ( the7_is_elementor_theme_mode_active() ) {
-			// Hide theme templates.
-			add_filter( 'theme_templates', function ( $templates ) {
-				$deprecated_templates = [
-					'template-albums-jgrid.php',
-					'template-albums.php',
-					'template-blog-list.php',
-					'template-blog-masonry.php',
-					'template-media-jgrid.php',
-					'template-media.php',
-					'template-microsite.php',
-					'template-portfolio-jgrid.php',
-					'template-portfolio-list.php',
-					'template-portfolio-masonry.php',
-					'template-team.php',
-					'template-testimonials.php',
-				];
-
-				return array_diff_key( $templates, array_fill_keys( $deprecated_templates, true ) );
-			} );
-		}
+		$this->icons_extension = new The7_Elementor_Icons_Extension();
+		$this->icons_extension->bootstrap();
 
 		$this->widgets = new The7_Elementor_Widgets();
 		$this->widgets->bootstrap();
@@ -128,7 +88,8 @@ class The7_Elementor_Compatibility {
 		$this->template_manager = new The7_Elementor_Template_Manager();
 		$this->template_manager->bootstrap();
 
-		if ( ! defined( 'THE7_DISABLE_KIT_MANAGER' ) || ( defined( 'THE7_DISABLE_KIT_MANAGER' ) && ! THE7_DISABLE_KIT_MANAGER ) ) {
+		if ( true )//todo add option dependency
+		{
 			$this->kit_manager_control = new The7_Kit_Manager_Control();
 			$this->kit_manager_control->bootstrap();
 		}
@@ -137,59 +98,21 @@ class The7_Elementor_Compatibility {
 			$this->scheme_manager_control = new The7_Schemes_Manager_Control();
 			$this->scheme_manager_control->bootstrap();
 		}
-		$this->modules = new The7_Elementor_Modules();
 
 		if ( defined( 'ELEMENTOR_PRO_VERSION' ) ) {
 			$this->bootstrap_pro();
 		}
-		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_elementor_global_style_css' ], 30 );
-		add_action( 'elementor/theme/before_do_popup', [ $this, 'enqueue_elementor_popup' ] );
+
+		add_action( 'wp_enqueue_scripts',   [ $this, 'enqueue_elementor_global_style_css'], 30  );
 		add_filter( 'presscore_localized_script', [ $this, 'extract_elementor_settings_to_js' ] );
-		add_action(
-			'elementor/editor/before_enqueue_styles',
-			function() {
-				wp_enqueue_style(
-					'the7-broccoli-icons',
-					PRESSCORE_ADMIN_URI . '/assets/fonts/the7-broccoli-editor-fonts-v1.0/style.min.css',
-					[],
-					THE7_VERSION
-				);
-			}
-		);
-
-		/**
-		 * Fixes a glitch with svg placeholders in image widget.
-		 *
-		 * Kses removes unsupported protocols.
-		 *
-		 * @see Group_Control_Image_Size::print_attachment_image_html
-		 */
-		add_filter( 'kses_allowed_protocols', 'the7_add_data_to_kses_allowed_protocols' );
-		wp_allowed_protocols(); // call function before wp_loaded to initialize allowed protocols
-
-		add_action(
-			'elementor/experiments/default-features-registered',
-			[
-				$this,
-				'adjust_default_experiments',
-			]
-		);
-
-		// Enqueue the7 common editor js when elementor editor is loaded.
-		add_action(
-			'elementor/preview/enqueue_scripts',
-			function () {
-				the7_register_script( 'the7-elementor-editor-common', THE7_ELEMENTOR_ADMIN_JS_URI . '/editor-common.js' );
-				wp_enqueue_script( 'the7-elementor-editor-common' );
-			}
-		);
-	}
-
-	public function on_elementor_init() {
-		require_once __DIR__ . '/pro/modules/dynamic-tags/the7/module.php';
-		new DynamicTagsModule();
-
-		$this->modules->bootstrap();
+		add_action( 'elementor/editor/before_enqueue_styles', function() {
+			wp_enqueue_style(
+				'the7-broccoli-icons',
+				PRESSCORE_ADMIN_URI . '/assets/fonts/the7-broccoli-editor-fonts-v1.0/style.min.css',
+				[],
+				THE7_VERSION
+			);
+		} );
 	}
 
 	/**
@@ -203,22 +126,8 @@ class The7_Elementor_Compatibility {
 				'container_width' => (int) the7_elementor_get_content_width_string(),
 			],
 		];
+
 		return $dt_local;
-	}
-
-	/**
-	 * Adjust default Elementor Experiments.
-	 *
-	 * @sine 10.4.3
-	 *
-	 * @param \Elementor\Core\Experiments\Manager $experiments
-	 */
-	public function adjust_default_experiments( $experiments ) {
-		// Turn off Additional Custom Breakpoints by default.
-		$experiments->set_feature_default_state( 'additional_custom_breakpoints', false );
-
-		// Turn off Improved CSS Loading by default.
-		$experiments->set_feature_default_state( 'e_optimized_css_loading', false );
 	}
 
 	/**
@@ -236,11 +145,11 @@ class The7_Elementor_Compatibility {
 	protected function bootstrap_pro() {
 		require_once __DIR__ . '/pro/class-the7-elementor-theme-builder-adapter.php';
 
-		$this->theme_builder_adapter = new \The7\Mods\Compatibility\Elementor\Pro\The7_Elementor_Theme_Builder_Adapter();
+		$this->theme_builder_adapter = new \The7\Adapters\Elementor\Pro\The7_Elementor_Theme_Builder_Adapter();
 		$this->theme_builder_adapter->bootstrap();
-		if ( the7_is_woocommerce_enabled() ) {
+		if ( dt_is_woocommerce_enabled() ) {
 			require_once __DIR__ . '/pro/modules/woocommerce/class-the7-woocommerce-support.php';
-			new \The7\Mods\Compatibility\Elementor\Pro\Modules\Woocommerce\Woocommerce_Support();
+			new \The7\Adapters\Elementor\Pro\WoocommerceSupport\Woocommerce_Support();
 		}
 
 	}
@@ -271,7 +180,6 @@ class The7_Elementor_Compatibility {
 	public static function get_frontend_document() {
 		return Elementor::$instance->documents->get_doc_for_frontend( get_the_ID() );
 	}
-
 
 	/**
 	 * @param string $location
@@ -308,44 +216,6 @@ class The7_Elementor_Compatibility {
 		return $document;
 	}
 
-	/**
-	 * Retrieve builder content for display.
-	 *
-	 * Used to render and return the post content with all the Elementor elements.
-	 *
-	 * @see \Elementor\Frontend::get_builder_content_for_display()
-	 *
-	 * @param int  $post_id Post ID.
-	 * @param bool $with_css Optional. Whether to include CSS files. Default is false.
-	 *
-	 * @return string The post content.
-	 */
-    public static function get_builder_content_for_display($post_id, $with_css = false){
-        $is_edit_mode = The7_Elementor_Compatibility::instance()->is_edit_mode();
-
-        $with_css = $with_css ? true : $is_edit_mode;
-
-        if ($with_css) {
-            add_filter('elementor/frontend/builder_content/before_print_css', '__return_true', 999);
-        }
-
-        $content = Elementor::instance()->frontend->get_builder_content_for_display($post_id, $with_css);
-
-        if ($with_css) {
-            remove_filter('elementor/frontend/builder_content/before_print_css', '__return_true', 999);
-        }
-        return $content;
-    }
-
-	public static function is_assets_loader_exist() {
-		return !! Elementor::$instance->assets_loader;
-	}
-
-	public static function enqueue_elementor_popup() {
-		wp_enqueue_style( 'the7-custom-scrollbar' );
-		wp_enqueue_script( 'the7-custom-scrollbar' );
-	}
-
 	public static function enqueue_elementor_global_style_css() {
 		the7_register_style(
 			'the7-elementor-global',
@@ -353,34 +223,5 @@ class The7_Elementor_Compatibility {
 		);
 
 		wp_enqueue_style( 'the7-elementor-global' );
-
-		if ( self::get_document_applied_for_location( 'popup' ) ) {
-			self::enqueue_elementor_popup();
-		}
 	}
-
-    public function is_edit_mode(){
-        if ($this->edit_mode_backup) return true;
-        $edit_mode = Elementor::$instance->editor->is_edit_mode();
-        return $edit_mode;
-    }
-
-    public function backup_edit_mode(){
-       $this->edit_mode_backup = Elementor::$instance->editor->is_edit_mode();
-    }
-
-    public function restore_edit_mode(){
-        $this->edit_mode_backup = false;
-    }
-
-    /**
-     * Print document content and backup edit mode for nested templates
-     *
-     * @param \Elementor\Core\Base\Document $document Elementor document class.
-     */
-    public function print_document($document){
-        $this->backup_edit_mode();
-        $document->print_content();
-        $this->restore_edit_mode();
-    }
 }

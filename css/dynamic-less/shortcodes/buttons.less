@@ -4,12 +4,13 @@
 /*vars*/
 @dt-btn-bg-color-darken: darken(@dt-btn-hover-bg-color, 5%);
 @dt-btn-bg-color-2-darken: darken(@dt-btn-hover-bg-color-2, 5%);
-.btn-icon-gap (@var, @btn-font-size-var, @btn-font-size-div) {
-	margin-right: var( ~"@{var}", calc(var(~"@{btn-font-size-var}") * 8 / ~"@{btn-font-size-div}"));
+@btn-font-size: 14;
+.btn-icon-gap (@a, @btn-font-size) when (@a > @btn-font-size) {
+  margin-right: @a*8/unit(@btn-font-size);
 }
 
-.btn-icon-gap-left (@var, @btn-font-size){
-  margin-left: calc(~"@{var}" * 8 / ~"@{btn-font-size}");
+.btn-icon-gap-left (@a, @btn-font-size) when (@a > @btn-font-size) {
+  margin-left: @a*8/unit(@btn-font-size);
   margin-right: 0 !important;
 }
 /*3D style*/
@@ -19,34 +20,27 @@
 .widget .dt-form .dt-btn,
 .nsu-submit,
 .give-btn.give-btn-reveal,
-.give-submit.give-btn,
-.wp-block-search .wp-block-search__button,
-.wc-block-product-search .wc-block-product-search__button {
-	font: var(--the7-btn-s-font);
-	text-transform: var(--the7-btn-s-text-transform);
-	letter-spacing: var(--the7-btn-s-letter-spacing);
-	word-spacing: var(--the7-btn-s-word-spacing);
-	border-radius: var(--the7-btn-s-border-radius);
-	border-width: var(--the7-btn-s-border-width);
-	border-style: var(--the7-btn-s-border-style);
-	border-color: var(--the7-btn-border-color);
-	padding: var(--the7-btn-s-padding);
-    min-width: var(--the7-btn-s-min-width);
-	min-height: var(--the7-btn-s-min-height);
+.give-submit.give-btn {
+	font: @dt-btn-s-font-style @dt-btn-s-font-variant @dt-btn-s-font-weight @dt-btn-s-font-size~"/"@dt-btn-s-font-size + 2 @dt-btn-s-font-family;
+	text-transform: @dt-btn-s-text-transform;
+	.border-radius (@radius: @dt-btn-s-border-radius);
+	border: @dt-btn-s-border-width solid @dt-btn-border-color;
+
+	padding: @btn-s-padding-top @btn-s-padding-right @btn-s-padding-bottom @btn-s-padding-left;
 	&.ico-right-side > i {
-	    .btn-icon-gap-left (var(--the7-btn-s-font-size), 12);
+	    .btn-icon-gap-left (@dt-btn-s-font-size, 12px);
 	  }
 
 	& > i,
 	& > i[class^="fa"],
 	& > i[class^="dt-icon"] {
-		font-size: var(--the7-btn-s-icon-size);
-	    .btn-icon-gap (--the7-btn-s-icon-gap, --the7-btn-s-font-size, 12);
+	    font-size: @dt-btn-s-icon-size;
+	    .btn-icon-gap (@dt-btn-s-font-size, 12px);
   	}
 }
 
 .btn-link.dt-btn-s {
-	font: var(--the7-btn-s-font);
+	font: @dt-btn-s-font-style @dt-btn-s-font-variant @dt-btn-s-font-weight @dt-btn-s-font-size~"/"@dt-btn-s-line-height @dt-btn-s-font-family;
 }
 
 /*middle button*/
@@ -60,56 +54,48 @@ input.dt-btn-m[type="submit"],
 #main .gform_wrapper .gform_footer input[type="submit"],
 #main-slideshow .tp-button,
 .woocommerce-widget-layered-nav-dropdown__submit {
-	font: var(--the7-btn-m-font);
-	text-transform: var(--the7-btn-m-text-transform);
-	letter-spacing: var(--the7-btn-m-letter-spacing);
-	word-spacing: var(--the7-btn-m-word-spacing);
-	border-radius: var(--the7-btn-m-border-radius);
-	border-width: var(--the7-btn-m-border-width);
-	border-style: var(--the7-btn-m-border-style);
-	border-color: var(--the7-btn-border-color);
-	padding: var(--the7-btn-m-padding);
-	min-width: var(--the7-btn-m-min-width);
-	min-height: var(--the7-btn-m-min-height);
+	font: @dt-btn-m-font-style @dt-btn-m-font-variant @dt-btn-m-font-weight @dt-btn-m-font-size~"/"@dt-btn-m-font-size + 2 @dt-btn-m-font-family;
+	text-transform: @dt-btn-m-text-transform;
+	.border-radius (@radius: @dt-btn-m-border-radius);
+	border: @dt-btn-m-border-width solid @dt-btn-border-color;
+	padding: @btn-m-padding-top @btn-m-padding-right @btn-m-padding-bottom @btn-m-padding-left;
 }
-
 .dt-btn-m {
 	&.ico-right-side > i {
-	    .btn-icon-gap-left (var(--the7-btn-m-font-size), 14);
+	    .btn-icon-gap-left (@dt-btn-m-font-size, 14px);
 	  }
 
 	& > i,
 	& > i[class^="fa"],
 	& > i[class^="dt-icon-"] {
-	    font-size: var(--the7-btn-m-icon-size);
-		.btn-icon-gap (--the7-btn-m-icon-gap, --the7-btn-m-font-size, 14);
+	    font-size: @dt-btn-m-icon-size;
+	    .btn-icon-gap (@dt-btn-m-font-size, 14px);
   	}
  }
+.wp-block-button .wp-block-button__link {
+	font: @dt-btn-m-font-style @dt-btn-m-font-variant @dt-btn-m-font-weight @dt-btn-m-font-size~"/"@dt-btn-m-font-size + 2 @dt-btn-m-font-family;
+	text-transform: @dt-btn-m-text-transform;
+}
 
 /*large button*/
 .dt-btn-l {
-	font: var(--the7-btn-l-font);
-	text-transform: var(--the7-btn-l-text-transform);
-	letter-spacing: var(--the7-btn-l-letter-spacing);
-	word-spacing: var(--the7-btn-l-word-spacing);
-	border-radius: var(--the7-btn-l-border-radius);
-	border-width: var(--the7-btn-l-border-width);
-	border-style: var(--the7-btn-l-border-style);
-	border-color: var(--the7-btn-border-color);
-	padding: var(--the7-btn-l-padding);
-	min-width: var(--the7-btn-l-min-width);
-	min-height: var(--the7-btn-l-min-height);
+	padding: @btn-l-padding-top @btn-l-padding-right @btn-l-padding-bottom @btn-l-padding-left;
+	font: @dt-btn-l-font-style @dt-btn-l-font-variant @dt-btn-l-font-weight @dt-btn-l-font-size~"/"@dt-btn-l-font-size + 2 @dt-btn-l-font-family;
+	text-transform: @dt-btn-l-text-transform;
+	.border-radius (@radius: @dt-btn-l-border-radius);
+	border: @dt-btn-l-border-width solid @dt-btn-border-color;
 	&.ico-right-side > i {
-	    .btn-icon-gap-left (var(--the7-btn-l-font-size), 18);
+	    .btn-icon-gap-left (@dt-btn-l-font-size, 18px);
 	}
 
 	& > i,
 	& > i[class^="fa"],
 	& > i[class^="dt-icon-"] {
-		font-size: var(--the7-btn-l-icon-size);
-		.btn-icon-gap (--the7-btn-l-icon-gap, --the7-btn-l-font-size, 18);
+	    font-size: @dt-btn-l-icon-size;
+	    .btn-icon-gap (@dt-btn-l-font-size, 18px);
   	}
 }
+
 
 /*bg style*/
 .dt-btn:not(.btn-light):not(.light-bg-btn):not(.outline-btn):not(.outline-bg-btn):not(.btn-no-decoration),
@@ -145,46 +131,53 @@ div.mc4wp-form button[type="submit"],
 input[type="submit"]:not([name="update_cart"]),
 .woocommerce-widget-layered-nav-dropdown__submit,
 .give-btn.give-btn-reveal,
-.give-submit.give-btn,
-.wp-block-search .wp-block-search__button,
-.wc-block-product-search .wc-block-product-search__button {
-    transition: all 0.3s ease-out;
-	box-shadow: var(--the7-btn-shadow);
-	&:hover {
-		box-shadow: var(--the7-btn-shadow-hover);
-	}
-}
+.give-submit.give-btn {
+	.btn-3d & {
+		box-shadow: 0px 2px 0px 0px desaturate(darken(@dt-btn-bg-color, 12%), 20%);
 
-/*bg style for material effect in shortcodes */
-.dt-btn:not(.btn-light):not(.light-bg-btn):not(.outline-btn):not(.outline-bg-btn):not(.btn-no-decoration) {
-	.btn-shadow& {
+		&:hover {
+			box-shadow: 0px 2px 0px 0px desaturate(darken(@dt-btn-hover-bg-color, 12%), 20%);
+		}
+		&.accent-btn-bg-color {
+			box-shadow: 0px 2px 0px 0px desaturate(darken(@accent-bg-color, 12%), 20%);
+		}
+		&.accent-btn-bg-hover-color:hover {
+			box-shadow: 0px 2px 0px 0px desaturate(darken(@accent-bg-color, 12%), 20%);
+		}
+	}
+
+	/*material style*/
+	.btn-shadow & {
 		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+		transition: box-shadow 0.2s ease-out, opacity 0.45s;
 		&:hover {
 			box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15);
 		}
 	}
 	.btn-3d& {
 		box-shadow: 0px 2px 0px 0px desaturate(darken(@dt-btn-bg-color, 12%), 20%);
-		transition: none;
+
 		&:hover {
+			//border-bottom-color: desaturate(darken(@dt-btn-hover-bg-color, 12%), 20%);
 			box-shadow: 0px 2px 0px 0px desaturate(darken(@dt-btn-hover-bg-color, 12%), 20%);
 		}
-		/*&.accent-btn-bg-color {
+		&.accent-btn-bg-color {
 			//border-bottom-color: desaturate(darken(@accent-bg-color, 12%), 20%);
 			box-shadow: 0px 2px 0px 0px desaturate(darken(@accent-bg-color, 12%), 20%);
 		}
 		&.accent-btn-bg-hover-color:hover {
 			//border-bottom-color: desaturate(darken(@accent-bg-color, 12%), 20%) !important;
 			box-shadow: 0px 2px 0px 0px desaturate(darken(@accent-bg-color, 12%), 20%);
-		}*/
+		}
 	}
+
 }
 
-	/* #standard buttons color & background
-    ================================================== */
+/* #standard buttons color & background
+================================================== */
 
 .mec-event-footer .mec-booking-button,
-//.wp-block-search .wp-block-search__button,
+
 .dt-form button,
 #page .widget .dt-form .dt-btn,
 .widget .dt-form .dt-btn,
@@ -193,7 +186,7 @@ input[type="reset"],
 .nsu-submit,
 .dt-wc-btn,
 input#place_order,
-.woocommerce-Reviews .submit:not(.box-button),
+.woocommerce-Reviews .submit,
 input.button,
 input[name="save_address"],
 .wc-layout-list .woo-buttons a,
@@ -205,19 +198,19 @@ div.mc4wp-form button[type="submit"],
 input[type="submit"]:not([name="update_cart"]),
 .woocommerce-widget-layered-nav-dropdown__submit,
 .give-btn.give-btn-reveal,
-.give-submit.give-btn,
-.wc-block-filter-submit-button {
-	color: var(--the7-btn-color);
+.give-submit.give-btn {
+	color: @dt-btn-color;
 	.stripe &,
 	& *,
 	.sidebar &,
 	.sidebar .widget &,
 	.sidebar-content .widget &,
 	.footer & {
-		color: var(--the7-btn-color);
+		color: @dt-btn-color;
 		.custom-mixin-footer-with-accent-color (@dt-btn-color, @widget-footer-accent-color);
 	}
-	.css-var-background("--the7-btn-bg", @startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
+	background-color: @dt-btn-bg-color;
+	.background-gradient (@startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
 	&:not(:hover) {
 		.btn-bg-off & {
 			background: none;
@@ -225,47 +218,46 @@ input[type="submit"]:not([name="update_cart"]),
 	}
 	&:hover > *,
 	&:hover {
-		color: var(--the7-btn-hover-color);
+		color: @dt-btn-hover-color;
+		border-color: @dt-btn-border-hover-color;
 		.stripe &,
 		& *,
 		.sidebar &,
 		.sidebar .widget &,
 		.sidebar-content .widget &,
 		.footer & {
-			color: var(--the7-btn-hover-color);
+			color: @dt-btn-hover-color;
 			.custom-mixin-footer-with-accent-color (@dt-btn-hover-color, @widget-footer-accent-color);
 		}
-	}
-	&:hover {
-		border-color:var(--the7-btn-border-hover-color);
 		#page &,
 		.tinv-modal & {
-			.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+			background: @dt-btn-hover-bg-color;
+			.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 		}
 		.btn-hover-bg-off #page & {
 			background: none;
 		}
 	}
 	&:hover .text-wrap {
-		color: var(--the7-btn-hover-color);
+		color: @dt-btn-hover-color;
 	}
 }
-.wc-block-product-search .wc-block-product-search__button,
-.wp-block-search .wp-block-search__button,
 button.button,
 .cart-btn-below-img .woo-buttons a,
 a.button:not(.edd-submit) {
-	color: var(--the7-btn-color);
+
+	color: @dt-btn-color;
 	.stripe &,
 	& *,
 	.sidebar &,
 	.sidebar .widget &,
 	.sidebar-content .widget &,
 	.footer & {
-		color: var(--the7-btn-color);
+		color: @dt-btn-color;
 		.custom-mixin-footer-with-accent-color (@dt-btn-color, @widget-footer-accent-color);
 	}
-	.css-var-background("--the7-btn-bg", @startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
+	background-color: @dt-btn-bg-color;
+	.background-gradient (@startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
 	&:not(:hover) {
 		.btn-bg-off & {
 			background: none;
@@ -273,27 +265,28 @@ a.button:not(.edd-submit) {
 	}
 	&:hover > *,
 	&:hover {
-		color: var(--the7-btn-hover-color);
+		color: @dt-btn-hover-color;
 	}
 	&:hover {
-		border-color: var(--the7-btn-border-hover-color);
+		border-color: @dt-btn-border-hover-color;
 		.stripe &,
 		& *,
 		.sidebar &,
 		.sidebar .widget &,
 		.sidebar-content .widget &,
 		.footer & {
-			color: var(--the7-btn-hover-color);
+			color: @dt-btn-hover-color;
 			.custom-mixin-footer-with-accent-color (@dt-btn-hover-color, @widget-footer-accent-color);
 		}
-		.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+		background: @dt-btn-hover-bg-color;
+		.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 	
 		.btn-hover-bg-off & {
 			background: none;
 		}
 	}
 	&:hover .text-wrap {
-		color: var(--the7-btn-hover-color);
+		color: @dt-btn-hover-color;
 	}
 }
 button.button.tinvwl-add-to-cart:hover > * {
@@ -307,7 +300,9 @@ button.button.tinvwl-add-to-cart:hover > * {
 .mec-event-footer .mec-booking-button,
 .give-btn.give-btn-reveal,
 .give-submit.give-btn {
-	.css-var-background("--the7-btn-bg", @startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
+	background-color: @dt-btn-bg-color;
+	background-image: none;
+	.background-gradient (@startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
 	&:not(:hover) {
 		.btn-bg-off & {
 			background: none;
@@ -315,15 +310,17 @@ button.button.tinvwl-add-to-cart:hover > * {
 	}
 	&:hover {
 		background: none;
-		.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
-		border-color: var(--the7-btn-border-hover-color);
+		background: @dt-btn-hover-bg-color;
+		.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
+
+		border-color: @dt-btn-border-hover-color;
 		.btn-hover-bg-off & {
 			background: none;
 		}
 	}
 	/*accent background*/
 	&.accent-btn-bg-color {
-		background: var(--the7-accent-color);
+		background: @accent-bg-color;
 		.accent-gradient & {
 			.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
 		}
@@ -331,7 +328,7 @@ button.button.tinvwl-add-to-cart:hover > * {
 	/*accent hover background*/
 	&.accent-btn-bg-hover-color:hover {
 		#page & {
-			background: var(--the7-accent-color);
+			background: @accent-bg-color;
 		}
 		.accent-gradient #page & {
 			.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
@@ -340,44 +337,43 @@ button.button.tinvwl-add-to-cart:hover > * {
 	&.default-btn-bg-hover-color:hover {
 		#page & {
 			background: none;
-			.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+			background: @dt-btn-hover-bg-color;
+			.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 		}
 	}
 }
 .btn-light:hover,
 .outline-bg-btn:hover {
-	.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+	background: @dt-btn-hover-bg-color;
+	.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 }
 .dt-btn.btn-hover-off:hover {
-	.css-var-background-important("--the7-btn-bg", @startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2);
+	background-color: @dt-btn-bg-color !important;
+	.background-gradient (@startColor: @dt-btn-bg-color, @endColor: @dt-btn-bg-color-2) !important;
 }
+
 
 /*button text color*/
 .dt-btn:not(.btn-custom-style),
 .btn-link {
-	color: var(--the7-btn-color);
+	color: @dt-btn-color;
 	& *,
 	.sidebar &,
 	.content .sidebar-content &,
 	.footer &,
 	.content .shortcode-banner-inside & *,
-	.content &,
-	.content .elementor-widget[class*='elementor-widget-wp-widget-'] & {
-		color: var(--the7-btn-color);
+	.content & {
+		color: @dt-btn-color;
 	}
 	&:hover,
 	&:hover > * {
-		color: var(--the7-btn-hover-color);
-
-		.content .elementor-widget[class*='elementor-widget-wp-widget-'] & {
-			color: var(--the7-btn-hover-color);
-		}
+		color: @dt-btn-hover-color;
 	}
 	&.accent-btn-color > span,
 	&.accent-btn-color > .text-wrap *,
 	&.accent-btn-color > i[class^="fa"],
 	&.accent-btn-color > i[class^="dt-icon-"] {
-		color: var(--the7-accent-color);
+		color: @accent-bg-color;
 		.accent-gradient & {
 			.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
 		}
@@ -393,20 +389,20 @@ button.button.tinvwl-add-to-cart:hover > * {
 	&.title-btn-hover-color:hover > .text-wrap *,
 	&.title-btn-hover-color:hover > i[class^="fa"],
 	&.title-btn-hover-color:hover > i[class^="dt-icon-"] {
-		color: var(--the7-h1-color) !important;
+		color: @h1-color !important;
 	}
 	&.default-btn-hover-color:hover > span,
 	&.default-btn-hover-color:hover > .text-wrap *,
 	&.default-btn-hover-color:hover > i[class^="fa"],
 	&.default-btn-hover-color:hover > i[class^="dt-icon-"] {
-		color: var(--the7-btn-hover-color) !important;
+		color: @dt-btn-hover-color !important;
 	}
 	&.accent-btn-hover-color:hover > span,
 	&.accent-btn-hover-color:hover > .text-wrap *,
 	&.accent-btn-hover-color:hover > i[class^="fa"],
 	&.accent-btn-hover-color:hover > i[class^="dt-icon-"] {
 		#page & {
-			color: var(--the7-accent-color) !important;
+			color: @accent-bg-color !important;
 		}
 		.accent-gradient #page & {
 			.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
@@ -416,7 +412,7 @@ button.button.tinvwl-add-to-cart:hover > * {
 .dt-btn:not(.custom-btn-color):not(.btn-shortcode):not(.btn-custom-style) > span,
 .dt-btn:not(.custom-btn-color):not(.btn-shortcode):not(.btn-custom-style) > .text-wrap * {
 	.accent-btn-color & {
-		color: var(--the7-accent-color);
+		color: @accent-bg-color;
 	}
 	.accent-btn-color.accent-gradient & {
 		.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
@@ -425,7 +421,7 @@ button.button.tinvwl-add-to-cart:hover > * {
 .custom-btn-hover-color .dt-btn:not(.custom-btn-color):not(.accent-btn-hover-color):not(.btn-shortcode):hover > span,
 .custom-btn-hover-color .dt-btn:not(.custom-btn-color):not(.accent-btn-hover-color):not(.btn-shortcode):hover > .text-wrap * {
 	background: none;
-	color: var(--the7-btn-hover-color);
+	color: @dt-btn-hover-color;
 }
 .custom-btn-hover-color .dt-btn:hover > .text-wrap * {
 	color: inherit;
@@ -433,7 +429,7 @@ button.button.tinvwl-add-to-cart:hover > * {
 .dt-btn:not(.custom-btn-hover-color):not(.btn-shortcode):not(.btn-custom-style):hover > span,
 .dt-btn:not(.custom-btn-hover-color):not(.btn-shortcode):not(.btn-custom-style):hover > .text-wrap * {
 	.accent-btn-hover-color & {
-		color: var(--the7-accent-color);
+		color: @accent-bg-color;
 	}
 	.accent-btn-hover-color.accent-gradient & {
 		.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
@@ -447,11 +443,12 @@ button.button.tinvwl-add-to-cart:hover > * {
 	.outline-decoration;
 	.shadow-decoration;
 	&:hover {
-		.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+		background: @dt-btn-hover-bg-color;
+		.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 	}
 	&.accent-btn-bg-hover-color:hover {
 		#page & {
-			background: var(--the7-accent-color);
+			background: @accent-bg-color;
 		}
 		.accent-gradient #page & {
 			.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
@@ -486,17 +483,18 @@ button.button.tinvwl-add-to-cart:hover > * {
 	}
 }
 .outline-bg-btn {
-	border-color: var(--the7-btn-bg-color);
+	border-color: @dt-btn-bg-color;
 	&:hover {
-		border-color: var(--the7-btn-hover-bg-color);
-		.css-var-background("--the7-btn-hover-bg", @dt-btn-hover-bg-color, @dt-btn-hover-bg-color-2);
+		border-color: @dt-btn-hover-bg-color;
+		background: @dt-btn-hover-bg-color;
+		.background-gradient (@startColor: @dt-btn-hover-bg-color, @endColor: @dt-btn-hover-bg-color-2);
 	}
 	&.accent-btn-bg-color {
-		border-color: var(--the7-accent-color);
+		border-color: @accent-bg-color;
 	}
 	&.accent-btn-bg-hover-color:hover {
 		#page & {
-			background: var(--the7-accent-color);
+			background: @accent-bg-color;
 			border-color: transparent;
 		}
 		.accent-gradient #page & {
@@ -507,30 +505,30 @@ button.button.tinvwl-add-to-cart:hover > * {
 /* #Outline button
 ================================================== */
 .outline-btn {
-	border-color: var(--the7-btn-bg-color);
+	border-color: @dt-btn-bg-color;
 	&:hover {
-		border-color: var(--the7-btn-hover-bg-color);
+		border-color: @dt-btn-hover-bg-color;
 		background: none;
 	}
 	&.accent-btn-bg-color {
-		border-color: var(--the7-accent-color);
+		border-color: @accent-bg-color;
 	}
 	&.accent-btn-bg-hover-color:hover {
 		#page & {
-			border-color: var(--the7-accent-color);
+			border-color: @accent-bg-color;
 		}
 	}
 }
 .dt-btn-link,
 .dt-btn-link > span,
 .dt-btn-link > i {
-	color: var(--the7-accent-color);
+	color: @accent-bg-color;
 	.accent-gradient & {
 		.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
 	}
 }
 .dt-btn-link:after {
-	background: var(--the7-accent-color);
+	background: @accent-bg-color;
 	.accent-gradient & {
 		.background-gradient (@startColor: @accent-bg-color, @endColor: @accent-bg-color-2);
 	}

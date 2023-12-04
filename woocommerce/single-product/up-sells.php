@@ -25,7 +25,7 @@ if ( $upsells ) : ?>
     <section class="up-sells upsells products">
 
 	    <?php
-	    $heading = apply_filters( 'woocommerce_product_upsells_products_heading', __( 'You may also like&hellip;', 'woocommerce' ) );
+	    $heading = apply_filters( 'woocommerce_product_upsells_products_heading', __( 'You may also like&hellip;', 'the7mk2' ) );
 
 	    if ( $heading ) :
 		    ?>
@@ -45,7 +45,7 @@ if ( $upsells ) : ?>
 					$product = wc_get_product( $upsell->get_id() );
 					if ( $product->is_on_sale() ) :
 						?>
-                        <span class="onsale"></span>
+                        <span class="onsale"><i class="dt-icon-the7-magn-004-12" aria-hidden="true"></i></span>
 					<?php
 					endif;
 					?>

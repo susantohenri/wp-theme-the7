@@ -239,7 +239,7 @@ $options['header-mobile-menu_icon-size'] = array(
 			'title' => '',
 			'src'   => '/inc/admin/assets/images/style022.gif',
 		),
-
+		
 		'type_5' => array(
 			'title' => '',
 			'src'   => '/inc/admin/assets/images/m8.gif',
@@ -312,7 +312,7 @@ $options['header-mobile-menu_icon-caption-typography'] = array(
 	'id'         => 'header-mobile-menu_icon-caption-typography',
 	'type'       => 'typography',
 	'std'        => array(
-		'font_family'    => 'Arial',
+		'font_family'    => 'Roboto',
 		'font_size'      => 16,
 		'text_transform' => 'none',
 	),

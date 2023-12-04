@@ -51,20 +51,3 @@ function the7_demo_get_quick_search_tags_list() {
 
 	return $tags;
 }
-
-/**
- * Prevent default WC pages creation during demo install.
- *
- * @param array $pages WC pages definition array.
- *
- * @return array
- */
-function the7_demo_prevent_default_wc_pages_creation( $pages ) {
-	if ( isset( $_GET['page'], $_POST['action'], $_POST['context'] ) && $_GET['page'] === 'the7-plugins' && $_POST['action'] === 'tgmpa-bulk-activate' && $_POST['context'] === 'demo_install' ) {
-		return [];
-	}
-
-	return $pages;
-}
-
-add_filter( 'woocommerce_create_pages', 'the7_demo_prevent_default_wc_pages_creation' );

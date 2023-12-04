@@ -1,34 +1,18 @@
 <?php
-/**
- * Checkout header template.
- *
- * Important! Strings with the7mk2 textdomain.
- *
- * @package The7.
- */
-
-defined( 'ABSPATH' ) || exit;
-
-/**
- * @param string $endpoint Some point.
- *
- * @return string
- */
-function dt_checkout_breadcrumb_class($endpoint){
-	$classes = array();
-	if($endpoint == 'cart' && is_cart() ||
-		$endpoint == 'checkout' && is_checkout() && !is_wc_endpoint_url('order-received') ||
-		$endpoint == 'order-received' && is_wc_endpoint_url('order-received')) {
-		$classes[] = 'current';
-	} elseif ( is_wc_endpoint_url( 'order-received' ) || $endpoint == 'order-received' && is_wc_endpoint_url( 'order-received' ) ) {
-
-		$classes[] = 'current';
-	} else {
-		$classes[] = 'hide-for-small';
+	function dt_checkout_breadcrumb_class($endpoint){
+		$classes = array();
+		if($endpoint == 'cart' && is_cart() ||
+			$endpoint == 'checkout' && is_checkout() && !is_wc_endpoint_url('order-received') ||
+			$endpoint == 'order-received' && is_wc_endpoint_url('order-received')) {
+			$classes[] = 'current';
+		} else if(is_wc_endpoint_url('order-received') || $endpoint == 'order-received' && is_wc_endpoint_url('order-received')) {
+			
+			$classes[] = 'current';
+		} else{
+			$classes[] = 'hide-for-small';
+		}
+		return implode(' ', $classes);
 	}
-
-	return implode(' ', $classes);
-}
 ?>
 
 <div class="checkout-page-title">

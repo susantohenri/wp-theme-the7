@@ -13,20 +13,19 @@ class WXR_Parser {
 	function parse( $file ) {
 		// Attempt to use proper XML parsers first
 		if ( extension_loaded( 'simplexml' ) ) {
-			$parser = new WXR_Parser_SimpleXML();
+			$parser = new WXR_Parser_SimpleXML;
 			$result = $parser->parse( $file );
 
 			// If SimpleXML succeeds or this is an invalid WXR file then return the results
 			if ( ! is_wp_error( $result ) || 'SimpleXML_parse_error' != $result->get_error_code() )
 				return $result;
-		} elseif ( extension_loaded( 'xml' ) ) {
-			$parser = new WXR_Parser_XML();
+		} else if ( extension_loaded( 'xml' ) ) {
+			$parser = new WXR_Parser_XML;
 			$result = $parser->parse( $file );
 
 			// If XMLParser succeeds or this is an invalid WXR file then return the results
-			if ( ! is_wp_error( $result ) || 'XML_parse_error' != $result->get_error_code() ) {
+			if ( ! is_wp_error( $result ) || 'XML_parse_error' != $result->get_error_code() )
 				return $result;
-			}
 		}
 
 		// We have a malformed XML file, so display the error and fallthrough to regex
@@ -35,7 +34,7 @@ class WXR_Parser {
 			if ( 'SimpleXML_parse_error' == $result->get_error_code() ) {
 				foreach  ( $result->get_error_data() as $error )
 					echo $error->line . ':' . $error->column . ' ' . esc_html( $error->message ) . "\n";
-			} elseif ( 'XML_parse_error' == $result->get_error_code() ) {
+			} else if ( 'XML_parse_error' == $result->get_error_code() ) {
 				$error = $result->get_error_data();
 				echo $error[0] . ':' . $error[1] . ' ' . esc_html( $error[2] );
 			}
@@ -45,7 +44,7 @@ class WXR_Parser {
 		}
 
 		// use regular expressions if nothing else available or this is bad XML
-		$parser = new WXR_Parser_Regex();
+		$parser = new WXR_Parser_Regex;
 		return $parser->parse( $file );
 	}
 }
@@ -66,19 +65,12 @@ class WXR_Parser_SimpleXML {
 			return new WP_Error( 'SimpleXML_parse_error', __( 'Cannot use DOMDocument to parse file - class does not exist', 'wordpress-importer' ), libxml_get_errors() );
 		}
 
-		$dom = new DOMDocument();
+		$dom = new DOMDocument;
 		$old_value = null;
-		if ( function_exists( 'libxml_disable_entity_loader' ) && PHP_VERSION_ID < 80000 ) {
+		if ( function_exists( 'libxml_disable_entity_loader' ) ) {
 			$old_value = libxml_disable_entity_loader( true );
 		}
-
-		$filesystem = the7_get_filesystem();
-		if ( is_wp_error( $filesystem ) ) {
-			return $filesystem;
-		}
-
-		$success = $dom->loadXML( $filesystem->get_contents( $file ) );
-
+		$success = $dom->loadXML( file_get_contents( $file ) );
 		if ( ! is_null( $old_value ) ) {
 			libxml_disable_entity_loader( $old_value );
 		}
@@ -103,14 +95,14 @@ class WXR_Parser_SimpleXML {
 		if ( ! preg_match( '/^\d+\.\d+$/', $wxr_version ) )
 			return new WP_Error( 'WXR_parse_error', __( 'This does not appear to be a WXR file, missing/invalid WXR version number', 'wordpress-importer' ) );
 
-		$base_url = $xml->xpath('/rss/channel/wp:base_blog_url');
+		$base_url = $xml->xpath('/rss/channel/wp:base_site_url');
 		$base_url = (string) trim( $base_url[0] );
 
 		$namespaces = $xml->getDocNamespaces();
 		if ( ! isset( $namespaces['wp'] ) )
-			$namespaces['wp'] = 'https://wordpress.org/export/1.1/';
+			$namespaces['wp'] = 'http://wordpress.org/export/1.1/';
 		if ( ! isset( $namespaces['excerpt'] ) )
-			$namespaces['excerpt'] = 'https://wordpress.org/export/1.1/excerpt/';
+			$namespaces['excerpt'] = 'http://wordpress.org/export/1.1/excerpt/';
 
 		// grab authors
 		foreach ( $xml->xpath('/rss/channel/wp:author') as $author_arr ) {
@@ -171,7 +163,6 @@ class WXR_Parser_SimpleXML {
 			$term = array(
 				'term_id' => (int) $t->term_id,
 				'term_taxonomy' => (string) $t->term_taxonomy,
-				'term_taxonomy_id' => (string) $t->term_taxonomy_id,
 				'slug' => (string) $t->term_slug,
 				'term_parent' => (string) $t->term_parent,
 				'term_name' => (string) $t->term_name,
@@ -311,12 +302,7 @@ class WXR_Parser_XML {
 		xml_set_character_data_handler( $xml, 'cdata' );
 		xml_set_element_handler( $xml, 'tag_open', 'tag_close' );
 
-		$filesystem = the7_get_filesystem();
-		if ( is_wp_error( $filesystem ) ) {
-			return $filesystem;
-		}
-
-		if ( ! xml_parse( $xml, $filesystem->get_contents( $file ), true ) ) {
+		if ( ! xml_parse( $xml, file_get_contents( $file ), true ) ) {
 			$current_line = xml_get_current_line_number( $xml );
 			$current_column = xml_get_current_column_number( $xml );
 			$error_code = xml_get_error_code( $xml );
@@ -424,7 +410,7 @@ class WXR_Parser_XML {
 					$this->authors[$this->data['author_login']] = $this->data;
 				$this->data = false;
 				break;
-			case 'wp:base_blog_url':
+			case 'wp:base_site_url':
 				$this->base_url = $this->cdata;
 				break;
 			case 'wp:wxr_version':
@@ -435,9 +421,9 @@ class WXR_Parser_XML {
 				if ( $this->in_sub_tag ) {
 					$this->sub_data[$this->in_sub_tag] = ! empty( $this->cdata ) ? $this->cdata : '';
 					$this->in_sub_tag = false;
-				} elseif ( $this->in_tag ) {
-					$this->data[ $this->in_tag ] = ! empty( $this->cdata ) ? $this->cdata : '';
-					$this->in_tag                = false;
+				} else if ( $this->in_tag ) {
+					$this->data[$this->in_tag] = ! empty( $this->cdata ) ? $this->cdata : '';
+					$this->in_tag = false;
 				}
 		}
 
@@ -463,7 +449,7 @@ class WXR_Parser_Regex {
 	function parse( $file ) {
 		$wxr_version = $in_post = false;
 
-		$fp = $this->file_open( $file, 'r' );
+		$fp = $this->fopen( $file, 'r' );
 		if ( $fp ) {
 			while ( ! $this->feof( $fp ) ) {
 				$importline = rtrim( $this->fgets( $fp ) );
@@ -471,8 +457,8 @@ class WXR_Parser_Regex {
 				if ( ! $wxr_version && preg_match( '|<wp:wxr_version>(\d+\.\d+)</wp:wxr_version>|', $importline, $version ) )
 					$wxr_version = $version[1];
 
-				if ( false !== strpos( $importline, '<wp:base_blog_url>' ) ) {
-					preg_match( '|<wp:base_blog_url>(.*?)</wp:base_blog_url>|is', $importline, $url );
+				if ( false !== strpos( $importline, '<wp:base_site_url>' ) ) {
+					preg_match( '|<wp:base_site_url>(.*?)</wp:base_site_url>|is', $importline, $url );
 					$this->base_url = $url[1];
 					continue;
 				}
@@ -512,7 +498,7 @@ class WXR_Parser_Regex {
 				}
 			}
 
-			$this->file_close($fp);
+			$this->fclose($fp);
 		}
 
 		if ( ! $wxr_version )
@@ -690,12 +676,10 @@ class WXR_Parser_Regex {
 		return '<' . strtolower( $matches[1] );
 	}
 
-	function file_open( $filename, $mode = 'r' ) {
+	function fopen( $filename, $mode = 'r' ) {
 		if ( $this->has_gzip )
 			return gzopen( $filename, $mode );
-		// Important! Allows us to pass Envato Theme Checker tests.
-		$func = 'fopen';
-		return $func( $filename, $mode );
+		return fopen( $filename, $mode );
 	}
 
 	function feof( $fp ) {
@@ -710,11 +694,9 @@ class WXR_Parser_Regex {
 		return fgets( $fp, $len );
 	}
 
-	function file_close( $fp ) {
+	function fclose( $fp ) {
 		if ( $this->has_gzip )
 			return gzclose( $fp );
-		// Important! Allows us to pass Envato Theme Checker tests.
-		$func = 'fclose';
-		return $func( $fp );
+		return fclose( $fp );
 	}
 }

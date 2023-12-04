@@ -15,11 +15,13 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	<?php presscore_get_template_part( 'theme', 'blog/blog-post-content-part' ); ?>
 
 	<?php
-	if ( presscore_config()->get( 'show_details' ) ) {
+	if ( presscore_get_config()->get( 'show_details' ) ) {
 		echo presscore_post_details_link();
 	}
 	?>
 
 	<?php echo presscore_get_posted_on(); ?>
+
+	<?php echo presscore_post_edit_link(); ?>
 
 </div>

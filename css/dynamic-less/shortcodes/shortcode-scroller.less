@@ -13,9 +13,17 @@
 
 
 .elementor-widget-the7_photo-scroller .scroller-arrow {
-	& span,
-    &:hover span  {
-		color: var(--the7-accent-color);
+	& span {
+		color: @accent-bg-color;
+		// .accent-gradient & {
+		// 	.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
+		// }
+	}
+	&:hover span {
+		color: @accent-bg-color;
+		// .accent-gradient & {
+		// 	.text-gradient (@startColor: @accent-bg-color, @endColor: @accent-text-color-2);
+		// }
 	}
 }
 .owl-prev:hover i,

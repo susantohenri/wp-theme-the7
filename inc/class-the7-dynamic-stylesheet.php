@@ -24,6 +24,7 @@ class The7_Dynamic_Stylesheet {
 	protected $less_abspath;
 
 	const THEME_CSS_DIR = 'css';
+	const THEME_CSS_LITE_DIR = 'css-lite';
 	const COMPILED_CSS_DIR = 'the7-css';
 
 	public function __construct( $handle, $less_src ) {
@@ -87,7 +88,9 @@ class The7_Dynamic_Stylesheet {
 
 	public static function get_theme_css_dir() {
 		$css_dir = self::THEME_CSS_DIR;
-
+		if (The7_Admin_Dashboard_Settings::get( 'lite-mode' )){
+			$css_dir = self::THEME_CSS_LITE_DIR;
+		}
 		return trailingslashit( get_template_directory() ) . $css_dir;
 	}
 

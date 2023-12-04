@@ -10,7 +10,7 @@ class The7_Option_Field_Radio extends The7_Option_Field_Abstract {
 		$wrap_class = 'controls-input-wrap';
 		if ( empty( $this->option['style'] ) || 'horizontal' === $this->option['style'] ) {
 			$wrap_class .= ' inline-input-wrap';
-		} elseif ( 'vertical' === $this->option['style'] ) {
+		} else if ( 'vertical' === $this->option['style'] ) {
 			$wrap_class .= ' block-input-wrap';
 		}
 

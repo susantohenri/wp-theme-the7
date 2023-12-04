@@ -7,9 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 class The7_Demo {
 
-	const DEMO_STATUS_FULL_IMPORT    = 'full_import';
+	const DEMO_STATUS_FULL_IMPORT = 'full_import';
 	const DEMO_STATUS_PARTIAL_IMPORT = 'partial_import';
-	const DEMO_STATUS_NOT_IMPORTED   = 'not_imported';
+	const DEMO_STATUS_NOT_IMPORTED = 'not_imported';
 
 	/**
 	 * @var bool
@@ -158,7 +158,7 @@ class The7_Demo {
 			'include_attachments' => false,
 			'screenshot'          => '',
 			'link'                => '',
-			'attachments_batch'   => 999,
+			'attachments_batch'   => 27,
 			'required_plugins'    => [],
 			'tags'                => [],
 		];

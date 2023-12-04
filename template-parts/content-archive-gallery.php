@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 global $post;
 
-$config = presscore_config();
+$config = Presscore_Config::get_instance();
 
 $media_items = get_post_meta( $post->ID, '_dt_album_media_items', true );
 $exclude_cover = get_post_meta( $post->ID, '_dt_album_options_exclude_featured_image', true );
@@ -163,7 +163,9 @@ $rell = '';
 		<?php the_excerpt(); ?>
 
 		<a href="javascript:void(0);" class="trigger-first-post-pp" rel="nofollow"><?php _ex( 'Details', 'details button', 'the7mk2' ); ?></a>
-    </div>
+
+		<?php echo presscore_post_edit_link(); ?>
+	</div>
 </article><!-- #post-<?php the_ID(); ?> -->
 
 <?php do_action('presscore_after_post'); ?>
