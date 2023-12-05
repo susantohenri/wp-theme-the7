@@ -1757,7 +1757,15 @@ class Filter_Attribute extends The7_Elementor_Widget_Base {
 				$base_link = (string) get_permalink( wc_get_page_id( 'shop' ) );
 			}
 
-			$term_items = 0;
+            if ( isset( $_GET['taxonomy'] ) ) {
+                $base_link = add_query_arg('taxonomy', wc_clean(wp_unslash($_GET['taxonomy'])), $base_link);
+            }
+
+            if ( isset( $_GET['term'] ) ) {
+                $base_link = add_query_arg('term', wc_clean(wp_unslash($_GET['term'])), $base_link);
+            }
+
+            $term_items = 0;
 			foreach ( $terms as $term ) {
 				$current_values = isset( $_chosen_attributes[ $taxonomy ]['terms'] ) ? $_chosen_attributes[ $taxonomy ]['terms'] : array();
 				$option_is_set  = in_array( $term->slug, $current_values, true );

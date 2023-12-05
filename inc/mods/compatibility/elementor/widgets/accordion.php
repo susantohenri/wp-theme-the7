@@ -357,6 +357,35 @@ class Accordion extends The7_Elementor_Widget_Base {
 				'tab'   => Controls_Manager::TAB_STYLE,
 			]
 		);
+		$this->add_basic_responsive_control(
+			'alignment',
+			[
+				'label'                => esc_html__( 'Alignment', 'the7mk2' ),
+				'type'                 => Controls_Manager::CHOOSE,
+				'options'              => [
+					'left'   => [
+						'title' => esc_html__( 'Left', 'the7mk2' ),
+						'icon'  => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => esc_html__( 'Center', 'the7mk2' ),
+						'icon'  => 'eicon-text-align-center',
+					],
+					'right'  => [
+						'title' => esc_html__( 'Right', 'the7mk2' ),
+						'icon'  => 'eicon-text-align-right',
+					],
+				],
+				'selectors_dictionary' => [
+					'left'   => 'flex-start',
+					'center' => 'center',
+					'right'  => 'flex-end',
+				],
+				'selectors'            => [
+					'{{WRAPPER}} .elementor-tab-title' => 'justify-content: {{VALUE}}',
+				],
+			]
+		);
 
 		$this->start_controls_tabs( 'tabs_style' );
 

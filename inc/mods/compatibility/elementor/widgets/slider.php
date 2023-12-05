@@ -29,7 +29,7 @@ class Slider extends The7_Elementor_Widget_Base {
 	 * @return string[]
 	 */
 	public function get_style_depends() {
-		return [ 'the7-slider' ];
+		return [ 'the7-slider-widget' ];
 	}
 
 	/**
@@ -61,7 +61,6 @@ class Slider extends The7_Elementor_Widget_Base {
 	}
 
 	protected function register_assets() {
-		the7_register_style( $this->get_name(), THE7_ELEMENTOR_CSS_URI . '/the7-slider.css' );
 		the7_register_script_in_footer( $this->get_name(), THE7_ELEMENTOR_JS_URI . '/the7-slider.js', [ 'the7-elementor-frontend-common' ] );
 	}
 
@@ -820,10 +819,10 @@ class Slider extends The7_Elementor_Widget_Base {
 				'ubax'             => 'Square',
 				'etefu'            => 'Rectangular',
 			],
-			'prefix_class' => 'bullets-',
+			//'prefix_class' => 'bullets-',
 		] );
 
-		$selector = "{{WRAPPER}} .swiper-pagination";
+		$selector = "{{WRAPPER}} .elementor-slides-wrapper > .swiper-pagination";
 
 		$this->add_responsive_control( 'bullet_size', [
 			'label'      => esc_html__( 'Bullets Size', 'the7mk2' ),
@@ -1072,10 +1071,11 @@ class Slider extends The7_Elementor_Widget_Base {
                 <div class="swiper-wrapper the7-elementor-slides">
 					<?php $this->render_slides() ?>
                 </div>
-					<?php if ( $show_dots ) : ?>
-                        <div class="swiper-pagination owl-dots"></div>
-					<?php endif; ?>
-					<?php $this->render_arrows( $settings ); ?>
+					<?php if ( $show_dots ) {
+	                        echo '<div class="swiper-pagination owl-dots ' . $this->add_bullets_class() . '"></div>';
+	                    }
+                     	$this->render_arrows( $settings ); 
+                     ?>
             </div>
         </div>
 		<?php
@@ -1089,6 +1089,24 @@ class Slider extends The7_Elementor_Widget_Base {
 		}
 
 		return count( $settings['slides'] );
+	}
+	protected function add_bullets_class( $class = '') {
+		$settings = $this->get_settings();
+		$style_classes = [
+			'small-dot-stroke'  => 'bullets-small-dot-stroke',
+			'scale-up'    => 'bullets-scale-up',
+			'stroke'  => 'bullets-stroke',
+			'fill-in'  => 'bullets-fill-in',
+			'ubax' => 'bullets-ubax',
+			'etefu' => 'bullets-etefu',
+		];
+
+		$layout = $settings['bullets_style'];
+		if ( array_key_exists( $layout, $style_classes ) ) {
+			$class = $style_classes[ $layout ];
+		}
+		return $class;
+	
 	}
 
 	/**

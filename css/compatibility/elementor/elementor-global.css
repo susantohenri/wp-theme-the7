@@ -1622,7 +1622,10 @@ img.aspect {
 .img-css-resize-wrapper img.the7-svg-image {
   width: var(--svg-width, 100%);
 }
-
+/*fix ratio img height within elementor container (occurs on mobile width when container has --flex-wrap: wrap;)*/
+.e-con.e-flex [class*="preserve-img-ratio"]{
+  width: 100%;
+}
 /*Horizontal menu*/
 .hidden-on-load {
   display: none;

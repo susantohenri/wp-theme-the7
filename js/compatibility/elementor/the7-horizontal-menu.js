@@ -125,6 +125,7 @@
                                 e.preventDefault();
                                 $ulMenu.find("." + classes.dtClicked).removeClass(classes.dtClicked);
                                 $(this).addClass(classes.dtClicked);
+                                state.disableCliсkHandler = true;
                             } else {
                                 e.stopPropagation();
                             }
@@ -132,6 +133,7 @@
                     });
                     if (($widget.hasClass('show-sub-menu-on-hover') || $widget.hasClass('parent-item-clickable-yes'))) {
                         $thisHover.on("mouseenter tap", function (e) {
+                            //TODO check do we really need tap action?
                             if (e.type === "tap") e.stopPropagation();
                             if (!methods.isDropdown()) {
                                 methods.showSubMenu($(this));

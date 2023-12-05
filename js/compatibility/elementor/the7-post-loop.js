@@ -4,30 +4,39 @@
             selectors: {
                 gridContainer: '.sGrid-container',
                 filterContainer: '.filter',
-                filterCategories: '.filter-categories'
+                filterCategories: '.filter-categories',
+                paginator: '.paginator',
+                wrapper: '.the7-elementor-widget'
             },
             classes: {
-                inPlaceTemplateEditable: "elementor-in-place-template-editable"
+                inPlaceTemplateEditable: "elementor-in-place-template-editable",
+                loading: "loading-overlay",
+                loadingShow: "loading-overlay-animation"
+            },
+            attr: {
+                paged: "data-paged",
+                pagenum: "data-page-num",
+                pagintionMode: "data-pagination-mode"
             }
         };
 
         let $widget = $(el),
-            $wrapper = $widget.find('.the7-elementor-widget').first(),
+            $wrapper = $widget.find(data.selectors.wrapper).first(),
             elementorSettings,
             settings,
             methods,
             widgetType,
-            elements = {
-                $gridContainer: $wrapper.children(data.selectors.gridContainer).first(),
-                $filterContainer: $wrapper.children(data.selectors.filterContainer).first(),
-                $filterCategories: $wrapper.children(data.selectors.filterCategories).first(),
-            };
+            widgetId,
+            elements;
+
         $widget.vars = {
             masonryActive: false,
             filteradeActive: false,
+            paginationActive: false,
             isInlineEditing: false,
             effectsTimer: null,
-            effectsTimerEnable:false
+            effectsTimerEnable: false,
+            ajaxLoading: false
         };
 
         // Store a reference to the object
@@ -36,8 +45,11 @@
         methods = {
             init: function () {
                 elementorSettings = new The7ElementorSettings($widget);
+
+                widgetId = elementorSettings.getID();
                 widgetType = elementorSettings.getWidgetType();
                 settings = elementorSettings.getSettings();
+                methods.initElements();
                 methods.bindEvents();
                 $widget.refresh();
                 if (elementorFrontend.isEditMode()) {
@@ -47,17 +59,128 @@
                 }
                 $widget.refresh = elementorFrontend.debounce($widget.refresh, 300);
             },
+
+            initElements: function () {
+                elements = {
+                    $gridContainer: $wrapper.children(data.selectors.gridContainer).first(),
+                    $filterContainer: $wrapper.children(data.selectors.filterContainer).first(),
+                    $filterCategories: $wrapper.children(data.selectors.filterCategories).first(),
+                    $paginator: $wrapper.children(data.selectors.paginator).first(),
+                };
+            },
+
+            initPagination: function () {
+                if (!$widget.vars.paginationActive) {
+                    if ($wrapper.attr(data.attr.pagintionMode) === 'ajax_pagination') {
+                        elements.$paginator.find('a').on("click", function (e) {
+                            e.preventDefault();
+
+                            if (elementorFrontend.isEditMode()){
+                                return;
+                            }
+
+                            if ($widget.vars.ajaxLoading) {
+                                return;
+                            }
+
+                            let $this = $(this);
+
+                            let isMore = false;
+                            let currPage = parseInt($wrapper.attr(data.attr.paged));
+                            let paged = isMore ? currPage + 1 : parseInt($this.attr(data.attr.pagenum));
+
+                            if (paged === currPage) {
+                                return;
+                            }
+                            $widget.vars.ajaxLoading = true;
+
+                            let nextHref = methods.updateURLQueryString($this.attr('href'));
+                            let ajaxData = methods.getAjaxData();
+                            //ajaxData.data.paged = paged;
+
+                            methods.addLoadingAnimationOverlay();
+                            $.ajax({
+                                type: "GET",
+                                url: nextHref,
+                                data: ajaxData,
+                                error: function (response) {
+                                },
+                                success: function (response) {
+                                    if (response) {
+                                        // update current page field
+                                        let $resp_wrapper = $(response).find(data.selectors.wrapper).first();
+                                        let $resp_gridContainer = $resp_wrapper.children(data.selectors.gridContainer).first();
+                                        let $resp_paginator = $resp_wrapper.children(data.selectors.paginator).first();
+                                        elements.$gridContainer.replaceWith($resp_gridContainer);
+                                        elements.$paginator.replaceWith($resp_paginator);
+
+                                        let $resp_wrapper_paged = $resp_wrapper.attr(data.attr.paged);
+
+                                        $wrapper.attr(data.attr.paged, $resp_wrapper_paged);
+
+                                        $widget.vars.filteradeActive = false;
+                                        $widget.vars.paginationActive = false;
+                                        $widget.vars.masonryActive = false;
+                                        methods.initElements();
+                                        methods.unBindEvents();
+                                        methods.bindEvents();
+                                        methods.handleElementHandlers();
+                                        $widget.refresh();
+                                    }
+                                },
+                                complete: function () {
+                                    methods.removeLoadingAnimationOverlay();
+                                    $widget.vars.ajaxLoading = false;
+                                }
+                            });
+                        });
+                    }
+                    $widget.vars.paginationActive = true;
+                }
+            },
+
+            getClosestDataElementorId: function () {
+                const $closestParent = $widget.closest('[data-elementor-id]');
+                return $closestParent ? $closestParent.data('elementor-id') : 0;
+            },
+
+            getAjaxData: function () {
+                return {
+                    "the7-widget-post-id": elementorFrontend.config.post.id || methods.getClosestDataElementorId(),
+                    "the7-widget-content": widgetId
+                };
+            },
+
+
+            updateURLQueryString: function (nextPageUrl) {
+                const currentUrl = new URL(window.location.href);
+                const targetUrl = new URL(nextPageUrl);
+                currentUrl.pathname = targetUrl.pathname
+                const currentParams = currentUrl.searchParams;
+                const targetParams = targetUrl.searchParams;
+                targetParams.forEach((value, key) => {
+                    currentParams.set(key, value);
+                });
+
+                //for 1 page
+                if (!targetParams.has('the7-page-' + widgetId)) {
+                    currentParams.delete('the7-page-' + widgetId);
+                }
+
+                history.pushState(null, '', currentUrl.href);
+                return currentUrl.href;
+            },
+
             initFilter: function () {
                 let config = methods.getFilterConfig()
                 if (!$widget.vars.filteradeActive) {
                     elements.$gridContainer.The7SimpleFilterade(config);
                     $widget.vars.filteradeActive = true;
-                }
-                else{
-                    elements.$gridContainer.The7SimpleFilterade('update',config);
+                } else {
+                    elements.$gridContainer.The7SimpleFilterade('update', config);
                 }
             },
-            getFilterConfig: function(){
+            getFilterConfig: function () {
                 let config = the7ShortcodesFilterConfig(elements.$filterContainer);
 
                 config.paginationMode = $wrapper.attr("data-pagination-mode");
@@ -84,15 +207,35 @@
                         methods.processEffects();
                         elementorFrontend.elements.$window.on('scroll', methods.handleLoadingEffects);
                     }, 500)
-                }
-                else{
+                } else {
                     methods.processEffects();
                 }
+            },
+
+            addLoadingAnimationOverlay: function () {
+                const loadingAnimationOverlay = $('<div>', {class: data.classes.loading});
+                $widget.append(loadingAnimationOverlay);
+                setTimeout(function () {
+                    loadingAnimationOverlay.addClass(data.classes.loadingShow);
+                }, 10);
+
+            },
+            removeLoadingAnimationOverlay: function () {
+                const loadingAnimationOverlay = $widget.find('.' + data.classes.loading);
+                if (!loadingAnimationOverlay) {
+                    return;
+                }
+                loadingAnimationOverlay.remove();
             },
 
             processEffects: function () {
                 $elements = elements.$gridContainer.children('.wf-cell:not(.shown):not(.is-visible)');
                 window.the7ProcessEffects($elements);
+            },
+
+            handleElementHandlers: function () {
+                const loopItems = elements.$gridContainer.find('.e-loop-item');
+                runElementHandlers(loopItems);
             },
             handleCTA: function () {
                 if (elementorPro === 'undefined') {
@@ -133,13 +276,15 @@
                 elementorFrontend.elements.$window.off('scroll', methods.handleLoadingEffects);
                 elementorFrontend.elements.$window.off('the7-resize-width', methods.handleResize);
 
+
+                elements.$gridContainer.off('beforeSwitchPage', methods.onBeforeSwitchPage);
                 elements.$gridContainer.off('updateReady', methods.onFilteradeUpdateReady);
             },
-            onBeforeSwitchPage:function() {
+            onBeforeSwitchPage: function () {
                 elementorFrontend.elements.$window.off('scroll', methods.handleLoadingEffects);
                 $widget.vars.effectsTimerEnable = true;
             },
-            onFilteradeUpdateReady:function() {
+            onFilteradeUpdateReady: function () {
                 methods.handleLoadingEffects();
                 methods.updateSimpleMasonry();
             },
@@ -148,8 +293,7 @@
                     if (!$widget.vars.masonryActive) {
                         elements.$gridContainer.The7SimpleMasonry(methods.getMasonryConfig());
                         $widget.vars.masonryActive = true;
-                    }
-                    else {
+                    } else {
                         methods.updateSimpleMasonry();
                     }
                 } else {
@@ -159,8 +303,8 @@
                     }
                 }
             },
-            updateSimpleMasonry(){
-                if ($widget.vars.masonryActive){
+            updateSimpleMasonry() {
+                if ($widget.vars.masonryActive) {
                     elements.$gridContainer.The7SimpleMasonry('setSettings', methods.getMasonryConfig());
                 }
             },
@@ -176,7 +320,7 @@
                 return !!settings['layout'];
             },
 
-            handlePostEdit(){
+            handlePostEdit() {
                 $widget.vars.isInlineEditing = true;
                 $widget.addClass(data.classes.inPlaceTemplateEditable);
             },
@@ -189,6 +333,7 @@
         //global functions
         $widget.refresh = function () {
             settings = elementorSettings.getSettings();
+            methods.initPagination();
             methods.initFilter();
             methods.handleResize();
         };

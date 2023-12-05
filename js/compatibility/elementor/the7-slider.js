@@ -31,11 +31,12 @@ jQuery(document).ready(function ($) {
             intersectionObserver,
             widgetType,
             elements = {
-                $swiperContainer: $widget.find(data.selectors.slider),
+                $swiperContainer: $widget.find(data.selectors.slider).first(),
                 animatedSlides: {},
                 activeElements: []
             };
-        elements.$slides = elements.$swiperContainer.find('.' + data.selectors.slide);
+        elements.$slides = elements.$swiperContainer.find('> .the7-elementor-slides >' + '.' + data.selectors.slide);
+        
         $widget.vars = {
             sliderInitialized: false,
             isInlineEditing: false
@@ -59,7 +60,20 @@ jQuery(document).ready(function ($) {
                 $widget.refresh();
                 methods.handleResize = elementorFrontend.debounce(methods.handleResize, 1000);
             },
-            handleCTA: function () {
+
+            runElementHandlers: function (elements) {
+                [...elements].flatMap(el => [...el.querySelectorAll('.elementor-element')]).forEach(el => elementorFrontend.elementsHandler.runReadyTrigger(el));
+            },
+
+            handleElementHandlers: function () {
+                if (!swiper) {
+                    return;
+                }
+                const duplicatedSlides = Array.from(swiper.slides).filter(slide => slide.classList.contains(swiper.params.slideDuplicateClass));
+                methods.runElementHandlers(duplicatedSlides);
+            },
+
+        handleCTA: function () {
                 if (typeof elementorPro === 'undefined') {
                     return;
                 }
@@ -211,13 +225,13 @@ jQuery(document).ready(function ($) {
                     pagination = true;
                 if (navigation) {
                     swiperOptions.navigation = {
-                        prevEl: '.the7-swiper-button-prev',
-                        nextEl: '.the7-swiper-button-next'
+                        prevEl: elements.$swiperContainer.children('.the7-swiper-button-prev')[0],
+                        nextEl: elements.$swiperContainer.children('.the7-swiper-button-next')[0]
                     };
                 }
                 if (pagination) {
                     swiperOptions.pagination = {
-                        el: '.swiper-pagination',
+                        el: elements.$swiperContainer.children('.swiper-pagination')[0],
                         type: 'bullets',
                         bulletActiveClass: 'active',
                         bulletClass: 'owl-dot',
@@ -397,7 +411,7 @@ jQuery(document).ready(function ($) {
                 });
                 swiper.on('snapGridLengthChange', methods.updateNav);
                 swiper.on('breakpoint', methods.updateBreakpoint);
-
+                methods.handleElementHandlers();
                 $widget.find('.dt-owl-carousel-call, .elementor-owl-carousel-call, .related-projects, .slider-simple:not(.slider-masonry)').trigger('refresh.owl.carousel');
             },
             loopLazyFix: function () {
@@ -454,6 +468,7 @@ jQuery(document).ready(function ($) {
                     swiper.loopCreate();
                     swiper.updateSlides();
                     methods.loopLazyFix();
+                    methods.handleElementHandlers();
                 } else if (swiper.params.loop !== oldLoop && !swiper.params.loop) {
                     swiper.loopDestroy();
                     swiper.updateSlides();
@@ -630,7 +645,9 @@ jQuery(document).ready(function ($) {
                 });
             }
         }
-
+        $widget.getSwiper = function(){
+            return swiper;
+        }
         methods.init();
     };
 

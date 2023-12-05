@@ -122,7 +122,7 @@ class Menu_Cart extends The7_Elementor_Widget_Base {
 		$this->add_render_attribute( 'popup-button', 'href', $link_action_url );
 		$this->add_render_attribute( 'popup-button', 'class', 'the7-popup-button-link' );
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		echo '<a ' . $this->get_render_attribute_string( 'popup-button' ) . ' aria-hidden="true"></a>';
+		echo '<a ' . $this->get_render_attribute_string( 'popup-button' ) . ' aria-label="' . esc_attr__( 'Open cart popup', 'the7mk2' ) . '"></a>';
 	}
 
 	/**

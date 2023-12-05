@@ -9,6 +9,7 @@ namespace The7\Mods\Compatibility\Elementor\Pro\Modules\Archive;
 
 use ElementorPro\Modules\ThemeBuilder\Module;
 use The7\Mods\Compatibility\Elementor\Widgets\Woocommerce\Products;
+use The7\Mods\Compatibility\Elementor\Widgets\Posts_Loop;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -74,7 +75,7 @@ class Custom_Pagination_Query_Handler {
 	 * @return bool
 	 */
 	public function product_archive_widget_filter( $element ) {
-		if ( ! $this->is_widget( $element, 'the7-wc-products' ) ) {
+		if ( ! $this->is_widget( $element, [ 'the7-wc-products', Posts_Loop::WIDGET_NAME ] ) ) {
 			return false;
 		}
 
@@ -89,7 +90,7 @@ class Custom_Pagination_Query_Handler {
 	 * @return bool
 	 */
 	public function archive_widget_filter( $element ) {
-		if ( ! $this->is_widget( $element, 'the7_elements' ) ) {
+		if ( ! $this->is_widget( $element, [ 'the7_elements', Posts_Loop::WIDGET_NAME ] ) ) {
 			return false;
 		}
 

@@ -220,6 +220,7 @@ class The7_Elementor_Widgets {
 					'Product_Meta',
 					'woocommerce/product-images',
 					'Product_Images',
+					'woocommerce/product-images-list',
 					'woocommerce/product-additional-information',
 					'Product_Additional_Information',
 					'woocommerce/product-navigation',
@@ -320,6 +321,10 @@ class The7_Elementor_Widgets {
 		the7_register_style(
 			'the7-carousel-text-and-icon-widget',
 			PRESSCORE_THEME_URI . '/css/compatibility/elementor/the7-carousel-text-and-icon-widget'
+		);
+		the7_register_style(
+			'the7-slider-widget',
+			PRESSCORE_THEME_URI . '/css/compatibility/elementor/the7-slider'
 		);
 		the7_register_style(
 			'the7-vertical-menu-widget',

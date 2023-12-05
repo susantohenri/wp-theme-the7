@@ -27,7 +27,7 @@
                         const $this = $(this);
                         const $parent = $this.parent();
                         const $currentVariation = $this.closest("ul");
-                        const atr = $currentVariation.attr("data-atr");
+                        const atr = $.escapeSelector($currentVariation.attr("data-atr"));
                         const $select = $currentVariation.siblings("select#" + atr);
 
                         if ($parent.hasClass("active")) {
@@ -49,7 +49,7 @@
                         const val = $this.val();
 
                         if (val.length) {
-                            const atr = $this.attr("id");
+                            const atr = $.escapeSelector($this.attr("id"));
                             $variationList.filter("[data-atr='" + atr + "']").find("li a[data-id='" + val + "']").trigger("click");
                         }
                     });

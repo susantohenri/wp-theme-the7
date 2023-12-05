@@ -209,8 +209,6 @@ class Variations extends Abstract_Template {
 			]
 		);
 
-		
-
 		$this->widget->add_control(
 			'variations_label_position',
 			[
@@ -779,14 +777,16 @@ class Variations extends Abstract_Template {
 			$attribute_taxonomy = $attribute->get_taxonomy_object();
 			if ( $attribute_taxonomy ) {
 				// Get terms if this is a taxonomy - ordered. We need the names too.
-				$terms = wc_get_product_terms(
-					$product->get_id(),
-					$attribute_slug,
-					[
-						'fields' => 'all',
-						'slug'   => $variations_per_attribute[ $attribute_slug ] ? array_keys( $variations_per_attribute[ $attribute_slug ] ) : '',
-					]
-				);
+				$terms_args  = [
+					'fields' => 'all',
+				];
+
+				$attribute_variations = array_filter( array_keys( (array) $variations_per_attribute[ $attribute_slug ] ) );
+				if ( $attribute_variations ) {
+					$terms_args['slug'] = $attribute_variations;
+				}
+
+				$terms = wc_get_product_terms( $product->get_id(), $attribute->get_taxonomy(), $terms_args );
 
 				if ( ! $terms ) {
 					continue;

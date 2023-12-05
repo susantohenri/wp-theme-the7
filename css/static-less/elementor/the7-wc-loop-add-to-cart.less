@@ -71,6 +71,13 @@
   .product_type_simple.box-button.added_to_cart {
      display: var(--added-btn-display) !important;
   }
+  .quantity,
+  .woocommerce-variation-add-to-cart .quantity {
+    display: var(--quantity-display);
+    .product-type-variable & {
+      display: var(--variative-quantity-display, var(--quantity-display));
+    }
+  }
   
   &.added-to-cart-y .box-button.added_to_cart,
   & .product_type_simple.box-button.added_to_cart {

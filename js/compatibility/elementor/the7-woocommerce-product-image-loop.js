@@ -38,6 +38,14 @@
     });
 
     $.productSlider = function (el) {
+        const data = {
+            selectors: {
+                slider: '.elementor-slides-wrapper',
+                slide: 'the7-swiper-slide',
+                activeSlide: '.swiper-slide-active',
+                activeDuplicate: '.swiper-slide-duplicate-active'
+            },
+        };
         let $widget = $(el),
             methods,
             elementorSettings,
@@ -46,8 +54,14 @@
             settings,
             overlayTemplateExist = false,
             $overlay,
-            visibility;
-        const $imgSlider = $widget.find(".owl-carousel");
+            visibility,
+            elements = {
+                $swiperContainer: $widget.find(data.selectors.slider),
+                animatedSlides: {},
+                activeElements: []
+            };
+            elements.$slides = elements.$swiperContainer.find('.' + data.selectors.slide);
+        const $imgSlider = $widget.find(".elementor-slides-wrapper");
 
         // Store a reference to the object.
         $.data(el, "productSlider", $widget);
@@ -82,6 +96,8 @@
                 }
 
                 elementorSettings = new The7ElementorSettings($widget);
+                settings = elementorSettings.getSettings();
+                this.initSlider();
                 $widget.refresh();
                  if (overlayTemplateExist) {
                     visibility = The7ElementorSettings.getResponsiveControlValue(settings, 'hover_visibility');
@@ -98,58 +114,61 @@
                 $widget.one('mouseenter', function() {
                     $widget.find('.post-thumbnail-rollover img').addClass('run-img-transitions');
                 });
+                
+            },
+            initSlider: async function () {
                 if ($imgSlider.length) {
-                    var $dotsEach = '1' == $imgSlider.attr("data-scroll-mode"),
-                    $navPrevHtml = $widget.find('.owl-prev-icon').html(),
-                    $navNextHtml = $widget.find('.owl-next-icon').html(),
-                    $animateOut = settings['transition'] === 'fade' ? 'fadeOut' : false,
-                    $animateIn = settings['transition'] === 'fade' ? 'fadeIn' : false,
-                    $transitionSpeed = settings['transition_speed'] ? settings['transition_speed'] : 600,
-                    $sliderAutoslideEnable = settings['autoplay'] ? settings['autoplay'] : false,
-                    $sliderAutoslidePause = settings['pause_on_hover'] ? settings['pause_on_hover'] : false,
-                    $sliderAutoslideDelay = settings['autoplay_speed'] ? settings['autoplay_speed'] : 5000,
-                    $navContainer = $widget.find('.elementor-widget-container .owl-nav'),
-                    $dotsContainer = $widget.find('.elementor-widget-container .owl-dots'),
-                    reloadLayzTimer;
-                    $widget.find('.owl-prev-icon').remove();
-                    $widget.find('.owl-next-icon').remove();
-                    var updateLazyr = function () {
-                        clearTimeout(reloadLayzTimer);
-                        reloadLayzTimer = setTimeout(function () {
-                            $imgSlider.layzrCarouselUpdate();
-                        }, 20);
-                    }
-                    $imgSlider.on('initialized.owl.carousel', function (event) {
-                        updateLazyr();
-                    });
-                    $imgSlider.owlCarousel({
-                        items: 1,
-                        autoHeight: false,
-                        center: false,
-                        margin: 0,
-                        loadedClass: 'owl-loaded',
-                        slideBy: 1,
-                        loop: true,
-                        smartSpeed: $transitionSpeed,
-                        animateOut: $animateOut,
-                        animateIn: $animateIn,
-                        autoplay: $sliderAutoslideEnable,
-                        autoplayTimeout: $sliderAutoslideDelay,
-                        autoplayHoverPause:$sliderAutoslidePause,
-                        nav: true,
-                        navContainer: $navContainer,
-                        navElement: "a",
-                        navText: [$navPrevHtml, $navNextHtml],
-                        dots: true,
-                        dotsContainer: $dotsContainer,
-                    });
-                    $imgSlider.on('change.owl.carousel', function (event) {
-                        clearTimeout(reloadLayzTimer);
-                        reloadLayzTimer = setTimeout(function () {
-                            $imgSlider.layzrCarouselUpdate();
-                            $('.dt-owl-item.cloned .lazy-load', $imgSlider).parent().removeClass('layzr-bg');
-                        }, 20);
-                    });
+                     //Swiper
+                    const Swiper = elementorFrontend.utils.swiper;
+                    swiper = await new Swiper($imgSlider, this.getSwiperOptions());
+                    methods.loopLazyFix();
+
+                }
+            },
+            getSwiperOptions: function () {
+
+                swiperOptions = {
+                    grabCursor: true,
+                    loop: true,
+                    loopPreventsSlide: true,
+                    pauseOnMouseEnter: true,
+                    speed: settings['transition_speed'],
+                    effect: settings['transition'],
+                    slideClass: 'the7-swiper-slide',
+                    nested: true,
+                };
+
+                const navigation = true,
+                    pagination = true;
+                if (navigation) {
+                    swiperOptions.navigation = {
+                        prevEl: elements.$swiperContainer.siblings('.the7-swiper-button-prev')[0],
+                        nextEl: elements.$swiperContainer.siblings('.the7-swiper-button-next')[0]
+                    };
+                }
+                if (pagination) {
+                    swiperOptions.pagination = {
+                        el: elements.$swiperContainer.siblings('.swiper-pagination')[0],
+                        type: 'bullets',
+                        bulletActiveClass: 'active',
+                        bulletClass: 'owl-dot',
+                        clickable: true,
+                        renderBullet: function (index, className) {
+                            return '<button role="button" class="' + className + '" aria-label="Go to slide ' + index + 1 + '"><span></span></button>';
+                        },
+                    };
+
+                }
+                return swiperOptions;
+            },
+            getInitialSlide() {
+                return 0;
+            },
+            loopLazyFix: function () {
+                if (swiper.params.loop){
+                let $swiperDuplicates = $(swiper.wrapperEl).children("." + (swiper.params.slideDuplicateClass));
+                    $swiperDuplicates.find(".is-loading").removeClass("is-loading");
+                    $swiperDuplicates.layzrInitialisation();
                 }
             },
             handleResize: function () {

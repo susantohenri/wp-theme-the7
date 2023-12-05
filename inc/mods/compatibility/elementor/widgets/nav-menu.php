@@ -747,6 +747,7 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => [
 					'submenu_display!' => 'always',
+					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -768,9 +769,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				],
 				'default'   => is_rtl() ? 'left' : 'right',
 				'toggle'    => false,
-				'condition' => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -787,9 +785,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				'selectors_dictionary' => [
 					'with_text' => '',
 					'side'      => 'justify-content: space-between;',
-				],
-				'condition'            => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -810,9 +805,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .dt-nav-menu' => '--icon-size: {{SIZE}}{{UNIT}}',
 					'{{WRAPPER}} .dt-nav-menu > li > a .next-level-button i' => 'font-size: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .dt-nav-menu > li > a .next-level-button, {{WRAPPER}} .dt-nav-menu > li > a .next-level-button svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-				],
-				'condition'  => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -835,9 +827,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .dt-icon-position-left.dt-icon-align-side .dt-nav-menu > li > a .item-content ' => 'margin-left: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .dt-icon-position-right.dt-icon-align-side .dt-nav-menu > li > a .item-content ' => 'margin-right: {{SIZE}}{{UNIT}};',
 					'(desktop) {{WRAPPER}}.dt-nav-menu_align-center .dt-icon-align-side .dt-nav-menu > li > a  .item-content ' => 'margin: 0 {{SIZE}}{{UNIT}};',
-				],
-				'condition' => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -868,9 +857,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .dt-nav-menu > li > a .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .dt-nav-menu > li > a .next-level-button svg'                => 'fill: {{VALUE}}; color: {{VALUE}}',
 				],
-				'condition' => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -894,9 +880,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					{{WRAPPER}} .dt-sub-menu-display-on_item_click .dt-nav-menu > li > a:hover .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .dt-sub-menu-display-on_click .dt-nav-menu > li > a .next-level-button:hover svg, {{WRAPPER}} .dt-sub-menu-display-on_item_click .dt-nav-menu > li > a:hover .next-level-button svg' => 'fill: {{VALUE}}; color: {{VALUE}}',
 				],
-				'condition' => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -917,9 +900,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}}  .dt-nav-menu > li > .active-item .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .dt-nav-menu > li > .active-item .next-level-button svg'                 => 'fill: {{VALUE}}; color: {{VALUE}}',
-				],
-				'condition' => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -1424,6 +1404,7 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				'tab'       => Controls_Manager::TAB_STYLE,
 				'condition' => [
 					'submenu_display!' => 'always',
+					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -1442,9 +1423,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 						'title' => esc_html__( 'End', 'the7mk2' ),
 						'icon'  => 'eicon-h-align-right',
 					],
-				],
-				'condition' => [
-					'selected_icon[value]!' => '',
 				],
 				'default'   => is_rtl() ? 'left' : 'right',
 				'toggle'    => false,
@@ -1465,9 +1443,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'with_text' => '',
 					'side'      => 'justify-content: space-between;',
 				],
-				'condition'            => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -1487,9 +1462,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .vertical-sub-nav' => '--sub-icon-size: {{SIZE}}{{UNIT}}',
 					'{{WRAPPER}} .vertical-sub-nav > li > a .next-level-button i' => 'font-size: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .vertical-sub-nav > li > a .next-level-button, {{WRAPPER}} .vertical-sub-nav > li > a .next-level-button svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
-				],
-				'condition'  => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -1512,9 +1484,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .dt-sub-icon-position-left.dt-sub-icon-align-side .vertical-sub-nav > li > a .item-content ' => 'margin-left: {{SIZE}}{{UNIT}};',
 					'{{WRAPPER}} .dt-sub-icon-position-right.dt-sub-icon-align-side .dt-nav-menu > li > a .item-content ' => 'margin-right: {{SIZE}}{{UNIT}};',
 					'(desktop) {{WRAPPER}}.dt-sub-menu_align-center .dt-sub-icon-align-side .vertical-sub-nav > li > a  .item-content ' => 'margin: 0 {{SIZE}}{{UNIT}};',
-				],
-				'condition' => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);
@@ -1546,9 +1515,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .vertical-sub-nav > li > a .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .vertical-sub-nav > li > a .next-level-button svg'                => 'fill: {{VALUE}};',
 				],
-				'condition' => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -1570,9 +1536,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 					'{{WRAPPER}} .dt-sub-menu-display-on_click .vertical-sub-nav > li > a .next-level-button:hover, {{WRAPPER}} .dt-sub-menu-display-on_item_click .vertical-sub-nav > li > a:hover .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .dt-sub-menu-display-on_click .vertical-sub-nav > li > a .next-level-button:hover svg,  {{WRAPPER}} .dt-sub-menu-display-on_item_click .vertical-sub-nav > li > a:hover .next-level-button svg'                                    => 'fill: {{VALUE}};',
 				],
-				'condition' => [
-					'selected_icon[value]!' => '',
-				],
 			]
 		);
 
@@ -1593,9 +1556,6 @@ class Nav_Menu extends The7_Elementor_Widget_Base {
 				'selectors' => [
 					'{{WRAPPER}} .vertical-sub-nav a.active-item .next-level-button, {{WRAPPER}} .vertical-sub-nav a.active .next-level-button' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .vertical-sub-nav a.active-item .next-level-button svg, {{WRAPPER}} .vertical-sub-nav a.active .next-level-button svg'                => 'fill: {{VALUE}};',
-				],
-				'condition' => [
-					'selected_icon[value]!' => '',
 				],
 			]
 		);

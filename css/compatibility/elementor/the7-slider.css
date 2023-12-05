@@ -171,99 +171,99 @@ div.elementor-widget-the7-slider-common {
 /*bullet specific styles*/
 
 
-div.bullets-scale-up.elementor-widget-the7-slider-common .owl-dot:not(.active):not(:hover) span {
+.elementor-widget-the7-slider-common .bullets-scale-up .owl-dot:not(.active):not(:hover) span {
     background: var(--bullet-color);
 }
 
-div.bullets-scale-up.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-scale-up .owl-dot:not(.active):hover span {
     background: var(--bullet-hover-color);
 }
 
-div.bullets-scale-up.elementor-widget-the7-slider-common .owl-dot.active span {
+.elementor-widget-the7-slider-common .bullets-scale-up .owl-dot.active span {
     background: var(--bullet-active-color);
 }
 
-div.bullets-stroke.elementor-widget-the7-slider-common .owl-dot:not(.active):not(:hover) span {
+.elementor-widget-the7-slider-common .bullets-stroke .owl-dot:not(.active):not(:hover) span {
     background: var(--bullet-color);
 }
 
-div.bullets-stroke.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-stroke .owl-dot:not(.active):hover span {
     background: var(--bullet-hover-color);
 }
-
-div.bullets-stroke.elementor-widget-the7-slider-common .owl-dot.active span {
+.elementor-widget-the7-slider-common .bullets-stroke .owl-dot.active span {
     box-shadow: 0 0 0 var(--bullet-border-width) var(--bullet-active-color) !important;
 }
 
-div.bullets-fill-in.elementor-widget-the7-slider-common .owl-dot:not(.active):not(:hover) span {
+.elementor-widget-the7-slider-common .bullets-fill-in .owl-dot:not(.active):not(:hover) span {
     box-shadow: inset 0 0 0 var(--bullet-border-width) var(--bullet-color) !important;
 }
 
-div.bullets-fill-in.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-fill-in .owl-dot:not(.active):hover span {
     box-shadow: inset 0 0 0 var(--bullet-border-width) var(--bullet-hover-color);
 }
 
-div.bullets-fill-in.elementor-widget-the7-slider-common .owl-dot.active span {
+.elementor-widget-the7-slider-common .bullets-fill-in .owl-dot.active span {
     box-shadow: inset 0 0 0 calc(var(--bullet-border-width) + 10px) var(--bullet-active-color);
 }
 
-div.bullets-small-dot-stroke.elementor-widget-the7-slider-common .owl-dot:not(.active):not(:hover) span {
+.elementor-widget-the7-slider-common .bullets-small-dot-stroke .owl-dot:not(.active):not(:hover) span {
     background: var(--bullet-color);
 }
 
-div.bullets-small-dot-stroke.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-small-dot-stroke .owl-dot:not(.active):hover span {
     background: var(--bullet-hover-color);
 }
 
-div.bullets-small-dot-stroke.elementor-widget-the7-slider-common .owl-dot.active span {
+.elementor-widget-the7-slider-common .bullets-small-dot-stroke .owl-dot.active span {
     background: var(--bullet-active-color);
 }
 
-div.bullets-small-dot-stroke.elementor-widget-the7-slider-common .owl-dot.active {
+.elementor-widget-the7-slider-common .bullets-small-dot-stroke .owl-dot.active {
     box-shadow: 0 0 0 var(--bullet-border-width) var(--bullet-active-color);
 }
 
-div.bullets-ubax.elementor-widget-the7-slider-common .owl-dot span {
+.elementor-widget-the7-slider-common .bullets-ubax .owl-dot span {
     background: var(--bullet-color);
     border-width: min(var(--bullet-half-size), var(--bullet-border-width));
 }
 
-div.bullets-ubax.elementor-widget-the7-slider-common .owl-dot.active span {
+.elementor-widget-the7-slider-common .bullets-ubax .owl-dot.active span {
     border-color: var(--bullet-active-color);
 }
 
-div.bullets-ubax.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-ubax .owl-dot:not(.active):hover span {
     background: var(--bullet-hover-color);
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot span {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot span {
     background: var(--bullet-color);
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot:not(.active):hover span {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot:not(.active):hover span {
     background: var(--bullet-hover-color);
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot span:before {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot span:before {
     background: var(--bullet-active-color);
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot span:before {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot span:before {
     opacity: 0;
     transition: opacity var(--slide-transition-speed);
     transform: translate3d(0, 0, 0);
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot.active span:before {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot.active span:before {
     opacity: 1;
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common{
+.elementor-widget-the7-slider-common .bullets-etefu {
     --bullet-border-width:5px;
 }
 
-div.bullets-etefu.elementor-widget-the7-slider-common .owl-dot span {
+.elementor-widget-the7-slider-common .bullets-etefu .owl-dot span {
     height: var(--bullet-border-width);
+    border-radius: 0 !important;
 }
 
 /*end of specific bullet styles*/
