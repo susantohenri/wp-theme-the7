@@ -543,11 +543,11 @@ class Loop_Add_To_Cart extends The7_Elementor_Widget_Base {
 				'return_value'         => 'yes',
 				'default'              => 'yes',
 				'selectors_dictionary' => [
-					'yes' => 'display: inline-flex;',
-					''    => 'display: none !important;',
+					'yes' => '--quantity-display: inline-flex;',
+					''    => '--quantity-display: none !important;',
 				],
 				'selectors'            => [
-					'{{WRAPPER}} .quantity, {{WRAPPER}} .woocommerce-variation-add-to-cart .quantity' => '{{VALUE}}',
+					'{{WRAPPER}}' => '{{VALUE}}',
 				],
 			]
 		);
@@ -582,12 +582,14 @@ class Loop_Add_To_Cart extends The7_Elementor_Widget_Base {
 						[
 							'variations-display' => 'flex',
 							'added-btn-display'  => 'none',
+							'variative-quantity-display' => 'var(--quantity-display)'
 						]
 					),
 					'n' => $this->combine_to_css_vars_definition_string(
 						[
 							'added-btn-display'  => 'flex',
 							'variations-display' => 'none',
+							'variative-quantity-display' => 'var(--variations-display)'
 						]
 					),
 				],

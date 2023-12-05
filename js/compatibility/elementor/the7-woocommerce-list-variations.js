@@ -38,7 +38,7 @@ jQuery(function ($) {
             const attributesSelector = Object.keys(attributes).filter(function(val) {
                 return !!val;
             }).map(function (key) {
-                return 'a.' + key + '_' + attributes[key];
+                return 'a.' + $.escapeSelector(key + '_' + attributes[key]);
             }).join(',');
 
 
@@ -122,13 +122,13 @@ jQuery(function ($) {
             const attributes = outOfStockAttributes || this.data.outOfStockAttributes;
             const $variationNodes = this.data.$variations.find("li a");
             $variationNodes.removeClass("out-of-stock");
-
             for (const [attr, values] of Object.entries(attributes)) {
                 if (values.length) {
-                    const selector = values.slice().map(function (val) {
-                        return "." + attr + "_" + val;
+                    const selector = values.slice().map((val) =>{
+                        return "." + $.escapeSelector(attr + "_" + val);
                     }).join(",");
                     $variationNodes.filter(selector).addClass("out-of-stock");
+
                 }
             }
         }
@@ -149,23 +149,23 @@ jQuery(function ($) {
                     matching.push(variation);
                 }
             }
-
             let outOfStockAttributes = Object.assign({}, this.data.outOfStockAttributes);
+
             matching.forEach(function (variation) {
                 for (const [key, value] of Object.entries(variation.attributes)) {
                     // Ignore active variations.
-                    if (self.getState(key) !== value) {
-                        outOfStockAttributes[key] = outOfStockAttributes[key].slice() || [];
 
+                    if (self.getState(key) !== value) {
+
+                        outOfStockAttributes[key] = outOfStockAttributes[key].slice() || [];
                         // Keep attributes unique.
                         if (outOfStockAttributes[key].indexOf(value) === -1) {
                             outOfStockAttributes[key].push(value);
+
                         }
                     }
                 }
             });
-
-
             return outOfStockAttributes;
         }
 

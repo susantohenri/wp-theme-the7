@@ -65,6 +65,7 @@ class The7_Elementor_Modules {
 			'loop',
 			'overlay',
 			'popup',
+			'ajax-pagination',
 		];
 	}
 }

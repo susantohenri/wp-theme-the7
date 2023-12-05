@@ -120,9 +120,9 @@ class Product_Add_To_Cart_V2 extends The7_Elementor_Widget_Base {
 		 */
 		$product = $args['product'];
 
-		$attribute             = sanitize_title( $args['attribute'] );
-		$name                  = $args['name'] ? $args['name'] : 'attribute_' . $attribute;
-		$id                    = $args['id'] ? $args['id'] : $attribute;
+		$attribute             = $args['attribute'];
+		$name                  = sanitize_title( $args['name'] ? $args['name'] : 'attribute_' . $attribute );
+		$id                    = sanitize_title( $args['id'] ? $args['id'] : $attribute );
 		$class                 = $args['class'];
 		$show_option_none      = $args['show_option_none'] ? true : false;
 		$show_option_none_text = $args['show_option_none'] ? $args['show_option_none'] : esc_html__( 'Choose an option', 'woocommerce' );
@@ -139,7 +139,7 @@ class Product_Add_To_Cart_V2 extends The7_Elementor_Widget_Base {
 		if ( $settings['layout'] === 'dropdown' ) {
 
 			$html  = '<div class="the7-wc-variation-select">';
-			$html .= '<select id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" name="' . esc_attr( $name ) . '" data-attribute_name="attribute_' . esc_attr( $attribute ) . '" data-show_option_none="' . ( $show_option_none ? 'yes' : 'no' ) . '">';
+			$html .= '<select id="' . esc_attr( $id ) . '" class="' . esc_attr( $class ) . '" name="' . esc_attr( $name ) . '" data-attribute_name="' . esc_attr( $name ) . '" data-show_option_none="' . ( $show_option_none ? 'yes' : 'no' ) . '">';
 			$html .= '<option value="">' . esc_html( $show_option_none_text ) . '</option>';
 
 			if ( ! empty( $options ) ) {
@@ -306,14 +306,16 @@ class Product_Add_To_Cart_V2 extends The7_Elementor_Widget_Base {
 		 */
 		$available_variations = $product->get_available_variations( 'objects' );
 		$variations           = [];
+		$sanitized_attribute  = sanitize_title( $attribute );
 
 		foreach ( $available_variations as $variation ) {
 			$attributes = $variation->get_variation_attributes( false );
-			if ( empty( $attributes[ $attribute ] ) ) {
+
+			if ( empty( $attributes[ $sanitized_attribute ] ) ) {
 				continue;
 			}
 
-			$slug = $attributes[ $attribute ];
+			$slug = $attributes[ $sanitized_attribute ];
 			if ( empty( $variations[ $slug ] ) || $variation->is_in_stock() ) {
 				$variations[ $slug ] = $variation;
 			}

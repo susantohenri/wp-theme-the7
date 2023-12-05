@@ -113,6 +113,7 @@ class Arrows extends Abstract_Template {
 				],
 				'selectors'            => [
 					'{{WRAPPER}} .owl-carousel' => '{{VALUE}}',
+					'{{WRAPPER}} .e-widget-swiper' => '{{VALUE}}',
 				],
 				'render_type'          => 'template',
 				'prefix_class'         => 'arrows%s-relative-to-',
@@ -236,7 +237,7 @@ class Arrows extends Abstract_Template {
 			]
 		);
 
-		$arrow_selector = '{{WRAPPER}} .owl-nav a';
+		$arrow_selector = '{{WRAPPER}} .owl-nav a, {{WRAPPER}} .the7-swiper-button';
 
 		$this->widget->add_responsive_control(
 			'arrow_bg_width',
@@ -356,7 +357,9 @@ class Arrows extends Abstract_Template {
 			$is_hover = ':hover';
 		}
 
-		$selector = '{{WRAPPER}} .owl-nav a' . $is_hover;
+		$selector = "{{WRAPPER}} .owl-nav a{$is_hover},{{WRAPPER}} .the7-swiper-button{$is_hover}";
+		$selector_pattern = '{{WRAPPER}} .owl-nav a' . $is_hover . '%1$s, {{WRAPPER}} .the7-swiper-button' . $is_hover . '%1$s';
+		$selector = sprintf($selector_pattern, "");
 
 		$this->widget->start_controls_tab(
 			$prefix_name . 'arrows_colors',
@@ -373,8 +376,8 @@ class Arrows extends Abstract_Template {
 				'alpha'     => true,
 				'default'   => '',
 				'selectors' => [
-					$selector . '> i'   => 'color: {{VALUE}};',
-					$selector . '> svg' => 'fill: {{VALUE}};color: {{VALUE}};',
+					sprintf($selector_pattern, '> i')  => 'color: {{VALUE}};',
+					sprintf($selector_pattern, '> svg') => 'fill: {{VALUE}};color: {{VALUE}};',
 				],
 			]
 		);
@@ -419,12 +422,15 @@ class Arrows extends Abstract_Template {
 		$default_h_pos = 'left';
 		if ( $prefix === 'next_' ) {
 			$button_class  = '.owl-next';
+			$swiper_button_class  = '.the7-swiper-button-next';
 			$default_h_pos = 'right';
 		} elseif ( $prefix === 'prev_' ) {
 			$button_class = '.owl-prev';
+			$swiper_button_class  = '.the7-swiper-button-prev';
 		}
 
-		$selector = '{{WRAPPER}} .owl-nav a' . $button_class;
+		$selector = '{{WRAPPER}} .owl-nav a' . $button_class . ',{{WRAPPER}} ' . $swiper_button_class;
+
 
 		$this->widget->add_control(
 			$prefix . 'arrow_position_heading',

@@ -181,6 +181,10 @@
         return false;
     }
 
+    runElementHandlers = function (elements) {
+        [...elements].flatMap(el => [...el.querySelectorAll('.elementor-element')]).forEach(el => elementorFrontend.elementsHandler.runReadyTrigger(el));
+    };
+
     The7ElementorAnimation = function () {
         this.classes = {
             animated: "animated",

@@ -15,7 +15,7 @@ if ( ! defined( 'PRESSCORE_DB_VERSION' ) ) {
 }
 
 if ( ! defined( 'PRESSCORE_STYLESHEETS_VERSION' ) ) {
-	define( 'PRESSCORE_STYLESHEETS_VERSION', '11.9.2.1' );
+	define( 'PRESSCORE_STYLESHEETS_VERSION', '11.10.0.1' );
 }
 
 define( 'THE7_CORE_COMPATIBLE_VERSION', '2.7.5' );

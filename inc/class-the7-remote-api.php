@@ -220,7 +220,7 @@ class The7_Remote_API {
 		if ( $versions === false ) {
 			$versions = [];
 			$data     = $this->remote_get_json( $this->api_theme_info_url );
-			if ( isset( $data['available_versions'] ) && is_array( $data['available_versions'] ) ) {
+			if ( ! is_wp_error( $data ) && isset( $data['available_versions'] ) && is_array( $data['available_versions'] ) ) {
 				$versions = $data['available_versions'];
 			}
 			set_transient( $transient_key, $versions, MINUTE_IN_SECONDS * 15 );

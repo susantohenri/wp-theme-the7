@@ -556,12 +556,13 @@ jQuery(function($) {
     var $sidebarOverlay = $(sidebarOverlayClass);
     if($('.dt-wc-sidebar-collapse').length > 0){
         $('<div class="wc-sidebar-toggle"></div>').prependTo('#sidebar');
+       
         $('.wc-sidebar-toggle').on('click', function(){
             var $this = $(this);
             if ($('.select2').length > 0) {
                 $('select.dropdown_product_cat, .woocommerce-widget-layered-nav-dropdown select').each(function(){
                     $(this).select2({
-                        dropdownParent: $('.sidebar-content'),
+                        dropdownParent: $('.sidebar'),
                         width: '100%'
                     })
                 });

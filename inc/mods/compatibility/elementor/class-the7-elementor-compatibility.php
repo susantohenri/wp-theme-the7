@@ -183,6 +183,8 @@ class The7_Elementor_Compatibility {
 				wp_enqueue_script( 'the7-elementor-editor-common' );
 			}
 		);
+
+        add_filter( 'pre_handle_404',  [ $this, 'allow_posts_widget_pagination'] , 10, 2 );
 	}
 
 	public function on_elementor_init() {
@@ -383,4 +385,81 @@ class The7_Elementor_Compatibility {
         $document->print_content();
         $this->restore_edit_mode();
     }
+
+    /**
+     * Fix WP 5.5 pagination issue.
+     *
+     * Return true to mark that it's handled and avoid WP to set it as 404.
+     *
+     * @see https://core.trac.wordpress.org/ticket/50976
+     *
+     * Based on the logic at \WP::handle_404.
+     *
+     * @param $handled - Default false.
+     * @param $wp_query
+     *
+     * @return bool
+     */
+    public function allow_posts_widget_pagination( $handled, $wp_query ) {
+        // Check it's not already handled and it's a single paged query.
+        if ( $handled || empty( $wp_query->query_vars['page'] ) || ! is_singular() || empty( $wp_query->post ) ) {
+            return $handled;
+        }
+
+        $document = Elementor::$instance->documents->get( $wp_query->post->ID );
+
+        return $this->is_valid_pagination( $document->get_elements_data(), $wp_query->query_vars['page'] );
+    }
+
+    public function is_valid_pagination( array $elements, $current_page ) {
+        $is_valid = false;
+
+        Elementor::$instance->db->iterate_data(
+            $elements,
+            $this->check_pagination_handler( $current_page, $is_valid )
+        );
+
+        return $is_valid;
+    }
+
+    /**
+     * @return void
+     */
+    public function check_pagination_handler(  $current_page, &$is_valid ) {
+        return function ( $element ) use ( &$is_valid, $current_page ) {
+            if ( ! $this->is_valid_post_widget( $element ) ) {
+                return;
+            }
+
+            $is_valid = $this->should_allow_pagination( $element, $current_page );
+        };
+    }
+
+    /**
+     * @return bool
+     */
+    private function is_valid_post_widget( $element) {
+        $prefix = "the7";
+        return isset( $element['widgetType'] ) && substr($element['widgetType'], 0, strlen($prefix)) === $prefix;
+    }
+
+
+    /**
+     * @return bool
+     */
+    private function should_allow_pagination( $element ) {
+    $post_type = 'post_type';
+
+       if (empty( $element['settings']['template_type']) && empty( $element['settings']['template_type']) === 'products' ){
+           $post_type = 'query_post_type';
+       }
+       if (!empty( $element['settings'][$post_type])){
+           if ($element['settings'][$post_type] === 'current_query'){
+               return true;
+           }
+       }
+
+        return ! empty( $element['settings']['loading_mode'] && $element['settings']['loading_mode']  === 'standard');
+    }
+
 }

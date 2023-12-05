@@ -3,6 +3,7 @@ namespace The7\Mods\Compatibility\Elementor\Pro\Modules\Query_Control;
 
 use Elementor\Controls_Manager;
 use Elementor\Core\Common\Modules\Ajax\Module as Ajax;
+use Elementor\Core\Editor\Editor;
 use Elementor\Plugin;
 use Elementor\Widget_Base;
 use Elementor\TemplateLibrary\Source_Local;
@@ -406,7 +407,11 @@ class The7_Query_Control_Module{
 	 * @throws \Exception
 	 */
 	public function ajax_posts_filter_autocomplete_deprecated( $data ) {
-		if ( empty( $data['filter_type'] ) || empty( $data['q'] ) ) {
+        if ( ! current_user_can( Editor::EDITING_CAPABILITY ) ) {
+            throw new \Exception( 'Access denied.' );
+        }
+
+        if ( empty( $data['filter_type'] ) || empty( $data['q'] ) ) {
 			throw new \Exception( 'Bad Request' );
 		}
 
@@ -512,6 +517,10 @@ class The7_Query_Control_Module{
 	 * @throws \Exception
 	 */
 	public function ajax_posts_filter_autocomplete( array $data ) {
+        if ( ! current_user_can( Editor::EDITING_CAPABILITY ) ) {
+            throw new \Exception( 'Access denied.' );
+        }
+
 		$query_data = $this->autocomplete_query_data( $data );
 		if ( is_wp_error( $query_data ) ) {
 			/** @var \WP_Error $query_data */
@@ -596,6 +605,10 @@ class The7_Query_Control_Module{
 	 * @return array
 	 */
 	public function ajax_posts_control_value_titles_deprecated( $request ) {
+        if ( ! current_user_can( Editor::EDITING_CAPABILITY ) ) {
+            throw new \Exception( 'Access denied.' );
+        }
+
 		$ids = (array) $request['id'];
 
 		$results = [];
@@ -664,6 +677,10 @@ class The7_Query_Control_Module{
 	}
 
 	public function ajax_posts_control_value_titles( $request ) {
+        if ( ! current_user_can( Editor::EDITING_CAPABILITY ) ) {
+            throw new \Exception( 'Access denied.' );
+        }
+
 		$query_data = $this->get_titles_query_data( $request );
 		if ( is_wp_error( $query_data ) ) {
 			return [];
